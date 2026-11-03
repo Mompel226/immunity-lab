@@ -1,0 +1,391 @@
+/* ============================================================
+   immunity.css — what is this lab's own: the header in the Human Body shelf's immunity teal, the left column that each
+   station fills with its own picture, the cards that open one at a time, and the pictures and animations of Topic 10.
+   Every colour is a token, defined in the bright AND the dark version (memory bright-and-dark-versions). The frame's
+   rules are the Cells Lab's (3 Nov 2026); this lab's own come after them.
+   ============================================================ */
+:root{
+  --accent:#0C6E63; --accent-2:#12897B; --accent-tint:#E1F3F0;
+  /* the inks of the Learn tab (js/terms.js): the T10 summary's own colours */
+  --k-struct:#1B7A43; --k-proc:#B5530F; --k-subst:#B4285F;
+  --on-photo-veil:rgba(14,20,27,.40);
+  /* the pictures: plasma, the pathogen's states, the town's people, the routes */
+  --im-plasma:#FCEFEA; --im-plasma-edge:#F2D4CA; --im-mem:#B45309;
+  --tw-v:#E3A90B; --tw-s:#2F6DB5; --tw-i:#C8322F; --tw-r:#9AA6B2;
+  --rt-bg:#F6F8FA; --rt-path:#556372; --rt-shut:#C8322F; --rt-ill:#C8322F; --rt-well:#2F6DB5;
+  --ch-tox:#E8730C; --ch-cl:#2E9E4F; --ch-wa:#2B7BD6; --ch-bac:#7A8B1E; --ch-pale:#FFFFFF;
+}
+@media (prefers-color-scheme: dark){
+:root:not([data-theme="light"]){
+  --accent:#5EE0CC; --accent-2:#2DD4BF; --accent-tint:#12302C;
+  --k-struct:#6EDB9A; --k-proc:#F5A35C; --k-subst:#F48FB4;
+  --im-plasma:#2A2124; --im-plasma-edge:#4A3438; --im-mem:#F2B544;
+  --tw-v:#F2C230; --tw-s:#6FA8EC; --tw-i:#F06A5E; --tw-r:#76828F;
+  --rt-bg:#16202A; --rt-path:#9AA8B5; --rt-shut:#F06A5E; --rt-ill:#F06A5E; --rt-well:#6FA8EC;
+  --ch-pale:#0E141B;
+}
+}
+:root[data-theme="dark"]{
+  --accent:#5EE0CC; --accent-2:#2DD4BF; --accent-tint:#12302C;
+  --k-struct:#6EDB9A; --k-proc:#F5A35C; --k-subst:#F48FB4;
+  --im-plasma:#2A2124; --im-plasma-edge:#4A3438; --im-mem:#F2B544;
+  --tw-v:#F2C230; --tw-s:#6FA8EC; --tw-i:#F06A5E; --tw-r:#76828F;
+  --rt-bg:#16202A; --rt-path:#9AA8B5; --rt-shut:#F06A5E; --rt-ill:#F06A5E; --rt-well:#6FA8EC;
+  --ch-pale:#0E141B;
+}
+
+/* ---------- the header: the shelf's own colours, never the other labs' green ---------- */
+.hdr{background:var(--hdr-bg);color:var(--hdr-ink);border-bottom:1px solid var(--hdr-line);box-shadow:none}
+.hdr__title{font-weight:700;letter-spacing:-.01em}
+/* his name is never cut (memory header-footer-credit): the topic line gives way first */
+.hdr__title,.hdr__by{flex:none}
+.hdr__mark{flex:none}
+@media (max-width:1500px){ .hdr__sub{display:none} }
+@media (max-width:1300px) and (min-width:1001px){ .stat--stations{display:none} }
+.hdr__sub{color:var(--hdr-soft);opacity:1;font-size:12.5px;min-width:0;flex:0 1 auto}
+.hdr__by{color:var(--hdr-soft);opacity:1}
+.hdr__by:hover,.hdr__by:focus-visible{color:var(--hdr-ink)}
+.badge{background:var(--hdr-veil);border:1px solid var(--hdr-line);color:var(--hdr-ink);cursor:pointer}
+.stat{background:var(--hdr-veil);border:1px solid var(--hdr-line);color:var(--hdr-ink)}
+.stat--go:hover,.stat--go:focus-visible{background:var(--accent-tint)}
+.ring .bg{stroke:var(--hdr-line)}
+.ring .fg{stroke:var(--accent-2)}
+.hbtn{background:var(--hdr-veil);border:1px solid var(--hdr-line);color:var(--hdr-ink);text-decoration:none}
+.hbtn:hover{background:var(--accent-tint)}
+.hbtn--save.is-ok{background:var(--accent-tint);color:var(--accent);border-color:var(--accent-2)}
+.hbtn--save.is-ok:hover{background:var(--accent-tint)}
+.hbtn--save.is-busy{background:var(--hdr-veil);color:var(--hdr-ink);border-style:dashed}
+.hbtn--save.is-no{background:var(--bad-tint);color:var(--bad);border-color:var(--bad)}
+.hbtn--save.is-no:hover{background:var(--bad-tint)}
+.hbtn--save.is-off{background:transparent;color:var(--hdr-ink);border-style:dashed}
+/* the way back (14 Oct 2026, Daniel: pupils missed it): a solid pill in the lab's green, first in the header; the header's own white (dark at night) as its words */
+.hbtn--back{background:var(--accent);border-color:var(--accent);color:var(--hdr-bg);box-shadow:0 1px 2px rgba(0,0,0,.18)}
+.hbtn--back:hover,.hbtn--back:focus-visible{background:var(--accent-2);border-color:var(--accent-2);color:var(--hdr-bg)}
+#btnTheme{white-space:nowrap}
+
+/* the station's heading: an antibody in the accent, its arms' ends in the substance rose */
+.st-head__ic{background:var(--accent-tint);border:1px solid var(--edge);color:var(--accent)}
+.st-head__ic .ic-cell{stroke:var(--accent)}
+.st-head__ic .ic-nuc{stroke:var(--k-subst)}
+.st-title{color:var(--ink);font-weight:700;letter-spacing:-.015em}
+
+/* ---------- the left column: each station's own picture ---------- */
+.platecol{position:relative;min-height:0;overflow:hidden;display:flex;flex-direction:column;
+  background:var(--col-bg);color:var(--col-ink);border-right:1px solid var(--col-line)}
+.platecol__tools{position:relative;z-index:6;display:flex;align-items:center;gap:10px;padding:8px 12px;min-height:0}
+.platecol__tools:empty{display:none}
+.tool{font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--col-ink);cursor:pointer;
+  border:1px solid var(--col-line);border-radius:var(--r-pill);padding:6px 12px;background:var(--col-card)}
+.tool:hover{border-color:var(--accent)}
+.tool[hidden]{display:none}
+.tool--sim{margin-right:auto}
+.viewhost{position:relative;flex:1;min-height:0;display:flex;flex-direction:column}
+.viewhost[hidden]{display:none}
+.view{flex:1;min-height:0;display:flex;flex-direction:column}
+.view[hidden]{display:none}
+.said{position:relative;z-index:4;margin:0;padding:8px 16px 12px;text-align:center;border-top:1px solid var(--col-line);background:var(--col-bg)}
+.said:empty{display:none}
+.said__name{display:block;font-size:14px;font-weight:600;color:var(--col-ink)}
+.said__credit{display:block;font-size:11.5px;color:var(--col-soft);margin-top:2px}
+.sim{flex:1;min-height:0;overflow:auto;padding:12px 14px 16px;display:flex;flex-direction:column}
+.sim[hidden]{display:none}
+.sim .widget{margin-top:0;border:none;box-shadow:none;background:transparent;padding:0}
+.platecol.is-sim .said{display:none}
+.stg__park{display:none}
+.stg__title{margin:2px 0 0;font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--accent)}
+.stg__title[hidden]{display:none}
+
+/* a button that belongs to a picture */
+.vbtn{font:inherit;font-size:13.5px;font-weight:600;display:inline-flex;align-items:center;gap:8px;cursor:pointer;
+  border:1.5px solid var(--accent);border-radius:var(--r-pill);background:var(--col-card);color:var(--accent);padding:7px 16px}
+.vbtn:hover{background:var(--accent-tint)}
+.vbtn:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+/* labels on a picture: the line ends ON the part, no dot (Daniel, 4 Oct 2026) */
+.lb__dot{display:none}
+/* label lines one steady width on screen, however far a picture is scaled to fit (8 Oct 2026) */
+svg .lb__lead,svg .lb__halo{vector-effect:non-scaling-stroke}
+/* the pale band under a label line stops where the line stops: with a round end it covered a ribosome or a
+   mitochondrion the line touched (18 Oct 2026) */
+.lb__halo{stroke:var(--col-bg);stroke-linecap:butt}
+.lb__lead{stroke:var(--col-ink)}
+.lb__txt{fill:var(--col-ink);stroke:var(--col-bg)}
+/* a word whose key-word card is at the bottom of this station: the faint rule of a definition and a small arrow down,
+   for "down to its card here" (25 Oct 2026) */
+.t.is-kw,.tc.is-kw{cursor:pointer;border-bottom:1px dotted var(--c49);padding-bottom:1px}
+.t.is-kw::after,.tc.is-kw::after{content:"↓";font-size:.72em;vertical-align:.2em;margin-left:1px;opacity:.75}
+.t.is-kw:hover,.tc.is-kw:hover{background:var(--c41);border-radius:3px}
+.t.is-kw:focus-visible,.tc.is-kw:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:3px}
+/* a name that opens its card (views/figure.js gives it role="button"); any other name is only a name: no hand, no colour */
+.lb[role="button"]{cursor:pointer}
+.lb__lead,.lb__halo{pointer-events:none}
+.lb:focus-visible{outline:none}
+.lb[role="button"]:focus-visible .lb__txt,.lb[role="button"]:hover .lb__txt{fill:var(--accent)}
+.lb.is-lit .lb__txt{fill:var(--accent);font-weight:700}
+.lb.is-lit .lb__lead{stroke:var(--accent);stroke-width:2.6}
+.lb.is-dim{opacity:.45}
+
+/* a picture's own buttons, in a bar above it */
+.vbar{display:flex;flex-wrap:wrap;gap:8px;justify-content:flex-start;padding:0 6px 6px}
+
+/* ---------- a sentence as a card: the heading always shows, the words open one card at a time ---------- */
+.exam-list > li.xcard{padding:0;margin:0 0 8px}
+.exam-list > li.xcard::before{display:none}
+.xcard__h{width:100%;display:flex;align-items:center;gap:10px;text-align:left;cursor:pointer;
+  font:inherit;font-size:15.5px;font-weight:600;color:var(--ink);background:var(--card-2);
+  border:1px solid var(--edge);border-radius:var(--r);padding:10px 14px}
+.xcard__h:hover{border-color:var(--accent)}
+.xcard__h:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.xcard__t{flex:1;min-width:0}
+.xcard__a{width:9px;height:9px;border-right:2px solid var(--grey);border-bottom:2px solid var(--grey);transform:rotate(45deg);transition:transform .2s;flex:none;margin-top:-4px}
+.xcard.is-open .xcard__h{border-color:var(--accent);background:var(--accent-tint);border-bottom-left-radius:0;border-bottom-right-radius:0}
+.xcard.is-open .xcard__a{transform:rotate(225deg);margin-top:4px}
+.xcard__b{border:1px solid var(--accent);border-top:0;border-radius:0 0 var(--r) var(--r);padding:12px 14px;background:var(--card)}
+.xcard__b[hidden]{display:none}
+/* a widget, photo or table inside a card sits inside it: the list's bullet margin (-26px in app.css) does not apply here */
+.exam-list li.xcard .widget,.exam-list li.xcard .media,.exam-list li.xcard .photo,.exam-list li.xcard .ctable{margin-left:0;margin-right:0;max-width:100%}
+/* a closed tooltip takes no room: laid out while hidden, it made the panel scroll sideways when its word sat near the
+   right edge (8 Oct 2026); it shows on hover, on focus and when pressed, as before */
+/* a grid question's row names wrap, so the table fits a narrow panel without scrolling inside the question */
+.gridq tbody th{white-space:normal;min-width:6.5em}
+/* a picture in a pop-up never takes more than a third of the screen's height, so its words stay beside the word pressed */
+.peek img{max-height:34vh;object-fit:contain}
+/* "Going further": a long reference wraps inside its card instead of running past it */
+.later__ref{max-width:100%;white-space:normal}
+/* the picture's fold button: the page's own sans and sentence case, a comfortable tap */
+.fold{font-family:var(--font);font-size:12.5px;letter-spacing:0;text-transform:none;min-height:32px}
+/* a question's picture: every ring has a larger invisible tap area, and on a drawing the ring does not hide its part */
+.hs__pt::before{content:"";position:absolute;inset:-9px;border-radius:50%}
+.hs__stage--fig .hs__pt{background:transparent}
+/* the keyword cards' prompt reads at full strength */
+.kw__ask{color:var(--col-soft);font-style:normal}
+/* the station row fades at its ends on a narrow screen, so a cut-off name reads as "more this way" */
+@media (max-width:1000px){ .rail__track{-webkit-mask-image:linear-gradient(90deg,transparent,#000 22px,#000 calc(100% - 22px),transparent);mask-image:linear-gradient(90deg,transparent,#000 22px,#000 calc(100% - 22px),transparent)} }
+/* a phone: the header is the name above ONE row of buttons (short labels), and the picture's own buttons are easy to tap */
+@media (max-width:540px){
+  .hdr__stats{flex-wrap:wrap;gap:5px}   /* one row as a rule; a long warning ("Sign in again" and Google's button) takes a second row rather than pushing buttons off the screen */
+  .hdr__stats .hbtn{padding:5px 8px;font-size:12px;min-height:32px}
+  .hdr__stats .hbtn__short{font-size:14px}
+  #btnHelp{width:32px;height:32px}
+  .stat{padding:3px 8px 3px 4px}
+  .cellv__mode,.gal__mode,.dfv__tab,.twn__mode{min-height:34px}
+  .vbar{gap:6px}
+}
+/* a question on a cell drawing: the drawing at a readable size, centred, its stage as wide as the drawing */
+.hs__stage--fig{max-width:min(100%,400px);margin-left:auto;margin-right:auto;background:var(--col-card)}
+.hs__stage--fig svg{background:transparent}
+.tip::after,.tip::before{display:none}
+.tip:hover::after,.tip:hover::before,.tip:focus-visible::after,.tip:focus-visible::before,.tip.is-open::after,.tip.is-open::before{display:block}
+@media (prefers-reduced-motion: reduce){ .xcard__a{transition:none} }
+
+
+/* the inks of this lab (js/terms.js) */
+.t--struct{color:var(--k-struct)} .t--proc{color:var(--k-proc)} .t--subst{color:var(--k-subst)}
+.chip--struct{background:var(--k-struct);color:var(--on-ink)} .chip--proc{background:var(--k-proc);color:var(--on-ink)}
+.chip--subst{background:var(--k-subst);color:var(--on-ink)}
+
+/* ---------- phone and upright tablet: the picture as a strip above the notes ---------- */
+@media (max-width:1000px) and (min-height:561px){
+  /* pinned above the notes (the Cells Lab's rule, 8 Oct 2026), so the picture stays beside the words about it */
+  .platecol{position:sticky;top:0;z-index:4;height:min(42vh,380px);box-shadow:0 2px 10px var(--c176)}
+  .platecol.is-folded{height:auto}
+  .platecol.is-folded .viewhost,.platecol.is-folded .said{display:none}
+  /* the town, the defences and the photographs are working pictures: they scroll with the page at full width */
+  .platecol[data-kind="town"],.platecol[data-kind="defences"],.platecol[data-kind="gallery"]{position:relative;height:auto;box-shadow:none}
+  .platecol[data-kind="gallery"] .gal{overflow:visible}
+  .platecol[data-kind="town"] .twn__svg,.platecol[data-kind="defences"] .dfv__svg{height:auto}
+}
+
+/* "Check yourself": a yellow highlighter under red-brown words, the same in both versions (a highlighter does not
+   change in the dark); the box keeps the theme's own ground */
+:root{ --gold-ink:#8A2A1E; --gold-mark:#FFE36B; }
+.golden__h,.exam-alert__h{color:var(--gold-ink);background:linear-gradient(180deg,transparent 14%,var(--gold-mark) 14%,var(--gold-mark) 92%,transparent 92%)}
+.golden p + p{margin-top:8px}
+
+/* ---------- the shared look of a picture's own controls ---------- */
+.cellv__mode{font:inherit;font-size:13px;font-weight:600;padding:6px 12px;border-radius:var(--r-pill);cursor:pointer;
+  border:1.5px solid var(--col-line);background:var(--col-card);color:var(--col-ink)}
+.cellv__mode[aria-pressed="true"]{border-color:var(--accent);background:var(--accent-tint);color:var(--accent)}
+.cellv__mode:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.vbtn[disabled]{opacity:.45;cursor:default}
+
+/* ---------- stations 5–7: one cell, several ways of seeing it ---------- */
+.cellv{flex:1;min-height:0;display:flex;flex-direction:column;padding:8px 8px 8px}
+.cellv__stage{flex:1;min-height:0;display:flex}
+.cellv__svg{flex:1;min-height:0;width:100%;height:100%;display:block}
+.cellv__veil{fill:var(--on-photo-veil);opacity:0;transition:opacity .3s ease;pointer-events:none}
+.cellv__veil.is-on{opacity:1}
+.cellv__note{margin:6px 8px 0;font-size:13.5px;font-weight:600;color:var(--amber);text-align:center}
+.cellv__note[hidden]{display:none}
+
+/* "Put in order": the step numbers are neutral until the answer is checked (they were the red of a wrong answer) */
+.oitem__n{background:transparent;color:var(--accent);border:1.5px solid var(--accent)}
+.order.is-ok .oitem__n{background:var(--accent-2);color:var(--c3);border-color:transparent}
+.order.is-no .oitem__n{background:var(--red);color:var(--c3);border-color:transparent}
+.oitem__grip{color:var(--grey)}
+/* every instruction under a question in one style (the match-up's was an amber callout) */
+.act p.hinttext{display:block;background:none;border:0;border-radius:0;padding:0;margin:2px 0 8px;font-size:12.5px;color:var(--grey)}
+/* a gap inside a sentence is as tall as a line of text, so the sentence still reads as one */
+.cloze{line-height:2.05}
+.cloze .gap{line-height:1.3}
+/* four groups to sort into: two by two, never three and one */
+.bins:has(> .bin:nth-child(4):last-child){grid-template-columns:repeat(2,minmax(0,1fr))}
+/* one ring for every picture, photograph or drawing: white with a dark edge inside and out, so it reads on any ground */
+.hs__pt:not([aria-pressed="true"]),.hs__stage svg ~ .hs__pt:not([aria-pressed="true"]){border:2px solid rgba(255,255,255,.95);background:rgba(255,255,255,.1);
+  box-shadow:0 0 0 1.5px rgba(10,20,28,.78),inset 0 0 0 1px rgba(10,20,28,.5)}
+.hs__pt:not([aria-pressed="true"]):hover{background:rgba(255,255,255,.35)}
+/* no word left alone on the last line of a paragraph */
+p,li,dd,figcaption{text-wrap:pretty}
+/* a cell picture's numbered pins and their key (when words in the margins would squeeze the picture) */
+.lb__pin{fill:var(--col-card);stroke:var(--col-ink);stroke-width:1.3px;vector-effect:non-scaling-stroke}
+.lb__pinn{fill:var(--col-ink);font-family:var(--font);font-weight:700}
+.lb.is-lit .lb__pin{fill:var(--accent);stroke:var(--accent)}
+.lb.is-lit .lb__pinn{fill:var(--on-ink)}
+.lb:hover .lb__pin,.lb:focus-visible .lb__pin{stroke:var(--accent)}
+.lb--key .lb__txt{stroke:none}
+
+/* a link out of the lab reads as a button, not as one more badge beside it */
+.later__out{background:transparent;color:var(--accent);border:1.5px solid var(--accent)}
+.later__out:hover{background:var(--accent-tint);filter:none}
+/* a tall photograph in a question is capped in height, so the question, the picture and "Check answer" fit on one
+   screen; the stage shrinks to the picture, so every ring stays on its part */
+.hs__stage:has(> img){width:fit-content;max-width:100%;margin-left:auto;margin-right:auto}
+.hs__stage > img{width:auto;max-width:100%;max-height:min(520px,62vh)}
+/* a heading over a picture (two photographs side by side) */
+.cellv__head{fill:var(--col-ink);font-family:var(--font);font-weight:700;paint-order:stroke;stroke:var(--col-bg);stroke-width:3px;stroke-linejoin:round}
+
+
+/* ---------- this lab's pictures ---------- */
+.vbar{align-items:center}
+.gal__mode,.dfv__tab,.twn__mode{font:inherit;font-size:13px;font-weight:600;padding:6px 12px;border-radius:var(--r-pill);cursor:pointer;
+  border:1.5px solid var(--col-line);background:var(--col-card);color:var(--col-ink)}
+.gal__mode[aria-pressed="true"],.dfv__tab[aria-pressed="true"],.twn__mode[aria-pressed="true"]{border-color:var(--accent);background:var(--accent-tint);color:var(--accent)}
+.gal__mode:focus-visible,.dfv__tab:focus-visible,.twn__mode:focus-visible,.gal__tile:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+/* the photographs (stations 1 and 3): each one names itself, its credit under its name */
+.gal{flex:1;min-height:0;display:flex;flex-direction:column;padding:8px 10px 8px;overflow:auto}
+.gal__grid{display:grid;grid-template-columns:repeat(var(--cols,2),minmax(0,1fr));gap:10px;align-content:start}
+.gal__grid[hidden]{display:none}
+.gal__band{grid-column:1/-1;margin:4px 2px -2px;font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--col-soft)}
+.gal__tile{position:relative;display:block;padding:0;margin:0;border:2px solid var(--col-line);border-radius:12px;overflow:hidden;cursor:pointer;
+  background:var(--col-card);aspect-ratio:4/3;text-align:left;transition:opacity .2s,border-color .2s}
+.gal__img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
+.gal__name{position:absolute;left:0;right:0;bottom:0;padding:22px 10px 7px;color:#fff;font-size:14px;line-height:1.25;
+  background:linear-gradient(180deg,rgba(8,14,20,0),rgba(8,14,20,.78) 45%)}
+.gal__name b{display:block;font-size:15px}
+.gal__name span{display:block;font-size:12.5px;opacity:.92}
+.gal__sup{position:absolute;right:8px;bottom:8px;font-style:normal;font-size:11px;font-weight:700;color:#fff;background:var(--accent);border-radius:5px;padding:1px 6px}
+.gal__credit{position:absolute;right:6px;top:5px;max-width:80%;font-size:10px;line-height:1.2;color:#fff;background:rgba(8,14,20,.55);border-radius:4px;padding:1px 5px;text-align:right}
+.gal__tile:hover{border-color:var(--accent)}
+.gal__tile.is-lit{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-tint)}
+.gal__tile.is-dim{opacity:.55}
+
+/* the body's defences (station 2) */
+.dfv{flex:1;min-height:0;display:flex;flex-direction:column;padding:8px 8px 8px}
+.dfv__n{display:inline-grid;place-items:center;width:18px;height:18px;border-radius:50%;background:var(--col-line);color:var(--col-ink);font-size:11px;margin-right:2px}
+.dfv__tab[aria-pressed="true"] .dfv__n{background:var(--accent);color:var(--on-ink)}
+.dfv__stage{flex:1;min-height:0;display:flex;position:relative}
+.dfv__svg{flex:1;min-height:0;width:100%;height:100%;display:block}
+.dfv__head{font-family:var(--font);font-weight:700;font-size:13px;fill:var(--col-ink)}
+.dfv__hair{fill:none;stroke:#3A2A22;stroke-width:1.6;stroke-linecap:round}
+.dfv__dust{fill:#8A7C6B;stroke:#4A4036;stroke-width:.6}
+.dfv__photo{flex:1;margin:0;position:relative;display:flex;align-items:center;justify-content:center}
+.dfv__photo[hidden]{display:none}
+.dfv__pwrap{position:relative;max-width:100%;max-height:100%}
+.dfv__pwrap img{display:block;max-width:100%;max-height:100%;border-radius:8px}
+.dfv__plab{position:absolute;transform:translate(-50%,-50%);background:var(--col-card);color:var(--col-ink);font-weight:700;font-size:13.5px;padding:2px 8px;border-radius:6px;box-shadow:0 1px 3px rgba(0,0,0,.3)}
+.dfv__next{align-self:flex-end;margin:6px 8px 0;font:inherit;font-size:13px;font-weight:600;padding:6px 14px;border-radius:var(--r-pill);cursor:pointer;
+  border:1.5px solid var(--accent);background:var(--col-card);color:var(--accent)}
+.dfv__next:hover{background:var(--accent-tint)}
+
+/* the town (station 5) */
+.twn{flex:1;min-height:0;display:flex;flex-direction:column;padding:8px 10px 8px}
+.twn__stage{flex:1;min-height:0;display:flex}
+.twn__svg{flex:1;min-height:0;width:100%;height:100%;display:block}
+.twn__p--v{fill:var(--tw-v)} .twn__p--s{fill:var(--tw-s)} .twn__p--i{fill:var(--tw-i)} .twn__p--r{fill:var(--tw-r)}
+.twn__p{stroke:var(--col-bg);stroke-width:.6px;transition:fill .35s}
+.twn__key{fill:var(--col-ink);font-family:var(--font)}
+.dv__head{fill:var(--col-ink);font-family:var(--font);font-weight:600}
+.twn__keys{display:flex;flex-wrap:wrap;gap:4px 14px;justify-content:center;font-size:13.5px;color:var(--col-ink);margin:4px 8px 0;line-height:1.35}
+.twn__k{display:inline-flex;align-items:center;gap:4px;white-space:nowrap}
+.twn__k svg{width:17px;height:17px;flex:none}
+.twn__knote{flex-basis:100%;text-align:center;font-size:13px}
+.twn__ctl{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin:6px 0 2px}
+.twn__ctl button{font:inherit;font-size:13.5px;font-weight:600;padding:7px 16px;border-radius:var(--r-pill);cursor:pointer;border:1.5px solid var(--accent);background:var(--col-card);color:var(--accent)}
+.twn__ctl button:hover{background:var(--accent-tint)}
+.twn__ctl button[disabled]{opacity:.45;cursor:default}
+.twn__next{background:var(--accent)!important;color:var(--on-ink)!important}
+.twn__next.is-pulse{animation:twnPulse 1.6s ease-in-out infinite}
+@keyframes twnPulse{50%{box-shadow:0 0 0 5px var(--accent-tint)}}
+.twn__read{margin:2px 6px 0;text-align:center;font-size:13.5px;color:var(--col-ink)}
+.twn__end{color:var(--accent);font-weight:600}
+@media (prefers-reduced-motion: reduce){ .twn__next.is-pulse{animation:none} .twn__p{transition:none} .gal__tile{transition:none} }
+
+/* ---------- this lab's animations ---------- */
+.im__bg,.ch__bg,.mb__bg{fill:var(--col-card)}
+.im__plasma{fill:var(--im-plasma);stroke:var(--im-plasma-edge);stroke-width:1.5}
+
+.im__mem{fill:none;stroke:var(--im-mem);stroke-width:3;stroke-dasharray:6 4}
+.im__badge{opacity:.95}
+.im__pg.is-dead .ag,.pg.is-dead .ag{opacity:.5}
+.ch__bac{fill:var(--ch-bac);stroke:#3F4A0C;stroke-width:1}
+.ch__tox{fill:var(--ch-tox);stroke:#7A3A05;stroke-width:.6}
+.ch__cl{fill:var(--ch-cl);stroke:#13552A;stroke-width:.8}
+.ch__wa{fill:var(--ch-wa);stroke:#0E3F75;stroke-width:.7}
+.ch__pale{fill:var(--ch-pale)}
+.ch__flow{fill:none;stroke:var(--accent);stroke-width:3;stroke-dasharray:7 5}
+.ch__arrow{fill:var(--accent)}
+.mb__milk{fill:#FFFFFF;stroke:#C9B9A6;stroke-width:1.2;opacity:.95}
+.im__read,.ch__read,.mb__read{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 6px}
+.im__pill,.ch__pill,.mb__pill{font-size:12.5px;border-radius:var(--r-pill);padding:3px 10px;border:1px solid var(--edge);background:var(--card-2)}
+.im__pill.is-ok,.ch__pill.is-ok,.mb__pill.is-ok{border-color:var(--ok);color:var(--ok)}
+.im__pill.is-warn,.ch__pill.is-warn,.mb__pill.is-warn{border-color:var(--amber);color:var(--amber)}
+.im__pill.is-bad,.ch__pill.is-bad,.mb__pill.is-bad{border-color:var(--bad);color:var(--bad)}
+.im__fig,.ch__fig,.mb__fig{margin:0}
+.im__svg,.ch__svg,.mb__svg{display:block;width:100%;height:auto}
+.ch__fence{font-size:12.5px;color:var(--purple);border-left:3px solid var(--purple);padding-left:8px}
+
+/* Close the routes (station 3) */
+.rt__wrap{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);gap:14px;align-items:start}
+@container (max-width:620px){ .rt__wrap{grid-template-columns:minmax(0,1fr)} }
+.rt{container-type:inline-size}
+.rt--staged .rt__wrap{grid-template-columns:minmax(0,1fr)}
+.rt__svg{display:block;width:100%;height:auto}
+.rt__bg{fill:var(--rt-bg)}
+.rt__who--ill{fill:var(--rt-ill)} .rt__who--well{fill:var(--rt-well)}
+.rt__whot{font-family:var(--font);font-size:15px;font-weight:700;fill:var(--ink)}
+.rt__path{fill:none;stroke:var(--rt-path);stroke-width:3;transition:opacity .3s}
+.rt__path.is-shut{opacity:.25;stroke-dasharray:6 6}
+.rt__arrow{fill:var(--rt-path)}
+.rt__rn{font-family:var(--font);font-size:14.5px;font-weight:600;fill:var(--ink);paint-order:stroke;stroke:var(--rt-bg);stroke-width:5px;stroke-linejoin:round}
+.rt__rn.is-shut{opacity:.4}
+.rt__bar rect{fill:var(--rt-shut)}
+.rt__btns{display:flex;flex-direction:column;gap:7px}
+.rt__btn{font:inherit;font-size:14px;font-weight:600;text-align:left;padding:9px 12px;border-radius:var(--r);cursor:pointer;border:1.5px solid var(--edge);background:var(--card);color:var(--ink)}
+.rt__btn[aria-pressed="true"]{border-color:var(--accent);background:var(--accent-tint);color:var(--accent)}
+.rt__btn[aria-pressed="true"]::before{content:"✓ "}
+.rt__say{font-size:14px;margin:10px 0 6px;min-height:3.2em}
+.rt__clear{font:inherit;font-size:13px;padding:6px 12px;border-radius:var(--r-pill);border:1px solid var(--edge);background:var(--card-2);cursor:pointer}
+
+/* Which antibody fits? (station 4) */
+.af__svg{display:block;width:100%;height:auto}
+.af__bg{fill:var(--im-plasma);stroke:var(--im-plasma-edge)}
+.af__pg{cursor:pointer;outline:none}
+.af__hit{fill:transparent;stroke:transparent;stroke-width:2}
+.af__pg:hover .af__hit,.af__pg:focus-visible .af__hit{stroke:var(--accent);stroke-dasharray:5 4}
+.af__pg.is-bad .af__hit{stroke:var(--bad);stroke-dasharray:none}
+.af__nm{font-family:var(--font);font-size:15px;font-weight:700;fill:var(--ink)}
+.af__pick{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin:8px 0}
+.af__ab{display:flex;align-items:center;gap:8px;font:inherit;font-size:13.5px;font-weight:600;padding:5px 12px 5px 6px;border-radius:var(--r);cursor:pointer;border:1.5px solid var(--edge);background:var(--card);color:var(--ink)}
+.af__ab svg{width:38px;height:40px}
+.af__ab[aria-pressed="true"]{border-color:var(--accent);background:var(--accent-tint)}
+.af__ab[disabled]{opacity:.45;cursor:default}
+.af__say{font-size:14px;min-height:2.6em;margin:4px 0}
+.af__again{font:inherit;font-size:13px;padding:6px 12px;border-radius:var(--r-pill);border:1px solid var(--edge);background:var(--card-2);cursor:pointer}
+.twn__ring{fill:none;stroke:var(--tw-i);stroke-width:3;stroke-dasharray:5 3}
+.im__pill i,.ch__pill i,.mb__pill i{font-style:normal;font-weight:700}
+.im__glow{fill:none;stroke:#E8A317;stroke-width:4}
+/* a phone: the numbered names of an animation, under the drawing */
+.pinkey{list-style:none;margin:6px 4px 0;padding:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:3px 12px;font-size:13.5px}
+.pinkey[hidden]{display:none}
+.pinkey b{display:inline-grid;place-items:center;width:20px;height:20px;border-radius:50%;border:1.5px solid var(--ink);font-size:11.5px;margin-right:4px}
