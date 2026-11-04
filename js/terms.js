@@ -275,3 +275,39 @@
   }
   if (document.body) watch(); else document.addEventListener('DOMContentLoaded', watch);
 })();
+
+/* Scientific names in italics, as biologists write them (Daniel, 4 Nov 2026: "Vibrio cholerae … is a species. So why did
+   you not italicize it like a binomial name?"): each word of a genus or species name the lab uses, wherever the page
+   writes it (the theory, a question, a caption, a drawing's names), made as the page changes, like the join above, so
+   no question's words change. In a drawing the italic word is a tspan. */
+(function () {
+  var SCI = /\b(Vibrio|cholerae|Staphylococcus|aureus|Salmonella|Campylobacter|Trichophyton)\b/;
+  var SVG = 'http://www.w3.org/2000/svg';
+  function fix(t) {
+    var p = t.parentNode; if (!p || p.nodeType !== 1) return;
+    var tag = p.nodeName.toUpperCase(); if (tag === 'SCRIPT' || tag === 'STYLE' || tag === 'TEXTAREA' || tag === 'OPTION' || tag === 'TITLE') return;
+    if (p.classList && p.classList.contains('sci')) return;
+    var m = SCI.exec(t.nodeValue); if (!m) return;
+    var svg = p.namespaceURI === SVG, w = svg ? document.createElementNS(SVG, 'tspan') : document.createElement('span');
+    w.setAttribute('class', 'sci'); w.textContent = m[1];
+    var rest = t.splitText(m.index);
+    rest.nodeValue = rest.nodeValue.slice(m[1].length);
+    p.insertBefore(w, rest);
+    fix(rest);
+  }
+  function walk(node) {
+    if (!node) return;
+    if (node.nodeType === 3) { fix(node); return; }
+    if (node.nodeType !== 1 && node.nodeType !== 11) return;
+    var w = document.createTreeWalker(node, NodeFilter.SHOW_TEXT), t, list = [];
+    while ((t = w.nextNode())) list.push(t);
+    list.forEach(fix);
+  }
+  function watch() {
+    walk(document.body);
+    new MutationObserver(function (recs) {
+      recs.forEach(function (r) { if (r.type === 'characterData') fix(r.target); else for (var i = 0; i < r.addedNodes.length; i++) walk(r.addedNodes[i]); });
+    }).observe(document.body, { subtree: true, childList: true, characterData: true });
+  }
+  if (document.body) watch(); else document.addEventListener('DOMContentLoaded', watch);
+})();

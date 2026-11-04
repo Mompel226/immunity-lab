@@ -397,6 +397,8 @@ p,li,dd,figcaption{text-wrap:pretty}
 .ch__k svg{width:22px;height:16px;overflow:visible}
 .ch__pale{fill:var(--ch-pale)}
 .ch__flow{fill:none;stroke:var(--accent);stroke-width:3;stroke-dasharray:7 5}
+/* a genus or species name, wherever the page writes it (js/terms.js) */
+.sci{font-style:italic}
 .ch__arrow{fill:var(--accent)}
 .mb__milk{fill:#FFFFFF;stroke:#C9B9A6;stroke-width:1.2;opacity:.95}
 .im__read,.ch__read,.mb__read{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 6px}

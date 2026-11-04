@@ -50,13 +50,13 @@
     var x = lerp(254, 222, k0), y = lerp(q.y0, q.y, k0);
     x = lerp(x, surfaceX(q.y) - 6, k1);
     x = lerp(x, q.x1, k2); y = lerp(y, q.y1, k2);
-    if (t > 33) { var k3 = ease(seg(t, 33, 39)); y = lerp(y, -20, k3); x = lerp(x, 175, k3 * .5); }
+    if (t > 33) y = lerp(y, -20, ease(seg(t, 33, 39)));      /* out of the body: straight up the gap between the villi */
     return [x, y];
   }
   function waAt(q, t) {
     var k1 = ease(seg(t, q.t0, q.t0 + 2)), k2 = ease(seg(t, q.t0 + 2, q.t0 + 4.4)), x = lerp(250, 222, k1), y = lerp(q.y0, q.y, k1);
     x = lerp(x, q.x1, k2); y = lerp(y, q.y1, k2);
-    if (t > 33) { var k3 = ease(seg(t, 33, 39)); y = lerp(y, -20, k3); x = lerp(x, 182, k3 * .5); }
+    if (t > 33) y = lerp(y, -20, ease(seg(t, 33, 39)));
     return [x, y];
   }
   function comma(x, y, a, s, op) {
@@ -91,9 +91,10 @@
       var at = waAt(q, t);
       out += '<circle class="ch__wa" cx="' + n1(at[0]) + '" cy="' + n1(at[1]) + '" r="3"/>';
     });
-    /* step 5: the contents leave, to the large intestine and out of the body */
+    /* step 5: the contents leave the body, straight up the gap between the villi (Daniel, 4 Nov 2026: "not up and right,
+       is basically just up") */
     var fl = clamp01((t - 33) / 2);
-    if (fl > 0) out += '<g opacity="' + n1(fl * 100) / 100 + '"><path class="ch__flow" d="M176 210 L176 26 L250 26" marker-end="url(#chArrow)"/></g>';
+    if (fl > 0) out += '<g opacity="' + n1(fl * 100) / 100 + '"><path class="ch__flow" d="M176 210 L176 12" marker-end="url(#chArrow)"/></g>';
     return out;
   }
   function labelsAt(t) {
@@ -108,7 +109,7 @@
     if (t > CL[3].t0 + .6 && t < 33) { var ca = clAt(CL[3], t); it.push({ id: 'cl', text: 'chloride ions', x: ca[0], y: ca[1], side: 'L', alts: CL.filter(function (q) { return t > q.t0; }).map(function (q) { return clAt(q, t); }) }); }
     if (t > WA[5].t0 + .6 && t < 33) { var wa = waAt(WA[5], t); it.push({ id: 'wa', text: 'water', x: wa[0], y: wa[1], side: 'L', alts: WA.filter(function (q) { return t > q.t0; }).map(function (q) { return waAt(q, t); }) }); }
     if (t > 24 && t < 33) it.push({ id: 'wpl', text: 'lower water potential', x: 180, y: 120, side: 'L', alts: [[180, 100], [176, 160]] }, { id: 'wph', text: 'higher water potential', x: 264, y: 150, side: 'R', alts: [[268, 130], [262, 170]] });
-    if (t > 34.5) it.push({ id: 'out', text: 'diarrhoea: out of the body', x: 246, y: 26, side: 'R' });
+    if (t > 34.5) it.push({ id: 'out', text: 'diarrhoea: out of the body', x: 178, y: 40, side: 'R' });
     return it;
   }
 
