@@ -306,7 +306,8 @@
   function immext(spec) {
     var box = build(spec), head = box.firstChild;
     box.classList.add('ixw'); box.hidden = true;
-    box.insertBefore(h('p', 'ixg__p', '<b>Extension.</b> Beyond the 0610 syllabus, which does not list these cells or steps. ' +
+    /* marked as IB as the other labs mark IB (later__ref--ib, the IB blue; Daniel, 4 Nov 2026: "the same color coding … as in other labs") */
+    box.insertBefore(h('p', 'ixg__p', '<span class="later__ref later__ref--ib">IB Biology · extension</span> Beyond the 0610 syllabus, which does not list these cells or steps. ' +
       'IB Biology (C3.2) asks most of it; two steps go beyond IB, and each step says which.'), head.nextSibling);
     return box;
   }
@@ -339,8 +340,8 @@
      Lederberg 1958), antibody genes joined at random (Tonegawa, Nobel Prize 1987), self-reactive lymphocytes removed, and
      affinity maturation after the first meeting. Plain words for EAL pupils; the analogy last. */
   function shapesnote() {
-    var box = h('div', 'widget fmnote');
-    box.innerHTML = '<p class="fmnote__h">Where do the antibody shapes come from? <span class="fmnote__tag">Beyond the 0610 syllabus</span></p>' +
+    var box = h('div', 'widget fmnote');   /* in the grey the other labs give to what is beyond the syllabus (later__ref--beyond) */
+    box.innerHTML = '<p class="fmnote__h">Where do the antibody shapes come from? <span class="later__ref later__ref--beyond">Beyond the 0610 syllabus</span></p>' +
       '<p>A lymphocyte does not learn a shape from the pathogen. Each new <b>lymphocyte</b>, while it is made in the bone marrow, joins pieces of its antibody genes in a random order. So each lymphocyte makes <b>antibodies</b> of one shape only, and the body has millions of different shapes before it meets any pathogen (Susumu Tonegawa, Nobel Prize 1987).</p>' +
       '<p>When a pathogen enters, its <b>antigens</b> bind only to the few lymphocytes whose antibodies already fit. Only these are stimulated: they divide, and some of their copies stay as <b>memory cells</b>. This is <b>clonal selection</b>. A pathogen has many different antigens, so it stimulates many different lymphocytes; but one lymphocyte, and every copy of it, makes antibodies of one shape only.</p>' +
       '<p>Two clues that the shapes are made first: people can make antibodies against chemicals made in a laboratory, which no pathogen has; and the body destroys young lymphocytes whose antibodies fit its own cells.</p>' +
