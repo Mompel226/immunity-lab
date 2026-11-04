@@ -13,11 +13,13 @@
   'use strict';
   var L = global.CircLearn, D = global.ImmDraw; if (!L || !D) return;
   var h = L.h, esc = L.esc, NS = 'http://www.w3.org/2000/svg';
-  var W = 600, H = 210;
+  var W = 600, H = 220;
   var KINDS = ['tri', 'round', 'sq'];
   var WORD = { tri: 'triangular', round: 'rounded', sq: 'square' };
   /* P, Q and R: the picture beside this station already calls its two pathogens A and B, in other colours */
-  var PG = [{ kind: 'round', x: 105, y: 108, rot: -8, name: 'Pathogen P' }, { kind: 'sq', x: 300, y: 108, rot: 6, name: 'Pathogen Q' }, { kind: 'tri', x: 495, y: 108, rot: -4, name: 'Pathogen R' }];
+  /* high in the picture, so a bound antibody's stem ends above the name, never on it (Daniel, 4 Nov 2026: "avoid the antigen
+     to overlap the text") */
+  var PG = [{ kind: 'round', x: 105, y: 84, rot: -8, name: 'Pathogen P' }, { kind: 'sq', x: 300, y: 84, rot: 6, name: 'Pathogen Q' }, { kind: 'tri', x: 495, y: 84, rot: -4, name: 'Pathogen R' }];
   var NUM = { tri: 1, round: 2, sq: 3 };
 
   function abfit(spec) {
