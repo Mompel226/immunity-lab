@@ -237,7 +237,7 @@
       gLab.innerHTML = K.names(lay, items, narrow, key, null, 6);
       if (pillAt) pillAt(mt, S);
     }
-    var sp = L.stepper({ steps: K.readerSteps(steps, R), end: R[R.length - 1], render: draw });
+    var sp = L.stepper({ steps: K.readerSteps(steps, R), end: R[R.length - 1], render: draw, flow: K.readerFlow(R, M) });
     return K.mount(S, sp, 'im', notes, function (Dw, nar) {
       narrow = nar;
       var m = K.margins(nar, 11, 11, 96, 96);

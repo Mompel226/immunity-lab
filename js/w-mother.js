@@ -136,7 +136,7 @@
       var weeks = Math.min(8, Math.max(1, Math.round(1 + 7 * seg(t, 32.4, 41))));
       S.pill('age', t < 16 ? 'before birth' : t < 24 ? 'newborn' : t < 32 ? 'a few days old, protected' : weeks + (weeks > 1 ? ' weeks' : ' week') + ' old', t < 32 ? 'ok' : weeks > 6 ? 'warn' : 'ok');
     }
-    var sp = L.stepper({ steps: K.readerSteps(STEPS, R), end: R[R.length - 1], render: draw });
+    var sp = L.stepper({ steps: K.readerSteps(STEPS, R), end: R[R.length - 1], render: draw, flow: K.readerFlow(R, M) });
     return K.mount(S, sp, 'mb', [
       ['The placenta drawing shows the mother’s blood vessels opening into the space round a villus of the placenta; the blood of the fetus flows inside the villus and along the umbilical cord. Antibodies are drawn far larger than real.']
     ], function (Dw, nar) {

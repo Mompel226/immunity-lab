@@ -290,12 +290,12 @@
     sbar.appendChild(sCount); sbar.appendChild(sNext); sbar.appendChild(sAll); sbar.appendChild(sAgain); sbar.appendChild(sPhoto);
     root.appendChild(bar); root.appendChild(stage); root.appendChild(key); root.appendChild(sbar); root.appendChild(next);
     var step = 0, stepT = 0, photoOn = false, playT = null;
-    /* Play all (Daniel, 4 Nov 2026: "a way to have the whole thing at once … not only click, click, click"): each step runs, holds
-       for a moment, and the next begins; any press stops it */
+    /* Play all (Daniel, 4 Nov 2026: "a way to have the whole thing at once … not only click, click, click"): each step runs and
+       the next begins after a short beat, so the whole flows ("I can always press pause to read"); any press stops it */
     function stopPlay() { if (playT) clearTimeout(playT); playT = null; sAll.textContent = '▶▶ Play all'; }
     function playOn() {
       var T = TABS[cur], S = T.steps[step];
-      playT = setTimeout(function () { if (step < T.steps.length - 1) { setStep(step + 1, true); playOn(); } else stopPlay(); }, (S.ms || 2600) + 1200);
+      playT = setTimeout(function () { if (step < T.steps.length - 1) { setStep(step + 1, true); playOn(); } else stopPlay(); }, (S.ms || 2600) + 350);
     }
     var cur = 'skin', raf = null, t0 = 0, uNow = 0, font = 14, mL = 100, mR = 100, narrow = false;
     function nowMs() { return (global.performance && performance.now) ? performance.now() : Date.now(); }

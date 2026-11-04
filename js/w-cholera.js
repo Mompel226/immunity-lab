@@ -138,7 +138,7 @@
       gLab.innerHTML = K.names(lay, items, narrow, key, { tox: 1.6, cl: 1.6, wa: 1.6 }, 6);
       S.pill('who', t < 32 ? 'infected' : t < 36 ? 'diarrhoea' : 'dehydrated', t < 32 ? 'warn' : 'bad');
     }
-    var sp = L.stepper({ steps: K.readerSteps(STEPS, R), end: R[R.length - 1], render: draw });
+    var sp = L.stepper({ steps: K.readerSteps(STEPS, R), end: R[R.length - 1], render: draw, flow: K.readerFlow(R, M) });
     /* a key to the colours, under the drawing and inside its figure (Daniel, 4 Nov 2026: "a legend for the chloride ions …
        as well as a legend for the water") */
     var keyEl = L.h('div', 'ch__keys',
