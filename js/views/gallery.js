@@ -36,7 +36,8 @@
     root.appendChild(bar);
     var cur = 0, lit = null, tileOf = {};
     var modes = spec.modes.map(function (m, k) {
-      var b = h('button', 'gal__mode', esc(m.name)); b.type = 'button';
+      /* each mode its own colour, the colour of its block in What you need to know (app.js exam-part--k) */
+      var b = h('button', 'gal__mode gal__mode--' + (k + 1), esc(m.name)); b.type = 'button';
       b.addEventListener('click', function () { show(k); });
       bar.appendChild(b);
       var grid = h('div', 'gal__grid'); grid.style.setProperty('--cols', m.cols || 2);
@@ -46,7 +47,7 @@
       m.tiles.forEach(function (t) {
         var bj = bandOf[t.id];
         if (bj != null && bj !== lastBand) { grid.appendChild(h('p', 'gal__band', esc(m.bands[bj].t))); lastBand = bj; }
-        var tile = h('button', 'gal__tile'); tile.type = 'button';
+        var tile = h('button', 'gal__tile gal__tile--' + (k + 1)); tile.type = 'button';
         tile.setAttribute('aria-label', t.name + (t.sub ? ', ' + t.sub : '') + ': open its card');
         tile.appendChild(photo(t));
         tile.appendChild(h('span', 'gal__name', '<b>' + esc(t.name) + '</b>' + (t.sub ? '<span>' + esc(t.sub) + '</span>' : '') + (t.sup ? '<i class="gal__sup">S</i>' : '')));

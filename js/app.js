@@ -457,7 +457,15 @@
       if (!offK && part !== partName) {
         partName = part;
         list = document.createElement('ul'); list.className = 'exam-list';
-        if (part) { var wrap = document.createElement('div'); wrap.className = 'exam-part'; wrap.innerHTML = '<div class="exam-part__h">' + esc(part) + '</div>'; wrap.appendChild(list); card.appendChild(wrap); }
+        /* a block named as one of the picture's buttons takes that button's colour (gallery.js gal__mode--k), so the two are
+           read as one (Daniel, 4 Nov 2026); a block with no button keeps the plain tint */
+        if (part) {
+          var wrap = document.createElement('div'); wrap.className = 'exam-part';
+          var modes = (st.view && st.view.modes) || [], mk = -1;
+          modes.forEach(function (m, j) { if (m.name === part) mk = j; });
+          if (mk >= 0 && modes.length > 1) wrap.classList.add('exam-part--' + (mk + 1));
+          wrap.innerHTML = '<div class="exam-part__h">' + esc(part) + '</div>'; wrap.appendChild(list); card.appendChild(wrap);
+        }
         else card.appendChild(list);
       }
       var li = document.createElement('li');
@@ -477,6 +485,7 @@
       else if (offK === 'beyond') badge = '';
       /* the sentences a student reads, not the card below: the only place a word takes you to another station */
       var teachHere = !offK;
+      if (typeof b === 'object' && b.head && window.Terms && Terms.freshCard) Terms.freshCard();   /* a card is read on its own */
       if (window.Terms && Terms.teach) Terms.teach(teachHere);
       li.innerHTML = badge + M(txt);
       if (window.Terms && Terms.teach) Terms.teach(false);

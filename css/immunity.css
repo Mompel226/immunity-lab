@@ -14,6 +14,9 @@
   --tw-v:#E3A90B; --tw-s:#2F6DB5; --tw-i:#C8322F; --tw-r:#9AA6B2;
   --rt-bg:#F6F8FA; --rt-path:#556372; --rt-shut:#C8322F; --rt-ill:#C8322F; --rt-well:#2F6DB5;
   --ch-tox:#E8730C; --ch-cl:#2E9E4F; --ch-wa:#2B7BD6; --ch-bac:#7A8B1E; --ch-pale:#FFFFFF;
+  /* the parts of a station (a block of What you need to know, and its button on the picture): blue and violet, far from the
+     inks of the words (green, orange, rose) and from the lab's teal */
+  --pt1-ink:#1E5BB8; --pt1-tint:#EAF1FC; --pt1-edge:#B9D0F2; --pt2-ink:#7438B0; --pt2-tint:#F4EDFB; --pt2-edge:#D8C4F0;
 }
 @media (prefers-color-scheme: dark){
 :root:not([data-theme="light"]){
@@ -23,6 +26,7 @@
   --tw-v:#F2C230; --tw-s:#6FA8EC; --tw-i:#F06A5E; --tw-r:#76828F;
   --rt-bg:#16202A; --rt-path:#9AA8B5; --rt-shut:#F06A5E; --rt-ill:#F06A5E; --rt-well:#6FA8EC;
   --ch-pale:#0E141B;
+  --pt1-ink:#8DB9FF; --pt1-tint:#14233A; --pt1-edge:#2C4C7A; --pt2-ink:#CFA9F7; --pt2-tint:#231A36; --pt2-edge:#4C3672;
 }
 }
 :root[data-theme="dark"]{
@@ -32,6 +36,7 @@
   --tw-v:#F2C230; --tw-s:#6FA8EC; --tw-i:#F06A5E; --tw-r:#76828F;
   --rt-bg:#16202A; --rt-path:#9AA8B5; --rt-shut:#F06A5E; --rt-ill:#F06A5E; --rt-well:#6FA8EC;
   --ch-pale:#0E141B;
+  --pt1-ink:#8DB9FF; --pt1-tint:#14233A; --pt1-edge:#2C4C7A; --pt2-ink:#CFA9F7; --pt2-tint:#231A36; --pt2-edge:#4C3672;
 }
 
 /* ---------- the header: the shelf's own colours, never the other labs' green ---------- */
@@ -271,6 +276,22 @@ p,li,dd,figcaption{text-wrap:pretty}
   border:1.5px solid var(--col-line);background:var(--col-card);color:var(--col-ink)}
 .gal__mode[aria-pressed="true"],.dfv__tab[aria-pressed="true"],.twn__mode[aria-pressed="true"]{border-color:var(--accent);background:var(--accent-tint);color:var(--accent)}
 .gal__mode:focus-visible,.dfv__tab:focus-visible,.twn__mode:focus-visible,.gal__tile:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+/* a station's parts: each block of What you need to know and its button on the picture share one colour, a swatch before
+   both names (Daniel, 4 Nov 2026: "easy to link it … different in color"); the photographs of that part light in it too */
+.gal__mode--1,.gal__tile--1,.exam-part--1{--pt-ink:var(--pt1-ink);--pt-tint:var(--pt1-tint);--pt-edge:var(--pt1-edge)}
+.gal__mode--2,.gal__tile--2,.exam-part--2{--pt-ink:var(--pt2-ink);--pt-tint:var(--pt2-tint);--pt-edge:var(--pt2-edge)}
+.gal__mode[class*="gal__mode--"]{display:inline-flex;align-items:center;gap:7px}
+.gal__mode[class*="gal__mode--"]::before,.exam-part[class*="exam-part--"] .exam-part__h::before{content:'';flex:none;width:11px;height:11px;border-radius:3px;background:var(--pt-ink)}
+.gal__mode[class*="gal__mode--"][aria-pressed="true"]{border-color:var(--pt-ink);background:var(--pt-tint);color:var(--pt-ink)}
+.gal__mode[class*="gal__mode--"]:focus-visible{outline-color:var(--pt-ink)}
+.gal__tile[class*="gal__tile--"]:hover,.gal__tile[class*="gal__tile--"].is-lit{border-color:var(--pt-ink)}
+.gal__tile[class*="gal__tile--"].is-lit{box-shadow:0 0 0 3px var(--pt-edge)}
+.exam-part[class*="exam-part--"]{background:var(--pt-tint);border-top:1px solid var(--pt-edge);border-bottom:1px solid var(--pt-edge);box-shadow:inset 5px 0 0 var(--pt-ink)}
+.exam-part[class*="exam-part--"] .exam-part__h{display:flex;align-items:center;gap:8px;font-size:16px;font-weight:700;letter-spacing:0;text-transform:none;color:var(--pt-ink);margin-bottom:10px}
+.exam-part[class*="exam-part--"] .xcard__h:hover,.exam-part[class*="exam-part--"] .xcard.is-open .xcard__h{border-color:var(--pt-ink)}
+.exam-part[class*="exam-part--"] .xcard.is-open .xcard__h{background:var(--pt-tint);color:var(--pt-ink)}
+.exam-part[class*="exam-part--"] .xcard__b{border-color:var(--pt-ink)}
+.exam-part[class*="exam-part--"] .xcard__h:focus-visible{outline-color:var(--pt-ink)}
 
 /* the photographs (stations 1 and 3): each one names itself; their credits are folded under the picture (.said__fold) */
 .gal{flex:1;min-height:0;display:flex;flex-direction:column;padding:8px 10px 8px;overflow:auto}

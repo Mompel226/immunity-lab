@@ -7,7 +7,7 @@ size) are kept on Daniel's computer, in `immunity-lab-source/assets-src/SOURCES.
 | File | What it is | Source and author | Licence | Changes |
 |---|---|---|---|---|
 | `p-bacterium` | *Staphylococcus aureus* (MRSA), coloured scanning electron micrograph | NIAID, Wikimedia Commons | CC BY 2.0 | cropped, resized |
-| `p-virus` | one measles virus, transmission electron micrograph | Cynthia S. Goldsmith, CDC Public Health Image Library | public domain | cropped, resized |
+| `p-sarscov2` | SARS-CoV-2, the virus that causes COVID-19, at the surface of a cell; coloured transmission electron micrograph | NIAID Rocky Mountain Laboratories, Wikimedia Commons | CC BY 2.0 | cropped, resized |
 | `p-fungus` | *Trichophyton mentagrophytes*, the fungus of athlete's foot, light micrograph | Dr Lucille K. Georg, CDC Public Health Image Library | public domain | cropped, resized |
 | `p-protoctist` | *Plasmodium falciparum*, the malaria parasite, in red blood cells | Dr Greene, CDC Public Health Image Library | public domain | cropped, resized |
 | `r-air` | a sneeze, the droplets lit against black | James Gathany, CDC Public Health Image Library | public domain | cropped, resized |

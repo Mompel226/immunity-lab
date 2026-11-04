@@ -36,13 +36,28 @@
     proc:   ['transmitted', 'transmission', 'phagocytosis', 'vaccination', 'vaccinated', 'immune response', 'active immunity', 'passive immunity',
              'osmosis', 'secretion', 'infection', 'breast-feeding', 'diarrhoea', 'dehydration', 'sewage treatment', 'blood clotting'],
     subst:  ['antibody', 'antibodies', 'antigen', 'antigens', 'toxin', 'mucus', 'stomach acid', 'hydrochloric acid', 'chloride ions',
-             'breast milk', 'chlorine', 'vaccine', 'fibrinogen', 'fibrin'],
+             'breast milk', 'chlorine', 'vaccine', 'soluble fibrinogen', 'insoluble fibrin', 'fibrinogen', 'fibrin', 'enzyme'],
     plain:  ['pathogen', 'pathogens', 'transmissible disease', 'transmissible', 'bacterium', 'bacteria', 'virus', 'viruses', 'fungus', 'fungi',
              'protoctist', 'protoctists', 'cholera', 'protein', 'proteins', 'enzymes', 'water potential', 'complementary', 'organism',
              /* the named pathogens and diseases, in bold as key words (Daniel, 4 Nov 2026: "salmonella maybe you get questions
                 about that … influenza, COVID-19 … bolden"). 0610 question papers name HIV in 74, athlete's foot 41, malaria 20,
                 measles 10, Salmonella 4, influenza 4, Staphylococcus 2 (counted 4 Nov 2026); COVID-19 in none yet, kept on his word */
-             'Staphylococcus aureus', 'Salmonella', 'measles', 'influenza', 'COVID-19', 'HIV', 'athlete’s foot', 'athlete\'s foot', 'malaria']
+             'Staphylococcus aureus', 'Salmonella', 'measles', 'influenza', 'COVID-19', 'HIV', 'athlete’s foot', 'athlete\'s foot', 'malaria',
+             /* the words the 0610 schemes credit, and the examples a pupil names, in every card (Daniel, 4 Nov 2026: "shared
+                needles, blood transfusion should be bolden … explore all of them"); bold in the plain ink, never one of the
+                three colours of the key. 0610/32/O/N/16: droplet, inhaled, food, contaminated surfaces, water, bites, cuts,
+                needle stick, blood, body fluids, blood transfusions, sexual contact, sharing needles */
+             'genetic material', 'protein coat', 'food poisoning', 'undercooked',
+             'body fluids', 'shared needles', 'blood transfusion', 'sex', 'skin to skin',
+             'contaminated surface', 'door handle', 'chopping board', 'dirty hands',
+             'bite', 'mosquito', 'malaria parasite', 'saliva', 'indirect transmission', 'direct contact',
+             'coughs', 'sneezes', 'droplets', 'breathes in', 'contaminated water', 'sewage',
+             'barrier', 'unbroken skin', 'clots', 'mesh', 'trap', 'traps', 'dust', 'sticky', 'swallowed', 'kills', 'engulf', 'digest',
+             'clean water supply', 'hygienic food preparation', 'good personal hygiene', 'waste disposal',
+             'ultraviolet', 'boiled', 'raw and cooked food apart', 'cook food thoroughly', 'correct temperature', 'cover food', 'soap',
+             'closed bins', 'flies and rats', 'human waste',
+             'specific shapes', 'bind', 'direct destruction', 'marking', 'recognised as foreign', 'divide',
+             'weakened pathogens', 'long-term immunity', 'long-term', 'short-term', 'no symptoms']
   };
 
   /* --------- what happens when you click a term ---------
@@ -106,7 +121,7 @@
   ['antibodies', 'vaccination', 'passive immunity', 'cholera']
     .forEach(function (w) { GOES_THERE[w] = true; });
 
-  var here = null, seen = null, quiet = false, wentTo = null, teaching = false, arrowed = false;
+  var here = null, seen = null, quiet = false, wentTo = null, teaching = false, arrowed = false, kwGiven = null;
   /* this station's key-word cards (the flip cards at the bottom of its Learn tab), by the word in lower case. Each key word
      has ONE card in the lab, in the station that first teaches it (Daniel, 25 Oct 2026: "please do not repeat keywords"),
      and in that station the word's first mention leads down to its card ("should then link to the flashcard at the
@@ -121,7 +136,7 @@
   var SHOWN = {};
   function setShown(m) { SHOWN = m || {}; }
   function setStation(id) {
-    here = id; seen = Object.create(null); quiet = false; wentTo = Object.create(null); KW = {};
+    here = id; seen = Object.create(null); quiet = false; wentTo = Object.create(null); kwGiven = Object.create(null); KW = {};
     (global.STATIONS || []).forEach(function (s) { if (s.id === id) (s.keywords || []).forEach(function (w) { KW[String(w.term).toLowerCase()] = w.term; }); });
   }
   /* a widget built afresh (its reset) marks its words as it did the first time: forget what it introduced */
@@ -129,6 +144,10 @@
     if (seen) (words || []).forEach(function (w) { var low = String(w).toLowerCase(), d = defined(low); delete seen[low]; if (d) delete seen[d.toLowerCase()]; });
     if (wentTo) (jumps || []).forEach(function (j) { delete wentTo[j]; });
   }
+  /* a card that opens on its own (app.js makeCard) is read on its own: its key words are bold in it, even when an earlier
+     card used them (Daniel, 4 Nov 2026: "HIV … should be bolden. Nothing was bolden here"). A word's ↓ to its key-word card
+     and an arrow to a station still come once a station. */
+  function freshCard() { if (seen) seen = Object.create(null); }
   function setQuiet(v) { quiet = !!v; }
   function teach(v) { teaching = !!v; }
 
@@ -193,7 +212,8 @@
         var pk = pk0;
         act = ' data-peek="' + pk[0] + '" data-note="' + esc(pk[1]) + '"' + (pk[2] ? ' data-credit="' + esc(pk[2]) + '"' : '') + ' tabindex="0" role="button"';
         cls = ' is-peek';
-      } else if (teaching && card && def && !KNOWN[def.toLowerCase()]) {
+      } else if (teaching && card && def && !KNOWN[def.toLowerCase()] && !(kwGiven && kwGiven[card.toLowerCase()])) {
+        if (kwGiven) kwGiven[card.toLowerCase()] = true;
         /* its key-word card is at the bottom of this station: down to it, not away */
         act = ' data-kw="' + esc(card.toLowerCase()) + '" tabindex="0" role="button"';
         cls = ' is-kw';
@@ -222,7 +242,7 @@
   }
 
   global.Terms = { setKnown: setKnown, isKnown: isKnown, forgetAll: forgetAll, knownCount: knownCount, mark: mark, legend: legend, unsee: unsee,
-                   CATS: CATS, setStation: setStation, setQuiet: setQuiet, setShown: setShown, teach: teach, PEEK: PEEK, JUMP: JUMP };
+                   CATS: CATS, setStation: setStation, freshCard: freshCard, setQuiet: setQuiet, setShown: setShown, teach: teach, PEEK: PEEK, JUMP: JUMP };
 })(window);
 
 /* A number never parts from its unit at a line break — 20 °C, 5 min, 48 mm, 60 %, 4 marks, pH 2 — wherever the page
