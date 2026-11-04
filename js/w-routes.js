@@ -45,10 +45,10 @@
   var MEASURES = [
     /* what each does to the pathogen, and how (Daniel, 4 Nov 2026: "removes it … How? Why is it not killing it too?") */
     { id: 'water', name: 'A clean water supply', stops: ['drink'], does: 'Chlorine or UV light kills the pathogens in drinking water, and so does boiling. Treated or bottled water is safe to drink even where sewage is not treated.' },
-    { id: 'food', name: 'Hygienic food preparation', stops: ['cook', 'hands'], does: 'Thorough cooking kills pathogens. Washed hands, clean surfaces and separate boards keep pathogens off food, and covering food keeps flies away from it.' },
-    { id: 'hygiene', name: 'Good personal hygiene', stops: ['hands', 'surface', 'air'], does: 'Washing hands with soap and water lifts pathogens off the skin and washes them away; soap also breaks some apart, such as many viruses. Covering coughs and sneezes stops the droplets.' },
+    { id: 'food', name: 'Hygienic food preparation', stops: ['cook', 'hands'], does: 'Thorough cooking kills pathogens. Washed hands, clean surfaces and separate boards keep pathogens off food, and covering food keeps flies away from it; in a fridge, pathogens reproduce more slowly.' },
+    { id: 'hygiene', name: 'Good personal hygiene', stops: ['hands', 'surface', 'air'], does: 'Washing hands with soap and water removes pathogens from the skin: the soap holds them in the water, and the water carries them from the hands. Soap also destroys the outer layer of some viruses, such as the virus that causes COVID-19. Covering coughs and sneezes stops most droplets.' },
     { id: 'waste', name: 'Waste disposal', stops: ['animal'], does: 'Closed bins keep flies and rats away from the waste, so they do not carry its pathogens to food and people.' },
-    { id: 'sewage', name: 'Sewage treatment', stops: ['env'], does: 'Pathogens settle out with the solids, and other microorganisms in the tanks feed on them; at the end, chlorine or UV light may kill the rest. The treated water does not spread pathogens in rivers, the sea or the soil.' }
+    { id: 'sewage', name: 'Sewage treatment', stops: ['env'], does: 'Many pathogens sink with the solids, and other microorganisms in the tanks feed on them; at the end, chlorine or UV light may kill the rest. The treated water spreads very few pathogens in rivers, the sea or the soil.' }
   ];
 
   /* "by A, by B, and by C": a short name may hold a comma of its own (rivers, the sea and soil), so each is led by "by" */

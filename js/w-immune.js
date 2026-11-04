@@ -47,7 +47,14 @@
   }
 
   /* ---------- a scene: lymphocytes, pathogens, antibodies, phagocytes ---------- */
-  var LS = .44, PS = .34, AS = .62, NS = .5;     /* the drawings' scales: lymphocyte, pathogen, antibody, phagocyte */
+  /* the drawings' scales: lymphocyte, pathogen, antibody. Sizes nearer to life (Daniel, 4 Nov 2026: the pathogens were drawn
+     larger than the cells): the pathogen has the scale it has everywhere in the lab (.2: about 50 units long), a lymphocyte
+     is about 1.7 times as long and a phagocyte about 3 times (life: about 3.5 and 6); the antigens and antibodies stay
+     larger than real, so their shapes show */
+  var LS = .52, PS = .2, AS = .62;
+  /* a phagocyte that engulfs: its radius, its vacuole's radius, how far the vacuole stands from the pathogen's centre (towards
+     the antibodies it binds) and from the cell's centre, and the scale of Servier's neutrophil inside it (defences.js: 62 ↔ .74) */
+  var RN = 74, RV = 58, VOFF = 14, COFF = 12, NIN = .88;
   function lymph(x, y, kind, keys) { return { type: 'lym', kind: kind, keys: keys || [[0, { x: x, y: y, op: 1, glow: 0 }]] }; }
   function pathogenActor(kind, keys, ag) { return { type: 'pg', kind: kind, keys: keys, ag: ag }; }
 
@@ -89,6 +96,20 @@
       var d = D.pathogen({ x: 0, y: 0, s: PS, rot: P.rot || 0, kind: P.kind, n: P.n || 9, phase: P.phase || 0 });
       P.local = d; P.ags = d.antigens;
     });
+    /* a phagocyte's places, from its pathogen's place when it arrives: it touches the antibodies' feet (the antibodies and
+       antigens reach about 72 from the pathogen's centre), then moves over the pathogen until its vacuole holds it */
+    script.phas.forEach(function (F) {
+      if (F.eat == null) return;
+      var P = script.pgs[F.eat], p0 = at(P.keys, F.t[1]), u = F.u, T = F.t;
+      function along(d) { return { x: p0.x + d * u[0], y: p0.y + d * u[1] }; }
+      var enter = along(228), touch = along(72 + RN - 6), fin = along(VOFF + COFF);
+      F.p0 = [p0.x, p0.y]; P.eatenAt = T[1];
+      F.keys = [[0, { x: enter.x, y: enter.y, op: 0 }], [T[0], { x: enter.x, y: enter.y, op: 0 }], [T[0] + .7, { x: lerp(enter.x, touch.x, .3), y: lerp(enter.y, touch.y, .3), op: 1 }],
+        [T[1], { x: touch.x, y: touch.y, op: 1 }], [T[2], { x: fin.x, y: fin.y, op: 1 }], [T[4] + .6, { x: fin.x, y: fin.y, op: 1 }], [T[5], { x: enter.x, y: enter.y, op: 0 }]];
+      /* its pathogen's antibodies bind the antigens that face the phagocyte (A.face: the first or second best) */
+      var rank = P.ags.map(function (a, k) { return [k, a.nx * u[0] + a.ny * u[1]]; }).sort(function (x, y) { return y[1] - x[1]; });
+      script.abs.forEach(function (A) { if (A.on === F.eat && A.face) A.ag = rank[A.face - 1][0]; });
+    });
     /* each antibody that binds: its pose in its pathogen's own frame */
     script.abs.forEach(function (A) {
       if (A.on == null) return;
@@ -111,18 +132,44 @@
       var s = at(Lm.keys, t); if (!vis(s)) return;
       var glow = s.glow || 0;
       out += '<g opacity="' + n1((s.op == null ? 1 : s.op) * 100) / 100 + '">' +
-        (glow > .02 ? '<circle cx="' + n1(s.x) + '" cy="' + n1(s.y) + '" r="' + n1(42 * (s.sc || 1)) + '" class="im__glow" opacity="' + n1(glow * 100) / 100 + '"/>' : '') +
-        (s.mem ? '<circle cx="' + n1(s.x) + '" cy="' + n1(s.y) + '" r="' + n1(40 * (s.sc || 1)) + '" class="im__mem" opacity="' + n1(s.mem * 100) / 100 + '"/>' : '') +
+        (glow > .02 ? '<circle cx="' + n1(s.x) + '" cy="' + n1(s.y) + '" r="' + n1(50 * (s.sc || 1)) + '" class="im__glow" opacity="' + n1(glow * 100) / 100 + '"/>' : '') +
+        (s.mem ? '<circle cx="' + n1(s.x) + '" cy="' + n1(s.y) + '" r="' + n1(48 * (s.sc || 1)) + '" class="im__mem" opacity="' + n1(s.mem * 100) / 100 + '"/>' : '') +
         D.cell('lymphocyte', s.x, s.y, LS * (s.sc || 1)) +
         /* which antibody this lymphocyte makes: a small one of its kind beside it */
         D.antibody({ x: s.x + 30 * (s.sc || 1), y: s.y + 28 * (s.sc || 1), rot: 20, s: .42 * (s.sc || 1), kind: Lm.kind, cls: 'im__badge' }) + '</g>';
       if ((s.op == null ? 1 : s.op) > .6 && (!Lm.nolabel || s.mem > .5)) labels.push({ id: s.mem > .5 ? 'mem' : 'lym', text: s.mem > .5 ? 'memory cell' : 'lymphocyte', x: s.x - 30, y: s.y, side: 'L', pri: s.mem > .5 ? 2 : 0, alts: [[s.x - 20, s.y - 22], [s.x - 20, s.y + 22]] });
     });
     /* phagocytes */
-    script.phas.forEach(function (F) {
+    /* phagocytes: each comes to its marked pathogen from the side its antibodies face, binds them, and its membrane flows
+       round the pathogen while the cell moves over it; the pathogen is then inside, in a vacuole, is digested, and the
+       vacuole goes (the defences' White blood cells, the same drawing: ImmDraw.membrane round Servier's inside) */
+    script.phas.forEach(function (F, fi) {
       var s = at(F.keys, t); if (!vis(s)) return;
-      out += '<g opacity="' + n1((s.op == null ? 1 : s.op) * 100) / 100 + '">' + D.cell('neutrophil', s.x, s.y, NS * (s.sc || 1)) + '</g>';
-      if ((s.op == null ? 1 : s.op) > .6) labels.push({ id: 'pha', text: 'phagocyte', x: s.x + 26, y: s.y - 20, side: 'R', pri: 1, alts: [[s.x + 20, s.y], [s.x + 26, s.y + 20]] });
+      var T = F.t, u = F.u, Vc = [F.p0[0] + VOFF * u[0], F.p0[1] + VOFF * u[1]], op = s.op == null ? 1 : s.op;
+      var cw = t < T[2] ? 1 : t > T[4] + .6 ? seg(t, T[4] + .6, T[4] + 1.4) : 1 - seg(t, T[2], T[2] + .8);
+      var balls = [[s.x, s.y, RN]];
+      for (var i = 0; i < 7; i++) {
+        var a = i * .898 + .3, w = (1.5 + 4 * cw) * Math.sin(t * 2.2 + i * 1.9);
+        balls.push([s.x + (RN - 24) * Math.cos(a), s.y + (RN - 24) * Math.sin(a), 24 + w]);
+      }
+      var g = ease(seg(t, T[1], T[2])), ringOp = 1 - seg(t, T[2], T[3]);
+      if (t >= T[1] && ringOp > .02) {
+        var tu = Math.atan2(u[1], u[0]), phi = .7, N = 16;
+        for (var sg = -1; sg <= 1; sg += 2) for (var j = 0; j <= N; j++) {
+          var f = j / N; if (f * (Math.PI - phi) > g * (Math.PI - phi + .05)) continue;
+          var an = tu + sg * (phi + f * (Math.PI - phi));
+          balls.push([Vc[0] + RV * Math.cos(an), Vc[1] + RV * Math.sin(an), (11 + 2 * (1 - f)) * ringOp]);
+        }
+      }
+      out += '<g opacity="' + n1(op * 100) / 100 + '">' + D.membrane({ id: 'imPh' + fi, balls: balls, edge: '#B9506B', rim: '#F797AA', fill: '#FACDD3' }) +
+        D.inside('neutrophil', s.x - 7, s.y + 5, NIN);
+      if (t >= T[2] && t < T[4] + .6) {
+        var vr = RV - 28 * seg(t, T[3], T[4]), vo = seg(t, T[2], T[3]) * (1 - seg(t, T[4], T[4] + .6));
+        out += '<circle class="dv__vac im__vac" cx="' + n1(Vc[0]) + '" cy="' + n1(Vc[1]) + '" r="' + n1(vr) + '" opacity="' + n1(vo * 100) / 100 + '"/>';
+        if (t >= T[3] && t < T[4] - .4) labels.push({ id: 'vac', text: 'vacuole: the pathogen is digested', x: Vc[0] + vr * .7, y: Vc[1] - vr * .7, side: 'R', pri: 2 });
+      }
+      out += '</g>';
+      if (op > .6) labels.push({ id: 'pha', text: 'phagocyte', x: s.x + 22, y: s.y + RN * .5, side: 'R', pri: 1, alts: [[s.x + 30, s.y + RN * .3], [s.x + 10, s.y + RN * .6]] });
     });
     /* pathogens, each with the antibodies bound to it by now */
     script.pgs.forEach(function (P, i) {
@@ -137,7 +184,8 @@
         (s.dead || P.weak ? ' style="filter:' + (P.weak ? 'saturate(.3) brightness(1.06) ' : '') + 'grayscale(' + n1((s.dead || 0) * 100) / 100 + ')"' : '') + '>' + inner + '</g>';
       /* named only once it is inside the frame, so the name never points at the edge (Daniel, 4 Nov 2026); the real pathogen
          after a vaccination is named as the real one, the vaccine's as weakened */
-      if ((s.op == null ? 1 : s.op) > .25 && g > .7 && s.x < W - 30) {
+      /* a pathogen a phagocyte is engulfing is not named: the phagocyte and its vacuole are */
+      if ((s.op == null ? 1 : s.op) > .25 && g > .7 && s.x < W - 30 && !(P.eatenAt != null && t >= P.eatenAt)) {
         labels.push({ id: 'pg', text: s.dead > .5 ? 'destroyed' : P.weak ? 'weakened pathogen' : P.real ? 'the real pathogen' : 'pathogen', x: s.x + 10, y: s.y, side: 'R', pri: 1, alts: [[s.x + 26, s.y + 8], [s.x - 4, s.y - 10]] });
         if (!s.dead) {
           var ag = P.ags.reduce(function (b, a) { return a.x > b.x ? a : b; });
@@ -151,7 +199,7 @@
     script.abs.forEach(function (A) {
       if (t < A.t0) return;
       var P = A.on != null ? script.pgs[A.on] : null;
-      if (P && t >= A.bt) { if (!shownAb && pgState(P, t).op > .6 && !pgState(P, t).dead) shownAb = worldOf(P, t, A.pose); return; }
+      if (P && t >= A.bt) { if (!shownAb && pgState(P, t).op > .6 && !pgState(P, t).dead && !(P.eatenAt != null && t >= P.eatenAt)) shownAb = worldOf(P, t, A.pose); return; }
       var k = ease(seg(t, A.t0, A.bt == null ? A.t1 : A.bt));
       var end = P ? worldOf(P, A.bt, A.pose) : { x: A.x1, y: A.y1, rot: A.r1 || 0 };
       var x = lerp(A.x0, end.x, k), y = lerp(A.y0, end.y, k), r = lerp(A.r0 || 0, end.rot, k);
@@ -216,20 +264,18 @@
     { t: 14, h: 'They divide', p: 'The stimulated lymphocytes **divide**, so there are many cells that make this one antibody. This takes days. Meanwhile the pathogens **reproduce**, so the person is **ill** for a few days.' },
     { t: 22, h: 'They release antibodies', p: 'The lymphocytes release many of these **antibodies**. Antibodies are **proteins**, not cells.' },
     { t: 30, h: 'The antibodies bind to the antigens', p: 'The antibodies **bind to the antigens**: their shapes fit. Some pathogens are **destroyed directly**; the others are **marked**.' },
-    { t: 38, h: 'Phagocytes engulf the marked pathogens', p: '**Phagocytes engulf** the marked pathogens and **digest** them. The person recovers.' },
-    { t: 48, h: 'Memory cells stay in the blood', p: 'Some of the lymphocytes stay in the blood as **memory cells**. The antibodies are broken down.' },
+    { t: 38, h: 'Phagocytes engulf the marked pathogens', p: '**Phagocytes engulf** the marked pathogens: the membrane flows round each one, so it is inside the phagocyte, in a vacuole. Enzymes **digest** it. The person recovers.' },
+    { t: 48, h: 'Memory cells stay in the blood', p: 'Some of the lymphocytes stay in the blood as **memory cells**. Most of the antibodies are broken down, so their number in the blood falls.' },
     { t: 56, h: 'The same pathogen returns', p: 'If the same pathogen returns, the **memory cells** divide quickly and make antibodies **faster** and in **larger numbers**, so the pathogen is destroyed **before the person becomes ill**. This is **active immunity**.' }
   ];
   var FM_M = [0, 8, 14, 22, 30, 38, 48, 56, 68];
   function fmScript() {
-    var P = [[410, 92, -12], [404, 216, 8], [410, 338, 20]];   /* to the right, so their new copies fit beside them in step 3 */
+    var P = [[410, 92, -12], [384, 216, 8], [384, 330, 20]];   /* to the right, so their new copies fit beside them in step 3, and the phagocytes fit in step 6 */
     var pgs = P.map(function (p, i) {
       var keys = [[0, { x: 540, y: p[1] + 10, op: 0, g: 1 }], [1.2 + i * .8, { x: 520, y: p[1], op: 1, g: 1 }], [6.5 + i * .4, { x: p[0], y: p[1], op: 1, g: 1 }]];
       if (i === 0) keys.push([34.4, { x: p[0], y: p[1], op: 1, g: 1, dead: 0 }], [35.6, { x: p[0], y: p[1], op: 1, g: .96, dead: 1 }], [37.4, { x: p[0], y: p[1], op: 0, g: .7, dead: 1 }]);
-      else {
-        var px = i === 1 ? 430 : 400, py = i === 1 ? 190 : 380;
-        keys.push([41 + i * 1.2, { x: p[0], y: p[1], op: 1, g: 1 }], [45 + i * 1.2, { x: px, y: py, op: .5, g: .38 }], [46.4 + i * 1.2, { x: px, y: py, op: 0, g: .2 }]);
-      }
+      /* the marked ones stay where they are while a phagocyte engulfs them, and are digested in its vacuole */
+      else keys.push([44 + (i - 1) * 1.2, { x: p[0], y: p[1], op: 1, g: 1 }], [46.4 + (i - 1) * 1.2, { x: p[0], y: p[1], op: 0, g: .55 }]);
       var o = { kind: 'tri', rot: p[2], n: 9, phase: i * 2, keys: keys };
       /* step 2: this one's antigen binds to the antibody on the matching lymphocyte, which is stimulated (build: meetAt) */
       if (i === 1) o.meet = { lym: 1, t: [8.3, 9.7, 11.3, 13.2] };
@@ -269,9 +315,9 @@
     /* antibodies, released at 22–28 by the cells that do not stay as memory cells (memory cells do not release antibodies:
        the audit of 4 Nov 2026), bound at 30–34: two on each of the six pathogens */
     var abs = [], src = [[66, 215], [252, 215]];
-    [[0, 0, 'R'], [0, 6, 'L'], [1, 1, 'R'], [1, 5, 'L'], [2, 2, 'L'], [2, 7, 'R'], [6, 0, 'R'], [6, 5, 'L'], [7, 3, 'L'], [7, 7, 'R'], [8, 1, 'R'], [8, 6, 'L']].forEach(function (b, i) {
+    [[0, 0, 'R'], [0, 6, 'L'], [1, 1, 'R', 1], [1, 5, 'L', 2], [2, 2, 'L', 1], [2, 7, 'R', 2], [6, 0, 'R'], [6, 5, 'L'], [7, 3, 'L'], [7, 7, 'R'], [8, 1, 'R'], [8, 6, 'L']].forEach(function (b, i) {
       var s = src[i % 2];
-      abs.push({ on: b[0], ag: b[1], arm: b[2], x0: s[0] + 30, y0: s[1], r0: 80, t0: 22.4 + i * .4, bt: 30.6 + i * .25 });
+      abs.push({ on: b[0], ag: b[1], arm: b[2], face: b[3], x0: s[0] + 30, y0: s[1], r0: 80, t0: 22.4 + i * .4, bt: 30.6 + i * .25 });
     });
     /* three more that bind nothing: they are broken down in step 7, so binding does not use antibodies up */
     [[120, 122, 40], [122, 300, -30], [232, 402, 20]].forEach(function (f, i) {
@@ -285,9 +331,11 @@
         abs.push({ on: q[0], ag: ag, arm: i % 2 ? 'L' : 'R', x0: s[2] + 30, y0: s[3], r0: 80, t0: 58.6 + (abs.length - 15) * .1, bt: 60.8 + (abs.length - 15) * .08 });
       });
     });
+    /* the phagocytes: each engulfs one marked pathogen (eat), coming from u; its times: enters, touches the antibodies,
+       the membrane has closed, the vacuole is formed, digested, gone (build: eatAt works out its places) */
     var phas = [
-      { keys: [[0, { x: 540, y: 150, op: 0 }], [38.4, { x: 540, y: 150, op: 0 }], [39.2, { x: 520, y: 160, op: 1 }], [43, { x: 434, y: 190, op: 1, sc: 1 }], [45.4, { x: 430, y: 190, op: 1, sc: 1.12 }], [47, { x: 430, y: 190, op: 1, sc: 1 }], [49, { x: 540, y: 150, op: 0 }]] },
-      { keys: [[0, { x: 540, y: 400, op: 0 }], [39.6, { x: 540, y: 400, op: 0 }], [40.4, { x: 520, y: 400, op: 1 }], [44.2, { x: 404, y: 380, op: 1, sc: 1 }], [46.6, { x: 400, y: 380, op: 1, sc: 1.12 }], [48, { x: 400, y: 380, op: 1, sc: 1 }], [50, { x: 540, y: 400, op: 0 }]] }
+      { eat: 1, u: [.5, -.87], t: [38.4, 40.4, 43, 43.8, 46.4, 49], keys: [[0, { x: 0, y: 0, op: 0 }]] },
+      { eat: 2, u: [.5, .87], t: [39.6, 41.6, 44.2, 45, 47.6, 50.2], keys: [[0, { x: 0, y: 0, op: 0 }]] }
     ];
     return { pgs: pgs, lyms: lyms, abs: abs, phas: phas };
   }
@@ -299,10 +347,10 @@
      vacsteps — vaccination, then the real pathogen
      ================================================================ */
   var VS_STEPS = [
-    { t: 0,  h: 'The vaccine is put into the body', p: '(a) **Weakened pathogens** or their **antigens** are put into the body, here by an injection. Weakened pathogens cannot cause the disease, but they have the same antigens as the real pathogen.' },
+    { t: 0,  h: 'The vaccine is put into the body', p: '(a) **Weakened pathogens** or their **antigens** are put into the body, here by an injection. Weakened pathogens do not cause the disease in a healthy person, but they have the same antigens as the real pathogen.' },
     { t: 8,  h: 'The antigens stimulate an immune response', p: '(b) The **antigens stimulate an immune response** by **lymphocytes**: only the lymphocytes whose antibodies are **complementary** to the antigens are stimulated (an antigen binds to the antibody on the lymphocyte’s surface), and they divide.' },
     { t: 16, h: 'The lymphocytes produce antibodies', p: 'The lymphocytes **produce antibodies**, which **bind** to the antigens of the weakened pathogens, and the weakened pathogens are destroyed.' },
-    { t: 26, h: 'Memory cells are produced', p: '(c) **Memory cells** are produced that give **long-term immunity**. The antibodies are broken down.' },
+    { t: 26, h: 'Memory cells are produced', p: '(c) **Memory cells** are produced that give **long-term immunity**. Most of the antibodies are broken down.' },
     { t: 33, h: 'Later: the real pathogen', p: 'If the real pathogen enters the body later, the memory cells divide and make the specific antibodies **quickly**, so the pathogen is destroyed **before the person becomes ill**.' }
   ];
   var VS_M = [0, 8, 16, 26, 33, 46];

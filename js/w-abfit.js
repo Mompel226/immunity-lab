@@ -48,7 +48,7 @@
         var ag = drawn[i].antigens[2], pose = D.bound(ag, p.kind, .9, 'R');
         anim = { k: chosen, t0: performance.now(), from: { x: 300, y: 240, rot: 0 }, to: pose };
         say.innerHTML = '<b>It fits.</b> The shape of antibody ' + NUM[p.kind] + ' is <b>complementary</b> to the antigens of ' + p.name + ', so it binds to them.' +
-          (Object.keys(bound).length === 3 ? ' <b>Each antibody fits the antigens of one pathogen only.</b>' : '');
+          (Object.keys(bound).length === 3 ? ' <b>Each antibody fits the antigens of one of these pathogens only.</b>' : '');
         chosen = null; bad = null; tick();
       } else {
         bad = i;
