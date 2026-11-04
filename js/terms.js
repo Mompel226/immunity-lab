@@ -53,6 +53,7 @@
              'bite', 'mosquito', 'malaria parasite', 'saliva', 'indirect transmission', 'direct contact',
              'coughs', 'sneezes', 'droplets', 'breathes in', 'contaminated water', 'sewage',
              'barrier', 'unbroken skin', 'clots', 'mesh', 'trap', 'traps', 'dust', 'sticky', 'swallowed', 'kills', 'engulf', 'digest',
+             'beat', 'secrete', 'secretes', 'up the airways', 'away from the lungs', 'to the throat',
              'clean water supply', 'hygienic food preparation', 'good personal hygiene', 'waste disposal',
              'ultraviolet', 'boiled', 'raw and cooked food apart', 'cook food thoroughly', 'correct temperature', 'cover food', 'soap',
              'closed bins', 'flies and rats', 'human waste',
