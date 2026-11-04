@@ -320,6 +320,14 @@ p,li,dd,figcaption{text-wrap:pretty}
 .dfv__svg{flex:1;min-height:0;width:100%;height:100%;display:block}
 .dfv__head{font-family:var(--font);font-weight:700;font-size:13px;fill:var(--col-ink)}
 .dfv__hair{fill:none;stroke:#3A2A22;stroke-width:1.6;stroke-linecap:round}
+/* phagocytosis: the phagocyte's extensions in the cell's own colours (an edge, the rim, the cytoplasm), the vacuole, the
+   sacs of enzymes and the pieces of the digested pathogen */
+.dv__ext1{fill:none;stroke:#B9506B;stroke-width:17;stroke-linecap:round;stroke-linejoin:round}
+.dv__ext2{fill:none;stroke:#F797AA;stroke-width:14.5;stroke-linecap:round;stroke-linejoin:round}
+.dv__ext3{fill:none;stroke:#FACDD3;stroke-width:9.5;stroke-linecap:round;stroke-linejoin:round}
+.dv__vac{fill:#FFF4F6;fill-opacity:.85;stroke:#B9506B;stroke-width:1.8}
+.dv__sac{fill:#9C4E65;stroke:#67002B;stroke-width:.8}
+.dv__frag{fill:#C9D46A;stroke:#8E9A2C;stroke-width:.6}
 /* the mucus, step by step: the goblet cells' own blue; the way to the throat in the page's ink */
 .dv__mucus{fill:#BEDCEB;fill-opacity:.82;stroke:#7FB3CF;stroke-width:1.2}
 .dv__mucdrop{fill:#BEDCEB;stroke:#7FB3CF;stroke-width:1}
@@ -331,7 +339,7 @@ p,li,dd,figcaption{text-wrap:pretty}
 .dfv__scount{font-size:13px;font-weight:600;color:var(--col-soft)}
 .dfv__snext,.dfv__sall,.dfv__sagain,.dfv__sphoto{font:inherit;font-size:14px;font-weight:600;padding:7px 14px;border-radius:var(--r-pill);cursor:pointer;border:1px solid var(--col-line);background:var(--col-card);color:var(--col-ink)}
 .dfv__snext{border-color:var(--accent);background:var(--accent);color:var(--on-ink,#fff)}
-.dfv__snext[hidden],.dfv__sall[hidden],.dfv__sagain[hidden]{display:none}
+.dfv__snext[hidden],.dfv__sall[hidden],.dfv__sagain[hidden],.dfv__sphoto[hidden]{display:none}
 .dfv__sall{border-color:var(--accent);color:var(--accent)}
 /* the way food goes, down the oesophagus: dashed, the page's ink */
 .dv__way{fill:none;stroke:var(--col-ink);stroke-width:2;stroke-dasharray:5 4;stroke-linecap:round}
@@ -441,6 +449,21 @@ p,li,dd,figcaption{text-wrap:pretty}
 .twn__ring{fill:none;stroke:var(--tw-i);stroke-width:3;stroke-dasharray:5 3}
 .im__pill i,.ch__pill i,.mb__pill i{font-style:normal;font-weight:700}
 .im__glow{fill:none;stroke:#E8A317;stroke-width:4}
+/* the extension "How antibodies are made" (js/w-immext.js): the macrophage's membrane in its own green, the vesicle, the
+   lysosomes, the MHC proteins holding the antigen pieces, the cytokines; and the fold that keeps it closed until pressed */
+.ix__ext1{fill:none;stroke:#5E8F5A;stroke-width:15;stroke-linecap:round;stroke-linejoin:round}
+.ix__ext2{fill:none;stroke:#CFE6CA;stroke-width:10.5;stroke-linecap:round;stroke-linejoin:round}
+.ix__ves{fill:#F3FAF1;fill-opacity:.9;stroke:#5E8F5A;stroke-width:1.8}
+.ix__lys{fill:#7B5EA7;stroke:#4B3670;stroke-width:1}
+.ix__mhc{fill:#5E6B78}
+.ix__agp{fill:#8E44AD;stroke:#5E2A75;stroke-width:1}
+.ix__cyt{fill:#E8730C;stroke:#9A4A06;stroke-width:.6}
+.ix__rec{fill:none;stroke:#2F6DB5;stroke-width:3.2;stroke-linecap:round}
+.ixg{margin:8px 0 4px;padding:12px 14px;border:1px dashed var(--col-line);border-radius:12px;background:var(--col-card)}
+.ixg__p{margin:0 0 10px;font-size:14px;line-height:1.5;color:var(--col-ink)}
+.ixg__btn{font:inherit;font-size:14px;font-weight:600;padding:8px 16px;border-radius:var(--r-pill);cursor:pointer;border:1.5px solid var(--accent);background:var(--accent);color:var(--on-ink,#fff)}
+.ixg__btn:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.widget__note.ixg__names{font-size:14px;color:var(--col-ink)}
 /* a phone: the numbered names of an animation, under the drawing */
 .pinkey{list-style:none;margin:6px 4px 0;padding:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:3px 12px;font-size:13.5px}
 .pinkey[hidden]{display:none}

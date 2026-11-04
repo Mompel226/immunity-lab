@@ -81,7 +81,7 @@
        among them; the mucus layer is drawn for the lab, in the colour of the goblet cells' own mucus. Each step waits for
        "Next step". The real cilia are one press away (the electron micrograph, spec.mucus). */
     mucus: { name: 'Mucus', w: 420, h: 254, say: 'Mucus traps pathogens in the airways; cilia move it away from the lungs, to the throat',
-      credit: 'Servier Medical Art (Tissues kit), CC BY 4.0, adapted; the mucus layer drawn for this lab',
+      credit: 'Servier Medical Art (Tissues kit), CC BY 4.0, adapted; the mucus layer drawn for this lab', realPhoto: true,
       steps: [
         { say: 'Goblet cells in the lining of the airways secrete mucus.',
           pts: { gob: [148, 142, 'L'], cil: [60, 76, 'L'], cc: [250, 170, 'R'] },
@@ -168,24 +168,102 @@
       /* the names on the right, away from the way in; the way in named at its start */
       pts: { way: [145, 32, 'L'], st: [240, 62, 'R'], lin: [222, 112, 'R'], bac: [195, 172, 'R'] },
       names: { way: 'swallowed food', st: 'stomach', lin: 'lining: makes hydrochloric acid', bac: 'bacteria in food: killed' } },
-    /* larger cells (4 Nov 2026), and no name line through the antibodies: a pathogen comes to the phagocyte, goes in and
-       fades as it is digested; the lymphocyte releases antibodies, and one that has left lies still beside it, with its name */
-    wbc: { name: 'White blood cells', w: 440, h: 250, say: 'Phagocytes engulf and digest pathogens; lymphocytes make antibodies',
-      credit: 'Servier Medical Art, CC BY 4.0, adapted',
-      art: function (u) {
+    /* phagocytosis as it really happens (Daniel, 4 Nov 2026: "the bacteria is just going into the cell … label the pathogen,
+       show how phagocytosis really looks like"), and the antibodies of a lymphocyte. Five steps, each waiting for Next step:
+       the pathogen, its antigens named (discs, so they read as marks on its surface, not arrows); the phagocyte's cytoplasm
+       flows round it in two extensions, in the cell's own colours, until they meet; the pathogen is inside, in a vacuole;
+       small sacs release enzymes into the vacuole and the pathogen is digested; a lymphocyte's antibodies bind to the
+       antigens of another pathogen, marking it for phagocytes (10.1.6, Supplement). The cells are Servier's; the extensions,
+       the vacuole and the sacs are drawn for the lab. Antigen presentation is not in 0610 (the Circulation Lab shows it,
+       as IB C3.2). A name whose part is still moving appears once it has stopped (`late`). */
+    wbc: { name: 'White blood cells', w: 370, h: 260, say: 'Phagocytes engulf and digest pathogens; lymphocytes make antibodies',
+      credit: 'Servier Medical Art, CC BY 4.0, adapted; the extensions, the vacuole and the sacs drawn for this lab',
+      steps: [
+        { say: 'A pathogen has antigens on its surface. A phagocyte, a white blood cell, moves towards it, follows it and reaches it.', ms: 3600,
+          pts: { pha: [38, 160, 'L'], ag: [0, 0, 'R'], pg: [0, 0, 'R'] }, late: { pha: 1, ag: 1, pg: 1 },
+          names: { pha: 'phagocyte', ag: 'antigens', pg: 'pathogen' } },
+        { say: 'The phagocyte engulfs the pathogen: its cytoplasm flows round it, on both sides.',
+          pts: { pha: [38, 160, 'L'], arm: [0, 0, 'R'] }, late: { arm: 1 },
+          names: { pha: 'phagocyte', arm: 'cytoplasm flows round the pathogen' } },
+        { say: 'The ends meet. The pathogen is now inside the phagocyte, in a vacuole.',
+          pts: { pha: [38, 160, 'L'], vac: [0, 0, 'R'] }, late: { vac: 1 },
+          names: { pha: 'phagocyte', vac: 'vacuole with the pathogen' } },
+        { say: 'Small sacs release enzymes into the vacuole, and the enzymes digest the pathogen. This is phagocytosis.', ms: 3400,
+          pts: { pha: [38, 160, 'L'], dig: [0, 0, 'R'] }, late: { dig: 1 },
+          names: { pha: 'phagocyte', dig: 'the pathogen, digested by enzymes' } },
+        { say: 'Supplement: lymphocytes make antibodies. Antibodies bind to the antigens of a pathogen and mark it for phagocytes.', ms: 3400,
+          pts: { ag2: [0, 0, 'R'], ab: [0, 0, 'R'], lym: [350, 214, 'R'] }, late: { ab: 1 },
+          names: { ag2: 'antigens', ab: 'antibodies, bound', lym: 'lymphocyte: makes antibodies' } }
+      ],
+      art: function (u, st, p) {
         var D = global.ImmDraw; if (!D) return '';
-        var out = D.cell('neutrophil', 120, 138, .85) + D.cell('lymphocyte', 312, 138, .82);
-        var k = u % 1, m = Math.min(1, k / .45), e = 1 - (1 - m) * (1 - m);
-        var dig = Math.max(0, Math.min(1, (k - .5) / .35));
-        out += '<g opacity="' + n1((1 - dig) * 100) / 100 + '">' + D.pathogen({ x: 200 + (124 - 200) * e, y: 34 + (134 - 34) * e, s: .16 - .06 * dig, rot: 20, kind: 'tri', n: 7 }).svg + '</g>';
-        [0, .5].forEach(function (p) {
-          var q = (u + p) % 1;
-          out += D.antibody({ x: 352 + 50 * q, y: 112 - 14 * q, rot: 40 + 30 * q, s: .62, kind: 'tri', op: Math.min(1, q * 4) * (1 - Math.max(0, q - .7) / .3) });
+        var T = TABS.wbc, C = [122, 150], RC = 87, dir = [Math.cos(-35 * Math.PI / 180), Math.sin(-35 * Math.PI / 180)];
+        var Q = [C[0] + (RC + 30) * dir[0], C[1] + (RC + 30) * dir[1]], V = [C[0] + 30 * dir[0], C[1] + 30 * dir[1]], R2 = 50, PS = .22, VR = 48;
+        function ease(k) { return 1 - (1 - k) * (1 - k); }
+        function lerp(a, b, k) { return [a[0] + (b[0] - a[0]) * k, a[1] + (b[1] - a[1]) * k]; }
+        /* step 1: the phagocyte moves after the pathogen (Daniel: "the macrophage chases the bacteria"), changing shape as it
+           crawls; the pathogen drifts slowly away, and the phagocyte reaches it */
+        var go = st === 0 ? ease(Math.min(1, p)) : 1, Cc = lerp([C[0] - 80, C[1] + 26], C, go), wob = st === 0 && go < 1 ? .05 * Math.sin(u * 40) : 0;
+        var out = '<g transform="translate(' + n1(Cc[0]) + ' ' + n1(Cc[1]) + ') scale(' + n1((1 + wob) * 100) / 100 + ' ' + n1((1 - wob) * 100) / 100 + ') translate(' + n1(-Cc[0]) + ' ' + n1(-Cc[1]) + ')">' + D.cell('neutrophil', Cc[0], Cc[1], 1.25) + '</g>';
+        /* where the pathogen is, and how far it is digested */
+        var pos = st === 0 ? lerp([Q[0] - 14, Q[1] + 10], Q, Math.min(1, p)) : st < 2 ? Q : st === 2 ? lerp(Q, V, ease(Math.min(1, p * 1.3))) : V, dig = st === 3 ? .88 * Math.max(0, Math.min(1, (p - .35) / .6)) : st > 3 ? 1 : 0;
+        /* two extensions of the cell, from where the pathogen touches it, round it until they meet (step 2), then gone */
+        if (st === 1 || st === 2) {
+          var d = Math.hypot(Q[0] - C[0], Q[1] - C[1]), a = (d * d - RC * RC + R2 * R2) / (2 * d), phi = Math.atan2(Math.sqrt(Math.max(0, R2 * R2 - a * a)), a);
+          var tu = Math.atan2(C[1] - Q[1], C[0] - Q[0]), g = st === 1 ? ease(Math.min(1, p)) : 1, fade = st === 2 ? Math.max(0, 1 - p * 1.6) : 1;
+          [1, -1].forEach(function (sg) {
+            var pts = []; for (var i = 0; i <= 24; i++) { var t = tu + sg * (phi + (Math.PI - phi) * g * i / 24); pts.push(n1(Q[0] + R2 * Math.cos(t)) + ' ' + n1(Q[1] + R2 * Math.sin(t))); }
+            var dd = 'M' + pts.join(' L');
+            out += '<g opacity="' + n1(fade * 100) / 100 + '"><path class="dv__ext1" d="' + dd + '"/><path class="dv__ext2" d="' + dd + '"/><path class="dv__ext3" d="' + dd + '"/></g>';
+          });
+          var tEnd = tu + (phi + (Math.PI - phi) * g) * .6;
+          T.steps[1].pts.arm = [n1(Q[0] + R2 * Math.cos(tEnd)), n1(Q[1] + R2 * Math.sin(tEnd)), 'R'];
+        }
+        /* the vacuole round the pathogen, inside the cell */
+        if (st >= 2 && st < 4) {
+          var vo = st === 2 ? Math.min(1, p * 1.6) : 1;
+          out += '<circle class="dv__vac" cx="' + n1(pos[0]) + '" cy="' + n1(pos[1]) + '" r="' + VR + '" opacity="' + vo + '"/>';
+          T.steps[2].pts.vac = [n1(pos[0] + VR * .8), n1(pos[1] - VR * .6), 'R'];
+          T.steps[3].pts.dig = [n1(pos[0] + 12), n1(pos[1] - 4), 'R'];
+        }
+        /* small sacs with enzymes come to the vacuole and join it (step 4) */
+        if (st === 3) [[70, 196], [84, 104], [60, 150]].forEach(function (sq, i) {
+          var k = Math.min(1, Math.max(0, p * 1.6 - i * .15)), at = lerp(sq, pos, ease(k) * .78);
+          out += '<circle class="dv__sac" cx="' + n1(at[0]) + '" cy="' + n1(at[1]) + '" r="5" opacity="' + n1((1 - Math.max(0, k - .85) / .15) * 100) / 100 + '"/>';
         });
-        return out + D.antibody({ x: 404, y: 52, rot: 70, s: .62, kind: 'tri', op: 1 });
-      },
-      pts: { pha: [62, 150, 'L'], ab: [404, 52, 'R'], lym: [372, 172, 'R'] },
-      names: { pha: 'phagocyte: engulfs and digests', ab: 'antibody', lym: 'lymphocyte: makes antibodies' } }
+        /* the pathogen; digested, it breaks into small pieces that fade */
+        if (dig < 1) {
+          var P1 = D.pathogen({ x: pos[0], y: pos[1], s: PS * (1 - .35 * dig), rot: 20, kind: 'round', n: 8, fade: 1 - dig });
+          out += P1.svg;
+          if (st === 0) {
+            var top = P1.antigens.reduce(function (m, g) { return g.y < m.y ? g : m; });
+            T.steps[0].pts.ag = [n1(top.x), n1(top.y), 'R'];
+            T.steps[0].pts.pg = [n1(pos[0] + 14), n1(pos[1] + 8), 'R'];
+          }
+        }
+        if (dig > 0 && dig < 1) for (var f = 0; f < 6; f++) {
+          var an = f * 1.05 + 0.4, rr = 8 + 20 * dig;
+          out += '<circle class="dv__frag" cx="' + n1(pos[0] + rr * Math.cos(an)) + '" cy="' + n1(pos[1] + rr * Math.sin(an)) + '" r="' + n1(4.2 * (1 - dig * .5)) + '" opacity="' + n1(Math.min(1, (1 - dig) * 3) * 100) / 100 + '"/>';
+        }
+        /* step 5: a lymphocyte's antibodies bind to the antigens of another pathogen */
+        if (st === 4) {
+          var lo = Math.min(1, p * 2.5);
+          out += '<g opacity="' + n1(lo * 100) / 100 + '">' + D.cell('lymphocyte', 300, 196, .72);
+          var P2 = D.pathogen({ x: 296, y: 62, s: PS, rot: -10, kind: 'round', n: 8 });
+          out += P2.svg;
+          var low = P2.antigens.slice().sort(function (m, n) { return (n.y - n.x * .3) - (m.y - m.x * .3); }).slice(0, 3);
+          var free = P2.antigens.filter(function (g) { return low.indexOf(g) < 0; }).reduce(function (m, g) { return g.x > m.x ? g : m; });
+          low.forEach(function (g, i) {
+            var b = D.bound(g, 'round', .42, i % 2 ? 'L' : 'R'), k = ease(Math.min(1, Math.max(0, p * 1.4 - .2 - i * .1)));
+            var at = lerp([300, 150], [b.x, b.y], k);
+            out += D.antibody({ x: at[0], y: at[1], rot: b.rot * k, s: .42, kind: 'round', plain: true });   /* grey, apart from the antigens */
+            if (i === 0) T.steps[4].pts.ab = [n1(b.x), n1(b.y), 'R'];
+          });
+          T.steps[4].pts.ag2 = [n1(free.x), n1(free.y), 'R'];
+          out += '</g>';
+        }
+        return out;
+      } }
   };
   var ORDER = ['skin', 'nose', 'mucus', 'acid', 'wbc'];
 
@@ -276,7 +354,8 @@
       gArt.innerHTML = T.art(u, step, sp);
       /* the headings over a drawing: the labels' size on screen, and the page's ink in bright and dark */
       Array.prototype.forEach.call(gArt.querySelectorAll('.dv__head'), function (t) { t.style.fontSize = (font * .92).toFixed(1) + 'px'; });
-      var items = Object.keys(S.pts).map(function (p) { var q = S.pts[p]; return { id: p, text: S.names[p], x: q[0], y: q[1], side: q[2] }; });
+      var items = Object.keys(S.pts).filter(function (p) { return !(T.steps && S.late && S.late[p] && sp < .98); })
+        .map(function (p) { var q = S.pts[p]; return { id: p, text: S.names[p], x: q[0], y: q[1], side: q[2] }; });
       if (narrow) {
         var P = global.CircLearn.pinLabels({ items: items, left: -6, right: T.w + 6, font: font, top: 0, bottom: T.h, gap: 4 });
         gLab.innerHTML = P.svg;
@@ -298,7 +377,7 @@
       ORDER.forEach(function (k) { btn[k].setAttribute('aria-pressed', k === id ? 'true' : 'false'); });
       var T = TABS[id];
       stopPlay(); photoOn = false; sPhoto.textContent = 'Photograph of real cilia'; [sNext, sAll, sAgain, sCount].forEach(function (b) { b.style.visibility = ''; });
-      svg.style.display = T.photo ? 'none' : ''; ph.hidden = !T.photo; sbar.hidden = !T.steps;
+      svg.style.display = T.photo ? 'none' : ''; ph.hidden = !T.photo; sbar.hidden = !T.steps; sPhoto.hidden = !T.realPhoto;
       if (T.photo) photoTab();
       svg.setAttribute('aria-label', T.say || T.name);
       api.say = T.photo ? (spec.mucus || {}).say : T.say; api.credit = T.photo ? (spec.mucus || {}).credit : T.credit;
