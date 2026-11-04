@@ -34,10 +34,12 @@
      model. The motion is never stretched to fill the reading time (Daniel, 4 Nov 2026: "very slow"): it runs PACE
      times faster than written, then the step holds its last frame until the reader's time is up. */
   var PACE = 1.6;
-  function readerClock(R, M) {
+  /* P: the pace of each step (an array), or one pace for all; PACE when not given */
+  function paceOf(P, i) { return P == null ? PACE : typeof P === 'number' ? P : (P[i] || PACE); }
+  function readerClock(R, M, P) {
     return function (t) {
       for (var i = 0; i + 1 < R.length; i++) if (t < R[i + 1] || i + 2 === R.length) {
-        var run = Math.min((M[i + 1] - M[i]) / PACE, R[i + 1] - R[i]), k = Math.min(1, Math.max(0, (Math.min(t, R[i + 1]) - R[i]) / run));
+        var run = Math.min((M[i + 1] - M[i]) / paceOf(P, i), R[i + 1] - R[i]), k = Math.min(1, Math.max(0, (Math.min(t, R[i + 1]) - R[i]) / run));
         return M[i] + k * (M[i + 1] - M[i]) - (k === 1 && i + 2 < R.length ? .001 : 0);
       }
       return M[M.length - 1];
@@ -45,10 +47,10 @@
   }
   /* Play all skips each step's reading hold: once a step's motion has run (and a short beat, so the eye sees the step
      change), it goes on with the next step's motion */
-  function readerFlow(R, M) {
+  function readerFlow(R, M, P) {
     return function (t) {
       for (var i = 0; i + 1 < R.length; i++) if (t < R[i + 1]) {
-        var run = Math.min((M[i + 1] - M[i]) / PACE, R[i + 1] - R[i]);
+        var run = Math.min((M[i + 1] - M[i]) / paceOf(P, i), R[i + 1] - R[i]);
         return t > R[i] + run + .35 ? R[i + 1] : t;
       }
       return t;

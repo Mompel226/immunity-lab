@@ -4,7 +4,7 @@
    … mention cytokines and the different types of lymphocytes and phagocytes … only shown if you press a button").
 
    It is the IB version of "The first meeting": the switch above that animation (fmswitch, below) shows one or the other
-   (Daniel, 4 Nov 2026: "a toggle"). Eight steps, each held until Next step (Play all runs them):
+   (Daniel, 4 Nov 2026: "a toggle"). Nine steps, each held until Next step (Play all runs them):
    a macrophage moves to a bacterium by amoeboid movement; engulfs it by endocytosis into a vesicle; lysosomes release
    enzymes that digest it, and pieces of its antigens are kept; MHC proteins take the pieces in the vesicle and carry them
    to the cell membrane (antigen presentation); a helper T-lymphocyte whose receptor fits binds, is activated and releases
@@ -72,6 +72,8 @@
     return D.pathogen({ x: 0, y: 0, s: .2, rot: BROT, kind: KIND, n: 8 }).antigens.reduce(function (m, a) { return a.nx * d[0] + a.ny * d[1] > m.nx * d[0] + m.ny * d[1] ? a : m; });
   })();
   var BPOSE = D.bound(BAG, KIND, .34, 'R');
+  var ALLK = D.pathogen({ x: 0, y: 0, s: .2, rot: BROT, kind: KIND, n: 8 }).antigens.map(function (a) { return a.k; });
+  var RESTK = ALLK.filter(function (k) { return k !== BAG.k; });   /* the bacterium without the antigen the B-cell took in */
 
   /* ---------- one frame at model time t ---------- */
   function render(t) {
@@ -159,8 +161,8 @@
     if (t >= 27 && t < 30.5) { lab('agp', 'antigen pieces, displayed', SHOW[0][0] + (HM - 4) * Math.cos(SHOW[0][2]), SHOW[0][1] + (HM - 4) * Math.sin(SHOW[0][2]), 'R', 2); lab('mhc', 'MHC protein', SHOW[2][0], SHOW[2][1], 'R', 3); }
     /* the helper T-cell: comes, its receptor fits a displayed piece (30–34), releases cytokines (34–38), goes to the B-cell (42–45) */
     if (t >= 30) {
-      var tk = ease(seg(t, 30, 33.5)), Tx = t < 42 ? pt(T0, T1, tk) : pt(T1, T2, ease(seg(t, 42, 45)));
-      out += art('t-lymph', Tx[0], Tx[1], 1.0) + (t >= 33 && t < 42 ? '<circle class="im__glow" cx="' + n1(Tx[0]) + '" cy="' + n1(Tx[1]) + '" r="54" opacity="' + n1(seg(t, 33, 34.5) * 50) / 100 + '"/>' : '');
+      var tk = ease(seg(t, 30, 33.5)), Tx = t < 43.6 ? pt(T0, T1, tk) : pt(T1, T2, ease(seg(t, 43.6, 45.6)));
+      out += art('t-lymph', Tx[0], Tx[1], 1.0) + (t >= 33 && t < 43.6 ? '<circle class="im__glow" cx="' + n1(Tx[0]) + '" cy="' + n1(Tx[1]) + '" r="54" opacity="' + n1(seg(t, 33, 34.5) * 50) / 100 + '"/>' : '');
       /* its receptors, all of one shape, on its surface from the moment it appears (Daniel, 4 Nov 2026: it "doesn't seem to
          have any receptors that have the shape of the antigen, at least when it appears for the first time"): each a cup
          complementary to the displayed antigen's head, its back on the membrane (radius 46). The one facing the macrophage
@@ -174,13 +176,13 @@
         out += '<path class="ix__rec" d="M' + q.join(' L') + '"/>';
       });
       if (t >= 30.6 && t < 33) lab('rec0', 'receptors: one shape', Tx[0] + (46 + rr) * Math.cos(f0 + 1.25), Tx[1] + (46 + rr) * Math.sin(f0 + 1.25), 'R', 3);
-      if (t >= 45 && t < 46.4) lab('rec2', 'its receptor fits the same antigen', BH[0] + 10, BH[1], 'R', 3);
-      if (t >= 33.5 && t < 46) lab('th', t >= 42 ? 'helper T-cell' : 'helper T-lymphocyte, activated', Tx[0] + 12, Tx[1] - 44, 'R', 2);   /* high on the cell, a row above its receptor */
+      if (t >= 45.4 && t < 46.6) lab('rec2', 'its receptor fits the same antigen', BH[0] + 10, BH[1], 'R', 3);
+      if (t >= 33.5 && t < 46) lab('th', t >= 43.6 ? 'helper T-cell' : 'helper T-lymphocyte, activated', Tx[0] + 12, Tx[1] - 44, 'R', 2);   /* high on the cell, a row above its receptor */
       if (t >= 34.5 && t < 38) lab('rec', 'its receptor fits the antigen', SHOW[1][0] + (HM + 4) * Math.cos(SHOW[1][2]), SHOW[1][1] + (HM + 4) * Math.sin(SHOW[1][2]), 'R', 3);
       /* cytokines: small signalling proteins, released and spreading */
       if (t >= 34) for (var c = 0; c < 9; c++) {
-        var ca = c * .7 + .3, cr = 44 + 70 * seg(t, 34 + c * .12, 37.5), cx = (t < 42 ? T1 : T2)[0] + cr * Math.cos(ca), cy = (t < 42 ? T1 : T2)[1] + cr * Math.sin(ca) * .8;
-        var co = t < 42 ? 1 - seg(t, 40, 42) : seg(t, 45, 45.8) * (1 - seg(t, 48, 50));
+        var ca = c * .7 + .3, cr = 44 + 70 * seg(t, 34 + c * .12, 37.5), cx = (t < 43.6 ? T1 : T2)[0] + cr * Math.cos(ca), cy = (t < 43.6 ? T1 : T2)[1] + cr * Math.sin(ca) * .8;
+        var co = t < 43.6 ? 1 - seg(t, 40, 42) : seg(t, 45.4, 46) * (1 - seg(t, 48, 50));
         if (co > .02) out += '<path class="ix__cyt" opacity="' + n1(co * 100) / 100 + '" d="M' + n1(cx) + ' ' + n1(cy - 4) + ' L' + n1(cx + 4) + ' ' + n1(cy) + ' L' + n1(cx) + ' ' + n1(cy + 4) + ' L' + n1(cx - 4) + ' ' + n1(cy) + ' Z"/>';
         if (c === 1 && t >= 37.5 && t < 40) lab('cyt', 'cytokines', cx, cy, 'R', 3);
       }
@@ -193,27 +195,41 @@
        receptor fits that antigen (42–45); it releases cytokines, and only then is the B-cell activated (45–46) */
     if (t >= 38 && t < 47) {
       var bk = ease(seg(t, 38, 40)), Bx = pt([470, 440], BC, bk);
-      out += art('b-lymph', Bx[0], Bx[1], 1.05) + (t >= 45 ? '<circle class="im__glow" cx="' + n1(Bx[0]) + '" cy="' + n1(Bx[1]) + '" r="56" opacity="' + n1(seg(t, 45, 46) * 50) / 100 + '"/>' : '');
+      out += art('b-lymph', Bx[0], Bx[1], 1.05) + (t >= 45.4 ? '<circle class="im__glow" cx="' + n1(Bx[0]) + '" cy="' + n1(Bx[1]) + '" r="56" opacity="' + n1(seg(t, 45.4, 46) * 50) / 100 + '"/>' : '');
       if (t >= 43.4) {
         var dop = seg(t, 43.4, 44.2), drot = Math.atan2(DBT[0], -DBT[1]) * 180 / Math.PI;
         out += '<g opacity="' + n1(dop * 100) / 100 + '"><path class="ix__mhc" transform="translate(' + n1(BD[0]) + ' ' + n1(BD[1]) + ') rotate(' + n1(drot) + ')" d="M-6.5 4 L-6.5 -3.5 L-3 -3.5 L-3 1.2 L3 1.2 L3 -3.5 L6.5 -3.5 L6.5 4 Z"/>' +
           D.antigen(KIND, BD[0], BD[1], DBT[0], DBT[1], null, AGS) + '</g>';
         if (t >= 43.6 && t < 45) lab('bdisp', 'it displays the same antigen', BH[0] + 8, BH[1] + 2, 'R', 3);
       }
-      /* its own antibodies on its surface; the third is turned to the antigen it will bind */
-      [[-40, -22, -60], [44, -10, 60], [BAB[0], BAB[1], BPOSE.rot]].forEach(function (q, i) {
+      /* its receptors: its own antibodies, held in its membrane, all of one shape (Daniel, 4 Nov 2026: "does it detect it with
+         … antibodies, or is it just some receptors?": they are the same) */
+      [[-40, -22, -60], [44, -10, 60]].forEach(function (q) {
         out += D.antibody({ x: Bx[0] + q[0], y: Bx[1] + q[1], rot: q[2], s: .34, kind: KIND });
       });
+      /* the third is turned to the antigen it binds; with that antigen it goes into the cell in a small vesicle
+         (receptor-mediated endocytosis, 42.4–43.6): a B-cell is not a phagocyte and never engulfs the bacterium */
+      var tin = ease(seg(t, 42.4, 43.6)), gone = seg(t, 43.6, 44.2);
+      var foot = pt([Bx[0] + BAB[0], Bx[1] + BAB[1]], [Bx[0] + BAB[0] * .3, Bx[1] + BAB[1] * .3], tin);
+      if (gone < 1) {
+        out += '<g opacity="' + n1((1 - gone) * 100) / 100 + '">';
+        if (t >= 42.6) out += '<circle class="ix__ves" cx="' + n1(foot[0] - 14) + '" cy="' + n1(foot[1] + 2) + '" r="' + n1(22 * seg(t, 42.6, 43.2)) + '"/>';
+        out += D.antibody({ x: foot[0], y: foot[1], rot: BPOSE.rot, s: .34, kind: KIND });
+        if (t >= 42.4) out += D.antigen(KIND, foot[0] + BAG.x - BPOSE.x - BAG.nx * HM, foot[1] + BAG.y - BPOSE.y - BAG.ny * HM, BAG.nx, BAG.ny, null, AGS);
+        out += '</g>';
+        /* named at the vesicle's top, once the bacterium has drifted below the name's line */
+        if (t >= 43.1 && t < 43.9) lab('bend', 'only the antigen enters, in a small vesicle', foot[0] - 14, foot[1] - 19, 'L', 3);
+      }
       /* a whole antigen, on another bacterium of the same kind, comes to that antibody and binds (40–42): a B-cell binds
          intact antigen (C3.2.8: "direct interaction with the specific antigen"), not the pieces a macrophage displays */
       var bend = [Bx[0] + BAB[0] - BPOSE.x, Bx[1] + BAB[1] - BPOSE.y], bb = pt([bend[0] - 80, bend[1] + 70], bend, ease(seg(t, 40, 42)));
-      /* taken in: it moves into the B-cell and goes (42.4–43.6) */
-      var tin = ease(seg(t, 42.4, 43.6)), bo = Math.min(seg(t, 40, 40.6), 1 - tin);
-      bb = pt(bb, [Bx[0] + BAB[0] * .4, Bx[1] + BAB[1] * .4], tin);
-      if (t >= 40 && bo > .02) out += '<g opacity="' + n1(bo * 100) / 100 + '">' + D.pathogen({ x: bb[0], y: bb[1], s: .2 * (1 - .45 * tin), rot: BROT, kind: KIND, n: 8 }).svg + '</g>';
-      if (t >= 40) lab('bc', t >= 45.6 ? 'B-cell, activated' : 'B-lymphocyte', Bx[0] + 40, Bx[1] + 10, 'R', 2);
+      /* the bacterium stays outside: once its antigen has gone in, it drifts away, one antigen fewer (42.6–44.4) */
+      var away = ease(seg(t, 42.6, 44.4)), bo = Math.min(seg(t, 40, 40.6), 1 - seg(t, 43.6, 44.4));
+      bb = pt(bb, [bb[0] - 70, bb[1] + 44], away);
+      if (t >= 40 && bo > .02) out += '<g opacity="' + n1(bo * 100) / 100 + '">' + D.pathogen({ x: bb[0], y: bb[1], s: .2, rot: BROT, kind: KIND, at: t < 42.4 ? ALLK : RESTK }).svg + '</g>';
+      if (t >= 40) lab('bc', t >= 45.8 ? 'B-cell, activated' : 'B-lymphocyte', Bx[0] + 40, Bx[1] + 10, 'R', 2);
       /* named at the bacterium's far side, so the name's line never crosses it */
-      if (t >= 41.4 && t < 43) lab('bab', 'the same kind of bacterium: its antigen binds', bb[0] - 14, bb[1], 'L', 3);
+      if (t >= 41.4 && t < 42.6) lab('bab', 'the same kind of bacterium: its antigen binds', bb[0] - 14, bb[1], 'L', 3);
     }
     /* the clone: it divides by mitosis (46–50); plasma cells secrete antibodies (49–54); memory cells (54–) */
     if (t >= 46) CLONE.forEach(function (q, i) {
@@ -239,11 +255,15 @@
     { h: 'Enzymes from lysosomes digest it', tag: 'Extension · IB C3.2.5', p: '**Lysosomes** are small vesicles that contain **enzymes**. They fuse with the vesicle and release their enzymes into it. The enzymes digest the bacterium, but pieces of its **antigens** are kept, with the same shape.' },
     { h: 'The macrophage displays the antigens', tag: 'Extension · beyond IB', p: '**MHC proteins** carry the antigen pieces to the cell membrane and hold them on the outside, where other cells can meet their shape. This is **antigen presentation**.' },
     { h: 'A helper T-cell is activated', tag: 'Extension · IB C3.2.8 · cytokines beyond IB', p: 'A **helper T-lymphocyte** whose **receptor** fits these antigen pieces binds to them, and is **activated**. It releases **cytokines**: signalling proteins that act on other cells of the immune system.' },
-    { h: 'A B-cell is activated: two signals', tag: 'Extension · IB C3.2.8 · the display beyond IB', p: 'In the same infection there are many bacteria of this kind, with the same antigens. A **B-lymphocyte** carries antibodies of one shape on its surface. (1) Its antibody **binds the antigen directly**, on one of these bacteria. By endocytosis the antigen enters the B-cell, which then displays pieces of the **same antigen**. (2) The **helper T-cell** activated in step 5 fits the same antigen: its receptor binds, and it releases cytokines. Only with both is the B-cell **activated**.' },
+    { h: 'A B-cell binds the same antigen', tag: 'Extension · IB C3.2.8 · the display beyond IB', p: 'In the same infection there are many bacteria of this kind, with the same antigens. A **B-lymphocyte** has receptors in its membrane: they are its own **antibodies**, all of one shape, held in the membrane. (1) A receptor **binds the antigen directly**. A B-cell is not a phagocyte: it does not engulf the bacterium. Only the bound antigen enters, in a small vesicle (endocytosis), and the B-cell displays pieces of it.' },
+    { h: 'The helper T-cell activates it', tag: 'Extension · IB C3.2.8', p: '(2) The **helper T-cell** activated in step 5 fits the same antigen. Its receptor binds the pieces on the B-cell, and it releases **cytokines**. Only with both, the antigen and the helper T-cell, is the B-cell **activated**.' },
     { h: 'It divides into plasma cells', tag: 'Extension · IB C3.2.9', p: 'The activated B-cell **divides by mitosis** many times, into a **clone**: cells that all make the same antibody. Most become **plasma cells**, which **secrete** large numbers of these **antibodies**.' },
     { h: 'Memory cells stay', tag: 'Extension · IB C3.2.10', p: 'Some cells of the clone become **memory cells**, which live for a long time. If the same pathogen returns, they respond quickly: this is **immunity**. Memory T-cells are made too.' }
   ];
-  var M = [0, 7, 15, 22, 30, 38, 46, 54, 62];
+  var M = [0, 7, 15, 22, 30, 38, 43.6, 46, 54, 62];
+  /* how fast each step's motion runs (w-kit readerClock): the steps after the helper T-cell have more to watch, so they
+     run slower (Daniel, 4 Nov 2026: "as soon as the helper T lymphocyte is activated, the next stages are a bit too fast") */
+  var PACES = [1.6, 1.6, 1.6, 1.6, 1.1, .8, .6, .9, .9];
   function readerTimes() {
     var R = [0];
     STEPS.forEach(function (s, i) { var words = (s.h + ' ' + s.p).replace(/\*\*/g, '').split(/\s+/).length; R.push(R[i] + Math.max(M[i + 1] - M[i], words / 3.2)); });
@@ -260,7 +280,7 @@
     var tissue = '<rect class="im__plasma" x="0" y="0" width="' + W + '" height="' + H + '" rx="16"/>';
     var gArt = document.createElementNS(NSV, 'g'); gArt.setAttribute('clip-path', 'url(#' + cid + ')'); model.appendChild(gArt);
     var gLab = document.createElementNS(NSV, 'g'); svg.appendChild(gLab);
-    var lay = null, narrow = false, key = K.pinKey(S), R = readerTimes(), clock = K.readerClock(R, M);
+    var lay = null, narrow = false, key = K.pinKey(S), R = readerTimes(), clock = K.readerClock(R, M, PACES);
     function draw(t) {
       var mt = clock(t), r = render(mt);
       gArt.innerHTML = tissue + r.svg;
@@ -268,7 +288,7 @@
         .map(function (q) { var p = lay.to(q.x, q.y); return { id: q.id, text: q.text, x: p[0], y: p[1], side: q.side, pri: q.pri }; });
       gLab.innerHTML = K.names(lay, items, narrow, key, null, 6);
     }
-    var sp = L.stepper({ steps: K.readerSteps(STEPS, R), end: R[R.length - 1], render: draw, flow: K.readerFlow(R, M) });
+    var sp = L.stepper({ steps: K.readerSteps(STEPS, R), end: R[R.length - 1], render: draw, flow: K.readerFlow(R, M, PACES) });
     /* the notes fold away under one closed line (Daniel, 4 Nov 2026: "this text is extremely long. It distracts from … the
        step-by-step"): nothing but the steps stands between the animation and the rest of the station */
     var box = K.mount(S, sp, 'im', [], function (Dw, nar) {
