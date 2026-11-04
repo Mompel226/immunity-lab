@@ -2,7 +2,8 @@
    w-immune.js — two step animations in the blood, on one small scene engine:
 
      firstmeet  "The first meeting" (station `antibodies`): a pathogen enters for the first time; the body already has
-                lymphocytes for many shapes (clonal selection); an antigen binds to the antibody on the surface of the one
+                lymphocytes for many shapes (clonal selection) but no memory cells (MS 0610/42/O/N/16 Q5(d): "memory cells
+                produced in first infection"; its stem: "some of these lymphocytes are activated"); an antigen binds to the antibody on the surface of the one
                 whose antibodies are complementary, and only that one is stimulated; it divides while the pathogens
                 reproduce (the person is ill); the cells that do not stay as memory cells release antibodies; the
                 antibodies bind: some pathogens are destroyed directly, the others are marked and engulfed by phagocytes;
@@ -210,7 +211,7 @@
      firstmeet — a pathogen enters the body for the first time
      ================================================================ */
   var FM_STEPS = [
-    { t: 0,  h: 'A pathogen enters the body', p: 'A pathogen enters the blood. It has **antigens** on its surface, with a **specific shape**. Each lymphocyte makes antibodies of one shape only: the small antibody beside each shows which. The body already has lymphocytes for many different shapes.' },
+    { t: 0,  h: 'A pathogen enters the body', p: 'A pathogen enters the blood. It has **antigens** on its surface, with a **specific shape**. Each lymphocyte makes antibodies of one shape only: the small antibody beside each shows which. The body already has lymphocytes for many different shapes, but **no memory cells** yet: only a few lymphocytes have the shape that fits.' },
     { t: 8,  h: 'The matching lymphocytes are stimulated', p: 'Only the **lymphocytes** that make antibodies with a shape **complementary** to these antigens are **stimulated**: an antigen binds to the antibody on the lymphocyte’s surface. The others are not.' },
     { t: 14, h: 'They divide', p: 'The stimulated lymphocytes **divide**, so there are many cells that make this one antibody. This takes days. Meanwhile the pathogens **reproduce**, so the person is **ill** for a few days.' },
     { t: 22, h: 'They release antibodies', p: 'The lymphocytes release many of these **antibodies**. Antibodies are **proteins**, not cells.' },

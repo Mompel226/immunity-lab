@@ -179,42 +179,49 @@
     wbc: { name: 'White blood cells', w: 440, h: 250, say: 'Phagocytes engulf and digest pathogens; lymphocytes make antibodies',
       credit: 'Servier Medical Art, CC BY 4.0, adapted; the phagocyte\'s membrane drawn for this lab, so it can change shape',
       steps: [
-        { say: 'There are two kinds of white blood cell: phagocytes and lymphocytes. A pathogen, with antigens on its surface, moves away; the phagocyte moves after it and reaches it.', ms: 3800,
-          pts: { pha: [44, 156, 'L'], lym: [404, 196, 'R'], ag: [0, 0, 'R'], pg: [0, 0, 'R'] }, late: { pha: 1, ag: 1, pg: 1 },
+        { say: 'There are two kinds of white blood cell: <b class="t t--struct">phagocytes</b> and <b class="t t--struct">lymphocytes</b>. A pathogen, with antigens on its surface, moves away; the phagocyte moves after it and reaches it.', ms: 3400,
+          pts: { pha: [60, 160, 'L'], lym: [378, 170, 'R'], ag: [0, 0, 'R'], pg: [0, 0, 'R'] }, late: { ag: 1, pg: 1 },
           names: { pha: 'phagocyte', lym: 'lymphocyte', ag: 'antigens', pg: 'pathogen' } },
-        { say: 'The phagocyte engulfs the pathogen: its cell membrane flows round the pathogen, then closes over it.', ms: 4000,
-          pts: { pha: [44, 156, 'L'], lym: [404, 196, 'R'], mem: [0, 0, 'R'] }, late: { mem: 1 },
+        { say: '<b class="t t--proc">Phagocytosis</b> begins: the phagocyte engulfs the pathogen. Its cell membrane flows round the pathogen, then closes over it.', ms: 3400,
+          pts: { pha: [60, 160, 'L'], lym: [378, 170, 'R'], mem: [0, 0, 'R'] }, late: { mem: 1 },
           names: { pha: 'phagocyte', lym: 'lymphocyte', mem: 'the membrane flows round it' } },
-        { say: 'The pathogen is now inside the phagocyte, in a vacuole, and enzymes digest it. This is phagocytosis.', ms: 3800,
-          pts: { pha: [44, 156, 'L'], lym: [404, 196, 'R'], vac: [0, 0, 'R'] }, late: { vac: 1 },
+        { say: 'The pathogen is now inside the phagocyte, in a vacuole. Enzymes digest it, and the vacuole goes. Engulfing and digesting a pathogen is <b class="t t--proc">phagocytosis</b>.', ms: 4400,
+          pts: { pha: [60, 160, 'L'], lym: [378, 170, 'R'], vac: [0, 0, 'R'] }, from: { vac: .18 }, until: { vac: .72 },
           names: { pha: 'phagocyte', lym: 'lymphocyte', vac: 'vacuole: the pathogen is digested' } },
-        { say: 'Supplement: the lymphocyte makes antibodies. They bind to the antigens of a pathogen and mark it for phagocytes.', ms: 3600,
-          pts: { pha: [44, 156, 'L'], lym: [404, 196, 'R'], ab: [0, 0, 'R'], ag2: [0, 0, 'R'] }, late: { ab: 1 },
+        { say: 'Supplement: the <b class="t t--struct">lymphocyte</b> makes <b class="t t--subst">antibodies</b>. They bind to the antigens of a pathogen and mark it for phagocytes.', ms: 3800,
+          pts: { pha: [60, 160, 'L'], lym: [378, 170, 'R'], ab: [0, 0, 'R'], ag2: [0, 0, 'R'] }, late: { ab: 1 }, from: { ag2: .3 },
           names: { pha: 'phagocyte', lym: 'lymphocyte: makes antibodies', ab: 'antibodies, bound', ag2: 'antigens' } }
       ],
+      /* Smooth on purpose (Daniel, 4 Nov 2026: "a bit too clunky … improve the speed and fluidity"): every move eases in and
+         out; every wobble repeats a whole number of times in the 6 s loop, so nothing jumps when the loop starts again; the
+         crawl's bulge grows and dies away with the speed of the cell, never switching off; the vacuole goes once the pathogen
+         is digested ("that little circle at the end … make it disappear"); the second pathogen drifts in and the antibodies
+         leave the lymphocyte's surface one by one. Each name points at its part where the part is now. The key words in the
+         line under the picture are coloured as the cards colour them (terms.js: structures, processes, substances), so
+         phagocytosis is named as the key word it is. */
       art: function (u, st, p) {
         var D = global.ImmDraw; if (!D) return '';
         var T = TABS.wbc, C = [118, 142], RC = 62, dir = [Math.cos(-38 * Math.PI / 180), Math.sin(-38 * Math.PI / 180)];
         var Q = [C[0] + (RC + 36) * dir[0], C[1] + (RC + 36) * dir[1]], V = [C[0] + 16 * dir[0], C[1] + 16 * dir[1]], PS = .2, R2 = 36;
-        function ease(k) { return 1 - (1 - k) * (1 - k); }
+        var TAU = Math.PI * 2, LY = [352, 150];
+        function sm(k) { k = Math.max(0, Math.min(1, k)); return k * k * (3 - 2 * k); }
         function lerp(a, b, k) { return [a[0] + (b[0] - a[0]) * k, a[1] + (b[1] - a[1]) * k]; }
         /* the lymphocyte, always there */
-        var out = D.cell('lymphocyte', 352, 150, .74);
-        /* step 1: the phagocyte crawls after the pathogen (its outline bulges forward, changing as it goes) */
-        var go = st === 0 ? ease(Math.min(1, p)) : 1, Cc = lerp([C[0] - 60, C[1] + 34], C, go), crawl = st === 0 && go < 1;
-        var Pp = st === 0 ? lerp([Q[0] - 14, Q[1] + 12], Q, Math.min(1, p)) : Q;
+        var out = D.cell('lymphocyte', LY[0], LY[1], .74);
+        /* step 1: the phagocyte crawls after the pathogen; cw, how fast it is moving (0 at rest), sizes the bulges */
+        var go = st === 0 ? sm(p) : 1, Cc = lerp([C[0] - 60, C[1] + 34], C, go), cw = st === 0 ? Math.min(1, 6 * go * (1 - go)) : 0;
+        var Pp = st === 0 ? lerp([Q[0] - 16, Q[1] + 13], Q, sm(Math.min(1, p * 1.08))) : Q;
         var balls = [[Cc[0], Cc[1], RC]];
-        /* at rest the outline is round, with a little life in it; crawling, it bulges and changes */
         for (var i = 0; i < 6; i++) {
-          var a = i * 1.047 + (crawl ? u * 3 : .4), w = crawl ? 7 * Math.sin(u * 20 + i) : 1.5 * Math.sin(u * 4 + i);
-          balls.push([Cc[0] + (RC - 30) * Math.cos(a), Cc[1] + (RC - 30) * Math.sin(a), 28 + w]);
+          var a = i * 1.047 + .4, w = (1.4 + 5 * cw) * Math.sin(TAU * 2 * u + i * 1.9), fw = 5 * cw * Math.max(0, Math.cos(a + 38 * Math.PI / 180));
+          balls.push([Cc[0] + (RC - 30) * Math.cos(a) + fw * dir[0], Cc[1] + (RC - 30) * Math.sin(a) + fw * dir[1], 28 + w]);
         }
-        if (crawl) balls.push([Cc[0] + (RC - 8) * dir[0], Cc[1] + (RC - 8) * dir[1], 24 + 6 * Math.sin(u * 14)]);   /* the leading edge */
-        /* steps 2 and 3: the membrane flows round the pathogen, from where it touches, until the two sides meet; then the
-           closed vacuole moves in, and the outline is round again */
-        var into = st >= 2 ? ease(Math.min(1, (st === 2 ? p : 1) * 1.4)) : 0, P = lerp(Q, V, into);
-        var cup = st === 1 ? ease(Math.min(1, p * 1.15)) : st >= 2 ? 1 : 0, ringOp = st >= 2 ? Math.max(0, 1 - into * 2.2) : 1;
-        if (cup > 0 && ringOp > 0) {
+        if (cw > .02) balls.push([Cc[0] + (RC - 8) * dir[0], Cc[1] + (RC - 8) * dir[1], (22 + 4 * Math.sin(TAU * 3 * u)) * cw]);   /* the leading edge */
+        /* step 2: the membrane flows round the pathogen until the two sides meet; step 3: the closed vacuole moves in, the
+           pathogen is digested, and the vacuole goes */
+        var cup = st === 1 ? sm(p * 1.12) : st >= 2 ? 1 : 0;
+        var into = st === 2 ? sm(p / .45) : st > 2 ? 1 : 0, P = lerp(Q, V, into), ringOp = st === 2 ? 1 - sm(p / .3) : st > 2 ? 0 : 1;
+        if (cup > 0 && ringOp > .02) {
           var tu = Math.atan2(C[1] - Q[1], C[0] - Q[0]), phi = .75, N = 11;
           for (var sgn = -1; sgn <= 1; sgn += 2) for (var j = 0; j <= N; j++) {
             var f = j / N, reach = cup * (Math.PI - phi + .05);
@@ -226,35 +233,39 @@
         }
         out += D.membrane({ id: 'dvPh', balls: balls, edge: '#B9506B', rim: '#F797AA', fill: '#FACDD3' });
         out += D.inside('neutrophil', Cc[0] - 6, Cc[1] + 4, .74);
-        /* the vacuole, once the membrane has closed over the pathogen; the pathogen is digested and the vacuole shrinks */
-        var dig = st === 2 ? Math.max(0, Math.min(1, (p - .45) / .5)) : st > 2 ? 1 : 0;
-        if (st >= 2) {
-          var vr = 30 - 14 * dig, vo = Math.min(1, into * 2.2);
-          out += '<circle class="dv__vac" cx="' + n1(P[0]) + '" cy="' + n1(P[1]) + '" r="' + n1(vr) + '" opacity="' + n1(vo * 100) / 100 + '"/>';
+        /* the phagocyte's name on the cell itself, low on its left, wherever the cell is */
+        T.steps[st].pts.pha = [n1(Cc[0] - RC + 18), n1(Cc[1] + 22), 'L'];
+        var dig = st === 2 ? sm((p - .3) / .4) : st > 2 ? 1 : 0;
+        if (st === 2) {
+          var vr = 30 - 12 * dig, vo = sm(p / .3) * (1 - sm((p - .72) / .22));
+          if (vo > .02) out += '<circle class="dv__vac" cx="' + n1(P[0]) + '" cy="' + n1(P[1]) + '" r="' + n1(vr) + '" opacity="' + n1(vo * 100) / 100 + '"/>';
           T.steps[2].pts.vac = [n1(P[0] + vr * .7), n1(P[1] - vr * .7), 'R'];
         }
         if (dig < 1) {
-          var P1 = D.pathogen({ x: P[0], y: P[1], s: PS * (st >= 2 ? (1 - .35 * into) * (1 - .5 * dig) : 1), rot: 20, kind: 'round', n: 8, fade: 1 - dig });
+          var P1 = D.pathogen({ x: Pp[0] + (P[0] - Q[0]), y: Pp[1] + (P[1] - Q[1]), s: PS * (st >= 2 ? (1 - .35 * into) * (1 - .5 * dig) : 1), rot: 20, kind: 'round', n: 8, fade: 1 - dig });
           out += P1.svg;
           if (st === 0) {
             var top = P1.antigens.reduce(function (m, g) { return g.y < m.y ? g : m; });
             T.steps[0].pts.ag = [n1(top.x), n1(top.y), 'R'];
-            T.steps[0].pts.pg = [n1(P[0] + 12), n1(P[1] + 6), 'R'];
+            T.steps[0].pts.pg = [n1(Pp[0] + 12), n1(Pp[1] + 6), 'R'];
           }
         }
-        /* step 4: the lymphocyte's antibodies bind to the antigens of another pathogen */
+        /* step 4: another pathogen drifts in; antibodies leave the lymphocyte's surface one by one and bind its antigens */
         if (st === 3) {
-          var P2 = D.pathogen({ x: 352, y: 50, s: .18, rot: -10, kind: 'round', n: 8 });
-          out += P2.svg;
-          var low = P2.antigens.slice().sort(function (m, n) { return n.y - m.y; }).slice(0, 3);
-          var free = P2.antigens.filter(function (g) { return low.indexOf(g) < 0; }).reduce(function (m, g) { return g.x > m.x ? g : m; });
-          low.forEach(function (g, i) {
-            var b = D.bound(g, 'round', .4, i % 2 ? 'L' : 'R'), k = ease(Math.min(1, Math.max(0, p * 1.4 - .2 - i * .1)));
-            var at = lerp([352, 110], [b.x, b.y], k);
-            out += D.antibody({ x: at[0], y: at[1], rot: b.rot * k, s: .4, kind: 'round', plain: true });
-            if (i === 0) T.steps[3].pts.ab = [n1(b.x), n1(b.y), 'R'];
+          var pin = sm(p / .3), P2c = lerp([424, 26], [352, 48], pin);
+          var P2 = D.pathogen({ x: P2c[0], y: P2c[1], s: .18, rot: -10 + 20 * (1 - pin), kind: 'round', n: 8 });
+          out += '<g opacity="' + n1(Math.min(1, pin * 2) * 100) / 100 + '">' + P2.svg + '</g>';
+          var fin = D.pathogen({ x: 352, y: 48, s: .18, rot: -10, kind: 'round', n: 8 });
+          var low = fin.antigens.slice().sort(function (m, n) { return n.y - m.y; }).slice(0, 3);
+          var free = fin.antigens.filter(function (g) { return low.indexOf(g) < 0; }).reduce(function (m, g) { return g.x > m.x ? g : m; });
+          low.forEach(function (g, k) {
+            var b = D.bound(g, 'round', .4, k % 2 ? 'L' : 'R'), t0 = .22 + k * .14, kk = sm((p - t0) / .42);
+            if (p < t0) return;
+            var home = [LY[0] - 18 + k * 18, LY[1] - 50 + Math.abs(k - 1) * 6], at = lerp(home, [b.x, b.y], kk);
+            out += D.antibody({ x: at[0], y: at[1], rot: lerp([k * 20 - 20, 0], [b.rot, 0], kk)[0], s: .4, kind: 'round', plain: true, op: sm((p - t0) / .1) });
+            if (k === 0) T.steps[3].pts.ab = [n1(b.x), n1(b.y), 'R'];
           });
-          T.steps[3].pts.ag2 = [n1(free.x), n1(free.y), 'R'];
+          T.steps[3].pts.ag2 = [n1(P2c[0] - 352 + free.x), n1(P2c[1] - 48 + free.y), 'R'];
         }
         return out;
       } }
@@ -286,7 +297,7 @@
       var T = TABS[cur], S = T.steps[step];
       playT = setTimeout(function () { if (step < T.steps.length - 1) { setStep(step + 1, true); playOn(); } else stopPlay(); }, (S.ms || 2600) + 1200);
     }
-    var cur = 'skin', raf = null, t0 = 0, font = 14, mL = 100, mR = 100, narrow = false;
+    var cur = 'skin', raf = null, t0 = 0, uNow = 0, font = 14, mL = 100, mR = 100, narrow = false;
     function nowMs() { return (global.performance && performance.now) ? performance.now() : Date.now(); }
     function setStep(i, playing) {
       if (!playing) stopPlay();
@@ -294,7 +305,7 @@
       sCount.textContent = 'Step ' + (step + 1) + ' of ' + T.steps.length;
       var last = step === T.steps.length - 1;
       sNext.hidden = last; sAll.hidden = last && !playT; sAgain.hidden = !last && step === 0; sNext.classList.toggle('is-pulse', !last && step > 0 && !playT);
-      api.say = T.steps[step].say; ctx.caption(); frame(.999);
+      api.say = T.steps[step].say; ctx.caption(); frame(raf ? uNow : .999);   /* the loop's own moment: a frame at .999 made each step jump */
     }
     var btn = {};
     ORDER.forEach(function (id, i) {
@@ -348,7 +359,8 @@
       gArt.innerHTML = T.art(u, step, sp);
       /* the headings over a drawing: the labels' size on screen, and the page's ink in bright and dark */
       Array.prototype.forEach.call(gArt.querySelectorAll('.dv__head'), function (t) { t.style.fontSize = (font * .92).toFixed(1) + 'px'; });
-      var items = Object.keys(S.pts).filter(function (p) { return !(T.steps && S.late && S.late[p] && sp < .98); })
+      /* late: a name shown once its step has finished; from / until: shown only between those parts of the step */
+      var items = Object.keys(S.pts).filter(function (p) { return !(T.steps && S.late && S.late[p] && sp < .98) && !(S.from && S.from[p] != null && sp < S.from[p]) && !(S.until && S.until[p] != null && sp > S.until[p]); })
         .map(function (p) { var q = S.pts[p]; return { id: p, text: S.names[p], x: q[0], y: q[1], side: q[2] }; });
       if (narrow) {
         var P = global.CircLearn.pinLabels({ items: items, left: -6, right: T.w + 6, font: font, top: 0, bottom: T.h, gap: 4 });
@@ -361,7 +373,8 @@
     }
     function loop(ts) {
       if (!t0) t0 = ts;
-      frame(((ts - t0) / 1000 / DUR) % 1);
+      uNow = ((ts - t0) / 1000 / DUR) % 1;
+      frame(uNow);
       raf = requestAnimationFrame(loop);
     }
     function stop() { if (raf) cancelAnimationFrame(raf); raf = null; t0 = 0; }
