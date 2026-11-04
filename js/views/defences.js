@@ -38,14 +38,22 @@
         var out = '<image href="assets/photos/sv-skin.svg" x="10" y="8" width="220" height="288"/>' +
                   '<image href="assets/photos/sv-skin-clot.svg" x="245" y="8" width="220" height="288"/>' +
                   '<text class="dv__head" x="120" y="24" text-anchor="middle">unbroken skin</text><text class="dv__head" x="355" y="24" text-anchor="middle">a cut, sealed by a clot</text>';
-        [[70, 132, 0], [128, 116, .3], [176, 124, .6], [300, 118, .15], [360, 104, .45], [408, 122, .75]].forEach(function (b, i) {
-          var k = (u + b[2]) % 1, drop = k < .4 ? (1 - k / .4) : 0;
-          out += pathogenSmall(b[0], b[1] - 60 * drop * drop, .14, i * 40, 'dv__bac');
+        /* the first bacterium lies still on the skin, and its name points at it; the others fall and stop on the skin or
+           the clot (Daniel, 4 Nov 2026: a name that stays while its bacterium falls points at nothing) */
+        /* each comes to rest ON the skin's top surface or the clot, never on the cut face of the block, where it would look
+           as if it were inside the skin */
+        [[70, 100, 0, 1], [125, 78, .3], [168, 98, .6], [300, 118, .15], [360, 104, .45], [338, 70, .75]].forEach(function (b, i) {
+          var k = (u + b[2]) % 1, drop = b[3] ? 0 : k < .4 ? (1 - k / .4) : 0;
+          var fall = Math.min(60, b[1] - 42);   /* it starts below the two headings, never over their words */
+          out += pathogenSmall(b[0], b[1] - fall * drop * drop, .14, i * 40, 'dv__bac');
         });
         return out;
       },
-      pts: { skin: [200, 170, 'L'], bac: [128, 116, 'L'], clot: [356, 150, 'R'] },
-      names: { skin: 'skin', bac: 'bacteria stay outside', clot: 'blood clot' } },
+      /* short lines: each pin near the edge its name stands at. The clot is drawn as the 0610 student learns it (9.4, and the
+         Circulation Lab's Clotting): fibrin threads in a mesh that traps red blood cells, platelets at the cut (pieces.py
+         fibrin_mesh; the kit's unnamed purple cells are left out). Each pin was placed on its part in a 4x render. */
+      pts: { bac: [70, 100, 'L'], skin: [40, 175, 'L'], clot: [395, 84, 'R'], fib: [371, 121, 'R'], rbc: [358, 160, 'R'], plt: [365, 211, 'R'] },
+      names: { bac: 'bacteria stay outside', skin: 'skin', clot: 'blood clot', fib: 'fibrin mesh', rbc: 'trapped red blood cells', plt: 'platelets' } },
     nose: { name: 'Hairs in the nose', w: 360, h: 300, say: 'Hairs in the nose trap dust and pathogens in the air you breathe in',
       credit: 'Servier Medical Art, CC BY 4.0, adapted; the hairs drawn for this lab',
       art: function (u) {

@@ -2,7 +2,8 @@
    views/gallery.js — a station's picture made of real photographs, one per idea: the four kinds of pathogen, the ways a
    pathogen is transmitted, the five ways to control the spread.
 
-   Each photograph carries its name ON it (memory name-it-on-the-picture), and its credit under it. Pressing one opens its
+   Each photograph carries its name ON it (memory name-it-on-the-picture); the credits are a folded list under the picture
+   (plate.js `credits`), never on the photographs (Daniel, 4 Nov 2026: they covered them). Pressing one opens its
    card on the right; opening a card lights its photograph (the others dim). A row of buttons switches between modes when
    a station has more than one; a mode may group its photographs under headings (`bands`: "By direct contact",
    "Indirectly").
@@ -49,7 +50,6 @@
         tile.setAttribute('aria-label', t.name + (t.sub ? ', ' + t.sub : '') + ': open its card');
         tile.appendChild(photo(t));
         tile.appendChild(h('span', 'gal__name', '<b>' + esc(t.name) + '</b>' + (t.sub ? '<span>' + esc(t.sub) + '</span>' : '') + (t.sup ? '<i class="gal__sup">S</i>' : '')));
-        if (t.credit) tile.appendChild(h('span', 'gal__credit', esc(t.credit)));
         tile.addEventListener('click', function () { lit = t.id; paint(); ctx.pick(t.id, { stay: true }); });
         grid.appendChild(tile);
         tileOf[t.id] = { k: k, el: tile };
@@ -64,12 +64,13 @@
       Object.keys(tileOf).forEach(function (id) {
         var T = tileOf[id]; T.el.classList.toggle('is-lit', lit === id); T.el.classList.toggle('is-dim', !!lit && lit !== id && tileOf[lit] && tileOf[lit].k === T.k);
       });
-      api.say = modes[cur].spec.say; api.credit = modes[cur].spec.credit || 'Every photograph is credited on it';
+      api.say = modes[cur].spec.say;
+      api.credits = modes[cur].spec.tiles.filter(function (t) { return t.credit; }).map(function (t) { return [t.name + (t.sub ? ' (' + t.sub + ')' : ''), t.credit]; });
       ctx.caption();
     }
     function show(k) { cur = k; lit = null; paint(); }
     var api = {
-      el: root, say: '', credit: '',
+      el: root, say: '', credits: null,
       labels: (function () { var o = {}; spec.modes.forEach(function (m) { m.tiles.forEach(function (t) { o[t.id] = t.name; }); }); return o; })(),
       focus: function (part) {
         lit = part || null;

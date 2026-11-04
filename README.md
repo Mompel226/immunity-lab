@@ -56,8 +56,8 @@ goes back up. White blood cells under the microscope, and phagocytosis step by s
 <br>
 
 **Real pictures.** Every photograph is a real one: micrographs and photographs from the CDC and the NIH, the US EPA, FDA
-and USDA, and Wikimedia Commons, each credited on it. The cells, organs, the placenta and the small intestine are drawn by
-Servier Medical Art (CC BY 4.0); the antigens and antibodies are drawn for the lab, far larger than real, so their shapes
+and USDA, and Wikimedia Commons, credited in a fold under the picture, never on the photographs. The cells, organs, the
+placenta, the small intestine and the fibrin threads of the clot are drawn by Servier Medical Art (CC BY 4.0); the antigens and antibodies are drawn for the lab, far larger than real, so their shapes
 show. Every label is one straight, level line that ends on its part, and no two lines cross.
 
 **Why the right answers are not in the page.** Each question carries a *scrambled fingerprint* of its answer. When a

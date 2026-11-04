@@ -32,13 +32,17 @@
   var PLAIN_WORDS = {
     struct: ['skin', 'hairs in the nose', 'white blood cell', 'white blood cells', 'phagocyte', 'phagocytes', 'lymphocyte', 'lymphocytes',
              'memory cell', 'memory cells', 'placenta', 'fetus', 'umbilical cord', 'villus', 'villi', 'epithelial cell', 'epithelial cells',
-             'capillary', 'capillaries', 'small intestine', 'stomach', 'cilia', 'airways', 'red blood cells', 'host'],
+             'capillary', 'capillaries', 'small intestine', 'stomach', 'cilia', 'airways', 'red blood cells', 'host', 'platelets', 'platelet'],
     proc:   ['transmitted', 'transmission', 'phagocytosis', 'vaccination', 'vaccinated', 'immune response', 'active immunity', 'passive immunity',
              'osmosis', 'secretion', 'infection', 'breast-feeding', 'diarrhoea', 'dehydration', 'sewage treatment', 'blood clotting'],
     subst:  ['antibody', 'antibodies', 'antigen', 'antigens', 'toxin', 'mucus', 'stomach acid', 'hydrochloric acid', 'chloride ions',
-             'breast milk', 'chlorine', 'vaccine'],
+             'breast milk', 'chlorine', 'vaccine', 'fibrinogen', 'fibrin'],
     plain:  ['pathogen', 'pathogens', 'transmissible disease', 'transmissible', 'bacterium', 'bacteria', 'virus', 'viruses', 'fungus', 'fungi',
-             'protoctist', 'protoctists', 'cholera', 'protein', 'proteins', 'enzymes', 'water potential', 'complementary', 'organism']
+             'protoctist', 'protoctists', 'cholera', 'protein', 'proteins', 'enzymes', 'water potential', 'complementary', 'organism',
+             /* the named pathogens and diseases, in bold as key words (Daniel, 4 Nov 2026: "salmonella maybe you get questions
+                about that … influenza, COVID-19 … bolden"). 0610 question papers name HIV in 74, athlete's foot 41, malaria 20,
+                measles 10, Salmonella 4, influenza 4, Staphylococcus 2 (counted 4 Nov 2026); COVID-19 in none yet, kept on his word */
+             'Staphylococcus aureus', 'Salmonella', 'measles', 'influenza', 'COVID-19', 'HIV', 'athlete’s foot', 'athlete\'s foot', 'malaria']
   };
 
   /* --------- what happens when you click a term ---------

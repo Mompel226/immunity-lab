@@ -12,9 +12,9 @@ size) are kept on Daniel's computer, in `immunity-lab-source/assets-src/SOURCES.
 | `p-protoctist` | *Plasmodium falciparum*, the malaria parasite, in red blood cells | Dr Greene, CDC Public Health Image Library | public domain | cropped, resized |
 | `r-air` | a sneeze, the droplets lit against black | James Gathany, CDC Public Health Image Library | public domain | cropped, resized |
 | `r-animal` | an *Anopheles* mosquito feeding on human skin | James Gathany, CDC Public Health Image Library | public domain | cropped, resized |
-| `r-surface` | raw chicken breast cut on a wooden chopping board | Shixart1985, Wikimedia Commons | CC BY 2.0 | cropped, resized |
+| `r-handle` | a hand pressing the handle of a wooden door | Shixart1985, Wikimedia Commons | CC BY 2.0 | cropped, lightened, resized |
 | `r-blood` | a bag of donated red blood cells in a testing laboratory | U.S. Food and Drug Administration, Wikimedia Commons | public domain | cropped to the bag, resized |
-| `r-water` | a household well a few metres from a pit latrine, Lusaka | Kennedy Mayumbelo, SuSanA Secretariat, Wikimedia Commons | CC BY 2.0 | cropped, resized |
+| `r-river` | "Unsafe drinking water, Ethiopia": a woman collects river water for drinking | Danielle Lantagne, CDC Public Health Image Library (22472) | public domain | cropped, resized |
 | `m-water` | the tanks of a drinking-water treatment works | U.S. Environmental Protection Agency, Wikimedia Commons | public domain | cropped, resized |
 | `m-hygiene` | hands washed with soap under a tap | MarkBuckawicki, Wikimedia Commons | CC0 | resized |
 | `m-waste` | a row of wheeled bins with closed lids | Havang(nl), Wikimedia Commons | CC0 | cropped, resized |
@@ -22,7 +22,7 @@ size) are kept on Daniel's computer, in `immunity-lab-source/assets-src/SOURCES.
 | `snow-map` | John Snow's map of the deaths from cholera round Broad Street, London, 1854 | John Snow (lithograph by C. F. Cheffins), Wikimedia Commons | public domain | cropped to the streets round the pump, resized |
 | `vaccinate` | a nurse vaccinates a teenage girl in the upper arm | James Gathany, CDC Public Health Image Library | public domain | resized |
 | `smallpox` | the two-pointed needle used to vaccinate against smallpox, against the skin | James Gathany, CDC Public Health Image Library | public domain | resized |
-| `r-food` | two raw eggs broken into a bowl, beside an egg box | Mark Bonica, Wikimedia Commons | CC BY 2.0 | cropped, resized |
+| `r-chicken` | torisashi: slices of chicken seared outside, raw inside | Fred Cherrygarden, Wikimedia Commons | CC BY 4.0 | cropped, resized |
 | `m-food` | a dish of cooked food covered with plastic film | Dnor, Wikimedia Commons | public domain | resized |
 | `mucus` | the lining of a bronchiole: tufts of cilia, scanning electron micrograph | Louisa Howard, Dartmouth Electron Microscope Facility, Wikimedia Commons | public domain | the microscope's data bar cut off, resized |
 | `breastfeed` | a mother feeds her baby on breast milk | U.S. Department of Agriculture, Food and Nutrition Service, Wikimedia Commons | public domain | cropped to the mother and baby, resized |

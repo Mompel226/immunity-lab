@@ -87,6 +87,16 @@
 .said:empty{display:none}
 .said__name{display:block;font-size:14px;font-weight:600;color:var(--col-ink)}
 .said__credit{display:block;font-size:11.5px;color:var(--col-soft);margin-top:2px}
+/* a picture of several photographs: its credits folded under it (Daniel, 4 Nov 2026), open upwards into the picture's space */
+.said__fold{margin-top:3px;font-size:12.5px;color:var(--col-soft)}
+.said__fold summary{display:inline-flex;align-items:center;gap:5px;cursor:pointer;padding:2px 8px;border-radius:6px;list-style:none}
+.said__fold summary::-webkit-details-marker{display:none}
+.said__fold summary::before{content:'\25B8';font-size:11px}
+.said__fold[open] summary::before{content:'\25BE'}
+.said__fold summary:hover{color:var(--col-ink)}
+.said__fold summary:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+.said__list{margin:4px auto 0;padding:0;list-style:none;text-align:left;display:inline-block;max-width:100%;line-height:1.45}
+.said__list b{color:var(--col-ink);font-weight:600}
 .sim{flex:1;min-height:0;overflow:auto;padding:12px 14px 16px;display:flex;flex-direction:column}
 .sim[hidden]{display:none}
 .sim .widget{margin-top:0;border:none;box-shadow:none;background:transparent;padding:0}
@@ -262,10 +272,12 @@ p,li,dd,figcaption{text-wrap:pretty}
 .gal__mode[aria-pressed="true"],.dfv__tab[aria-pressed="true"],.twn__mode[aria-pressed="true"]{border-color:var(--accent);background:var(--accent-tint);color:var(--accent)}
 .gal__mode:focus-visible,.dfv__tab:focus-visible,.twn__mode:focus-visible,.gal__tile:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 
-/* the photographs (stations 1 and 3): each one names itself, its credit under its name */
+/* the photographs (stations 1 and 3): each one names itself; their credits are folded under the picture (.said__fold) */
 .gal{flex:1;min-height:0;display:flex;flex-direction:column;padding:8px 10px 8px;overflow:auto}
 .gal__grid{display:grid;grid-template-columns:repeat(var(--cols,2),minmax(0,1fr));gap:10px;align-content:start}
 .gal__grid[hidden]{display:none}
+/* on a phone, two photographs a row: at three, a tile's name and its line ran out of the top of the tile (4 Nov 2026) */
+@media (max-width:440px){ .gal__grid{grid-template-columns:repeat(min(var(--cols,2),2),minmax(0,1fr))} }
 .gal__band{grid-column:1/-1;margin:4px 2px -2px;font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--col-soft)}
 .gal__tile{position:relative;display:block;padding:0;margin:0;border:2px solid var(--col-line);border-radius:12px;overflow:hidden;cursor:pointer;
   background:var(--col-card);aspect-ratio:4/3;text-align:left;transition:opacity .2s,border-color .2s}
@@ -275,7 +287,6 @@ p,li,dd,figcaption{text-wrap:pretty}
 .gal__name b{display:block;font-size:15px}
 .gal__name span{display:block;font-size:12.5px;opacity:.92}
 .gal__sup{position:absolute;right:8px;bottom:8px;font-style:normal;font-size:11px;font-weight:700;color:#fff;background:var(--accent);border-radius:5px;padding:1px 6px}
-.gal__credit{position:absolute;right:6px;top:5px;max-width:80%;font-size:10px;line-height:1.2;color:#fff;background:rgba(8,14,20,.55);border-radius:4px;padding:1px 5px;text-align:right}
 .gal__tile:hover{border-color:var(--accent)}
 .gal__tile.is-lit{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-tint)}
 .gal__tile.is-dim{opacity:.55}

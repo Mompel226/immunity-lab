@@ -32,10 +32,17 @@
     col = document.querySelector('.viewcol'); host = el('viewHost'); sim = el('simHost'); said = el('said');
   }
 
+  /* A picture made of several photographs gives `credits` ([[name, credit], …]): a folded list under the picture, never
+     words on the photographs (Daniel, 4 Nov 2026: "not on the images, because it covers the image"). It stays open while
+     the reader presses the photographs, which redraws this line. */
   function caption(v) {
     if (!said) return;
+    var was = said.querySelector('.said__fold'), open = !!(was && was.open);
+    var list = v && v.credits && v.credits.length ? v.credits : null;
     said.innerHTML = '<span class="said__name">' + (v && v.say ? v.say : '') + '</span>' +
-      (v && v.credit ? '<span class="said__credit">' + v.credit + '</span>' : '');
+      (list ? '<details class="said__fold"' + (open ? ' open' : '') + '><summary>Credits for these photographs</summary><ul class="said__list">' +
+        list.map(function (c) { return '<li><b>' + esc(c[0]) + '</b>: ' + esc(c[1]) + '</li>'; }).join('') + '</ul></details>' :
+        v && v.credit ? '<span class="said__credit">' + v.credit + '</span>' : '');
   }
 
   function showStation(st) {
