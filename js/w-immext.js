@@ -9,7 +9,8 @@
    enzymes that digest it, and pieces of its antigens are kept; MHC proteins take the pieces in the vesicle and carry them
    to the cell membrane (antigen presentation); a helper T-lymphocyte whose receptor fits binds, is activated and releases
    cytokines; a B-lymphocyte whose surface antibody fits binds a whole antigen, on another bacterium of the same kind,
-   directly, and is activated by the helper T-cell; it divides by mitosis
+   directly, takes it in by endocytosis and displays pieces of it, and is activated when the helper T-cell that fits the
+   same antigen binds (two signals, C3.2.8); it divides by mitosis
    into a clone of plasma cells that secrete antibodies; some of the clone stay as memory cells.
 
    Each step says what it belongs to (its tag). SOURCES: IB Biology guide (first assessment 2025), C3.2.4 ("Students are not
@@ -53,7 +54,12 @@
   var LYS = [[-34, -78], [96, 18], [58, 56]];                   /* lysosomes, in the cytoplasm, from the macrophage's centre */
   var SHOW = [-46, -18, 10].map(function (deg) { var r = deg * Math.PI / 180; return [M1[0] + (MR - 4) * Math.cos(r), M1[1] + (MR - 4) * Math.sin(r), r]; });
   var T0 = [450, 90], T1 = [SHOW[1][0] + (HM + 50) * Math.cos(SHOW[1][2]), SHOW[1][1] + (HM + 50) * Math.sin(SHOW[1][2])];
-  var BC = [392, 372], T2 = [BC[0] - 10, BC[1] - 92];             /* the B-cell, and where the helper T-cell meets it */
+  var BC = [392, 372];                                           /* the B-cell */
+  /* where the helper T-cell meets the B-cell: the B-cell displays the same antigen on its top (BD, its head's centre BH),
+     and the T-cell stands so that one of its receptors sits round that head, as at the macrophage */
+  var RRC = 9 * AGS + 4, DBT = (function () { var x = -10, y = -92, l = Math.sqrt(x * x + y * y); return [x / l, y / l]; })();
+  var BD = [BC[0] + 48 * DBT[0], BC[1] + 48 * DBT[1]], BH = [BD[0] + 8 * AGS * DBT[0], BD[1] + 8 * AGS * DBT[1]];
+  var T2 = [BH[0] + (46 + RRC) * DBT[0], BH[1] + (46 + RRC) * DBT[1]];
   var CLONE = [[226, 458], [312, 468], [398, 456], [110, 440], [446, 382]];   /* plasma cells (0–2), memory cells (3–4), inside the frame, apart */
   /* the bacterium, its body and its antigens drawn apart, so the enzymes can digest the body while the antigens' shapes
      stay: REF gives each antigen's place on the body (its outer end x, y and outward direction nx, ny) */
@@ -155,27 +161,45 @@
     if (t >= 30) {
       var tk = ease(seg(t, 30, 33.5)), Tx = t < 42 ? pt(T0, T1, tk) : pt(T1, T2, ease(seg(t, 42, 45)));
       out += art('t-lymph', Tx[0], Tx[1], 1.0) + (t >= 33 && t < 42 ? '<circle class="im__glow" cx="' + n1(Tx[0]) + '" cy="' + n1(Tx[1]) + '" r="54" opacity="' + n1(seg(t, 33, 34.5) * 50) / 100 + '"/>' : '');
-      /* its receptor: a cup round the antigen piece it fits, on the T-cell's side, once it has bound */
-      if (t >= 33.5 && t < 42) {
-        /* round the displayed antigen's head: its flat side stands (stalk 7 + 1) × AGS out from the membrane, its dome 9 × AGS more */
-        var ra = SHOW[1][2], px = SHOW[1][0] + 8 * AGS * Math.cos(ra), py = SHOW[1][1] + 8 * AGS * Math.sin(ra), q = [], rr = 9 * AGS + 4;
-        for (var qi = 0; qi <= 14; qi++) { var qa = ra - Math.PI / 2 + Math.PI * qi / 14; q.push(n1(px + rr * Math.cos(qa)) + ' ' + n1(py + rr * Math.sin(qa))); }
-        out += '<path class="ix__rec" opacity="' + n1(seg(t, 33.5, 34.5) * 100) / 100 + '" d="M' + q.join(' L') + '"/>';
-      }
+      /* its receptors, all of one shape, on its surface from the moment it appears (Daniel, 4 Nov 2026: it "doesn't seem to
+         have any receptors that have the shape of the antigen, at least when it appears for the first time"): each a cup
+         complementary to the displayed antigen's head, its back on the membrane (radius 46). The one facing the macrophage
+         is the one that binds: at T1 its cup sits exactly round the head on SHOW[1] (T1 = SHOW[1] + (HM + 50) × n, and
+         HM + 50 − 46 − rr = the head's centre, 8 × AGS out) */
+      var rr = 9 * AGS + 4, f0 = SHOW[1][2] + Math.PI;
+      var dB = Math.atan2(-DBT[1], -DBT[0]) - f0;   /* the receptor that meets the B-cell's antigen at T2 */
+      [0, 1.25, dB, 2.5, -2.5, Math.PI].forEach(function (d) {
+        var f = f0 + d, cx = Tx[0] + (46 + rr) * Math.cos(f), cy = Tx[1] + (46 + rr) * Math.sin(f), q = [];
+        for (var qi = 0; qi <= 14; qi++) { var qa = f + Math.PI / 2 + Math.PI * qi / 14; q.push(n1(cx + rr * Math.cos(qa)) + ' ' + n1(cy + rr * Math.sin(qa))); }
+        out += '<path class="ix__rec" d="M' + q.join(' L') + '"/>';
+      });
+      if (t >= 30.6 && t < 33) lab('rec0', 'receptors: one shape', Tx[0] + (46 + rr) * Math.cos(f0 + 1.25), Tx[1] + (46 + rr) * Math.sin(f0 + 1.25), 'R', 3);
+      if (t >= 45 && t < 46.4) lab('rec2', 'its receptor fits the same antigen', BH[0] + 10, BH[1], 'R', 3);
       if (t >= 33.5 && t < 46) lab('th', t >= 42 ? 'helper T-cell' : 'helper T-lymphocyte, activated', Tx[0] + 12, Tx[1] - 44, 'R', 2);   /* high on the cell, a row above its receptor */
       if (t >= 34.5 && t < 38) lab('rec', 'its receptor fits the antigen', SHOW[1][0] + (HM + 4) * Math.cos(SHOW[1][2]), SHOW[1][1] + (HM + 4) * Math.sin(SHOW[1][2]), 'R', 3);
       /* cytokines: small signalling proteins, released and spreading */
       if (t >= 34) for (var c = 0; c < 9; c++) {
         var ca = c * .7 + .3, cr = 44 + 70 * seg(t, 34 + c * .12, 37.5), cx = (t < 42 ? T1 : T2)[0] + cr * Math.cos(ca), cy = (t < 42 ? T1 : T2)[1] + cr * Math.sin(ca) * .8;
-        var co = t < 42 ? 1 - seg(t, 40, 42) : seg(t, 44, 45) * (1 - seg(t, 48, 50));
+        var co = t < 42 ? 1 - seg(t, 40, 42) : seg(t, 45, 45.8) * (1 - seg(t, 48, 50));
         if (co > .02) out += '<path class="ix__cyt" opacity="' + n1(co * 100) / 100 + '" d="M' + n1(cx) + ' ' + n1(cy - 4) + ' L' + n1(cx + 4) + ' ' + n1(cy) + ' L' + n1(cx) + ' ' + n1(cy + 4) + ' L' + n1(cx - 4) + ' ' + n1(cy) + ' Z"/>';
         if (c === 1 && t >= 37.5 && t < 40) lab('cyt', 'cytokines', cx, cy, 'R', 3);
       }
     }
-    /* the B-cell: comes (38–40), its own antibodies bind a whole antigen (40–42), activated by the helper T-cell (44–46) */
+    /* the B-cell, activated by two signals (IB C3.2.8: "both direct interaction with the specific antigen and contact with a
+       helper T-cell that has also become activated by the same type of antigen"; Daniel, 4 Nov 2026: "when are B
+       lymphocytes then activated? … I don't understand that step"): it comes (38–40); 1, its own antibody binds a whole
+       antigen on a bacterium of the same kind (40–42), and the antigen enters it by endocytosis (42.4–43.6); it displays pieces of the
+       same antigen on its surface (43.4–44.2; beyond IB); 2, the helper T-cell activated at the macrophage comes, and its
+       receptor fits that antigen (42–45); it releases cytokines, and only then is the B-cell activated (45–46) */
     if (t >= 38 && t < 47) {
       var bk = ease(seg(t, 38, 40)), Bx = pt([470, 440], BC, bk);
-      out += art('b-lymph', Bx[0], Bx[1], 1.05) + (t >= 44.5 ? '<circle class="im__glow" cx="' + n1(Bx[0]) + '" cy="' + n1(Bx[1]) + '" r="56" opacity="' + n1(seg(t, 44.5, 46) * 50) / 100 + '"/>' : '');
+      out += art('b-lymph', Bx[0], Bx[1], 1.05) + (t >= 45 ? '<circle class="im__glow" cx="' + n1(Bx[0]) + '" cy="' + n1(Bx[1]) + '" r="56" opacity="' + n1(seg(t, 45, 46) * 50) / 100 + '"/>' : '');
+      if (t >= 43.4) {
+        var dop = seg(t, 43.4, 44.2), drot = Math.atan2(DBT[0], -DBT[1]) * 180 / Math.PI;
+        out += '<g opacity="' + n1(dop * 100) / 100 + '"><path class="ix__mhc" transform="translate(' + n1(BD[0]) + ' ' + n1(BD[1]) + ') rotate(' + n1(drot) + ')" d="M-6.5 4 L-6.5 -3.5 L-3 -3.5 L-3 1.2 L3 1.2 L3 -3.5 L6.5 -3.5 L6.5 4 Z"/>' +
+          D.antigen(KIND, BD[0], BD[1], DBT[0], DBT[1], null, AGS) + '</g>';
+        if (t >= 43.6 && t < 45) lab('bdisp', 'it displays the same antigen', BH[0] + 8, BH[1] + 2, 'R', 3);
+      }
       /* its own antibodies on its surface; the third is turned to the antigen it will bind */
       [[-40, -22, -60], [44, -10, 60], [BAB[0], BAB[1], BPOSE.rot]].forEach(function (q, i) {
         out += D.antibody({ x: Bx[0] + q[0], y: Bx[1] + q[1], rot: q[2], s: .34, kind: KIND });
@@ -183,17 +207,21 @@
       /* a whole antigen, on another bacterium of the same kind, comes to that antibody and binds (40–42): a B-cell binds
          intact antigen (C3.2.8: "direct interaction with the specific antigen"), not the pieces a macrophage displays */
       var bend = [Bx[0] + BAB[0] - BPOSE.x, Bx[1] + BAB[1] - BPOSE.y], bb = pt([bend[0] - 80, bend[1] + 70], bend, ease(seg(t, 40, 42)));
-      var bo = Math.min(seg(t, 40, 40.6), 1 - seg(t, 46, 47));
-      if (t >= 40 && bo > .02) out += '<g opacity="' + n1(bo * 100) / 100 + '">' + D.pathogen({ x: bb[0], y: bb[1], s: .2, rot: BROT, kind: KIND, n: 8 }).svg + '</g>';
-      if (t >= 40) lab('bc', t >= 46 ? 'B-cell, activated' : 'B-lymphocyte', Bx[0] + 40, Bx[1] + 10, 'R', 2);
+      /* taken in: it moves into the B-cell and goes (42.4–43.6) */
+      var tin = ease(seg(t, 42.4, 43.6)), bo = Math.min(seg(t, 40, 40.6), 1 - tin);
+      bb = pt(bb, [Bx[0] + BAB[0] * .4, Bx[1] + BAB[1] * .4], tin);
+      if (t >= 40 && bo > .02) out += '<g opacity="' + n1(bo * 100) / 100 + '">' + D.pathogen({ x: bb[0], y: bb[1], s: .2 * (1 - .45 * tin), rot: BROT, kind: KIND, n: 8 }).svg + '</g>';
+      if (t >= 40) lab('bc', t >= 45.6 ? 'B-cell, activated' : 'B-lymphocyte', Bx[0] + 40, Bx[1] + 10, 'R', 2);
       /* named at the bacterium's far side, so the name's line never crosses it */
-      if (t >= 42 && t < 46) lab('bab', 'a bacterium: its antigen binds', bb[0] - 14, bb[1], 'L', 3);
+      if (t >= 41.4 && t < 43) lab('bab', 'the same kind of bacterium: its antigen binds', bb[0] - 14, bb[1], 'L', 3);
     }
     /* the clone: it divides by mitosis (46–50); plasma cells secrete antibodies (49–54); memory cells (54–) */
     if (t >= 46) CLONE.forEach(function (q, i) {
       var k = ease(seg(t, 46 + i * .5, 49 + i * .3)), at = pt(BC, q, k), plasma = i < 3, sc = plasma ? 1.05 + .2 * seg(t, 49, 51) : .9;
       out += art('b-lymph', at[0], at[1], sc * .78);
       if (!plasma && t >= 54) out += '<circle class="im__mem" cx="' + n1(at[0]) + '" cy="' + n1(at[1]) + '" r="' + n1(40 * .9) + '" opacity="' + n1(seg(t, 54, 55.5) * 100) / 100 + '"/>';
+      /* a memory cell keeps the B-cell's antibodies on its surface, as a B-cell does (a plasma cell secretes them instead) */
+      if (!plasma) [[-27, -15, -60], [30, -7, 60]].forEach(function (q2) { out += D.antibody({ x: at[0] + q2[0], y: at[1] + q2[1], rot: q2[2], s: .26, kind: KIND }); });
       if (plasma && t >= 50) for (var a = 0; a < 3; a++) {
         var e = (t - 50 - a * .9) / 3; if (e < 0) continue; e = e % 1;
         var an = -1.9 + i * .6 + a * .5, rr = 36 + 46 * e;
@@ -211,7 +239,7 @@
     { h: 'Enzymes from lysosomes digest it', tag: 'Extension · IB C3.2.5', p: '**Lysosomes** are small vesicles that contain **enzymes**. They fuse with the vesicle and release their enzymes into it. The enzymes digest the bacterium, but pieces of its **antigens** are kept, with the same shape.' },
     { h: 'The macrophage displays the antigens', tag: 'Extension · beyond IB', p: '**MHC proteins** carry the antigen pieces to the cell membrane and hold them on the outside, where other cells can meet their shape. This is **antigen presentation**.' },
     { h: 'A helper T-cell is activated', tag: 'Extension · IB C3.2.8 · cytokines beyond IB', p: 'A **helper T-lymphocyte** whose **receptor** fits these antigen pieces binds to them, and is **activated**. It releases **cytokines**: signalling proteins that act on other cells of the immune system.' },
-    { h: 'A B-cell is activated', tag: 'Extension · IB C3.2.8', p: 'A **B-lymphocyte** carries antibodies of one shape on its surface. If they fit this antigen, it binds the antigen **directly**, here on another bacterium of the same kind. It is **activated** only when it also has **contact with a helper T-cell** activated by the same antigen.' },
+    { h: 'A B-cell is activated: two signals', tag: 'Extension · IB C3.2.8 · the display beyond IB', p: 'In the same infection there are many bacteria of this kind, with the same antigens. A **B-lymphocyte** carries antibodies of one shape on its surface. (1) Its antibody **binds the antigen directly**, on one of these bacteria. By endocytosis the antigen enters the B-cell, which then displays pieces of the **same antigen**. (2) The **helper T-cell** activated in step 5 fits the same antigen: its receptor binds, and it releases cytokines. Only with both is the B-cell **activated**.' },
     { h: 'It divides into plasma cells', tag: 'Extension · IB C3.2.9', p: 'The activated B-cell **divides by mitosis** many times, into a **clone**: cells that all make the same antibody. Most become **plasma cells**, which **secrete** large numbers of these **antibodies**.' },
     { h: 'Memory cells stay', tag: 'Extension · IB C3.2.10', p: 'Some cells of the clone become **memory cells**, which live for a long time. If the same pathogen returns, they respond quickly: this is **immunity**. Memory T-cells are made too.' }
   ];
@@ -241,14 +269,17 @@
       gLab.innerHTML = K.names(lay, items, narrow, key, null, 6);
     }
     var sp = L.stepper({ steps: K.readerSteps(STEPS, R), end: R[R.length - 1], render: draw, flow: K.readerFlow(R, M) });
-    return K.mount(S, sp, 'im', [
-      ['<b>The cells, by name</b> (extension). Phagocytes: <b>neutrophils</b>, the most common white blood cells, short-lived and the first to arrive at an infection; <b>macrophages</b>, larger and long-lived, which develop from monocytes that leave the blood; <b>dendritic cells</b>, which also display antigen pieces, to T-cells in the lymph nodes. Lymphocytes: <b>B-lymphocytes</b>, which become plasma cells and memory cells; <b>helper T-lymphocytes</b>, which activate B-cells and other cells, by contact and with cytokines; <b>cytotoxic (killer) T-lymphocytes</b>, which kill body cells infected by viruses. <b>Cytokines</b> are signalling proteins, for example interleukins. IB Biology names B-lymphocytes, helper T-lymphocytes, plasma cells and memory cells; the rest goes beyond IB.', 'ixg__names'],
-      ['The cells are Servier Medical Art (CC BY 4.0, adapted); a plasma cell is drawn as a larger B-lymphocyte. The vesicle, the lysosomes, the enzymes, the MHC proteins and the cytokines are drawn for this lab, far larger than real. The macrophage is drawn about five times as long as the bacterium; in life it is about ten times. In life the enzymes cut the antigens into short pieces; each piece the macrophage displays keeps part of the antigen\u2019s shape, the part a receptor fits, so each is drawn here as the antigen itself.']
-    ], function (Dw, nar) {
+    /* the notes fold away under one closed line (Daniel, 4 Nov 2026: "this text is extremely long. It distracts from … the
+       step-by-step"): nothing but the steps stands between the animation and the rest of the station */
+    var box = K.mount(S, sp, 'im', [], function (Dw, nar) {
       narrow = nar;
       var m = K.margins(nar, 13, 13, 110, 110);
       lay = K.frameOf(svg, bg, model, cr, { x0: 0, x1: W, y0: 0, y1: H }, false, Dw, m[0], m[1], m[2], m[3], 14.5);
     });
+    box.appendChild(h('details', 'ixnote', '<summary>About these cells and the drawing</summary>' +
+      '<p><b>The cells, by name</b> (extension). Phagocytes: <b>neutrophils</b>, the most common white blood cells, short-lived and the first to arrive at an infection; <b>macrophages</b>, larger and long-lived, which develop from monocytes that leave the blood; <b>dendritic cells</b>, which also display antigen pieces, to T-cells in the lymph nodes. Lymphocytes: <b>B-lymphocytes</b>, which become plasma cells and memory cells; <b>helper T-lymphocytes</b>, which activate B-cells and other cells, by contact and with cytokines; <b>cytotoxic (killer) T-lymphocytes</b>, which kill body cells infected by viruses. <b>Cytokines</b> are signalling proteins, for example interleukins. IB Biology names B-lymphocytes, helper T-lymphocytes, plasma cells and memory cells; the rest goes beyond IB.</p>' +
+      '<p>The cells are Servier Medical Art (CC BY 4.0, adapted); a plasma cell is drawn as a larger B-lymphocyte. The vesicle, the lysosomes, the enzymes, the MHC proteins and the cytokines are drawn for this lab, far larger than real. The macrophage is drawn about five times as long as the bacterium; in life it is about ten times. In life the enzymes cut the antigens into short pieces; each piece the macrophage displays keeps part of the antigen\u2019s shape, the part a receptor fits, so each is drawn here as the antigen itself.</p>'));
+    return box;
   }
 
   /* the IB version of "The first meeting": shown by the switch above it (fmswitch), never on its own */

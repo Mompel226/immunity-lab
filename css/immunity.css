@@ -475,3 +475,8 @@ p,li,dd,figcaption{text-wrap:pretty}
 .fmnote__h{font-weight:700;font-size:16px}
 .fmnote__tag{display:inline-block;font-size:12px;font-weight:600;color:var(--c34,#666);border:1px solid var(--edge);border-radius:var(--r-pill);padding:1px 8px;margin-left:6px;vertical-align:2px}
 .fmnote__an{font-style:italic}
+/* the IB extension's notes, folded under one line (w-immext.js) */
+.ixnote{margin:10px 0 0;font-size:13px;color:var(--grey);line-height:1.45}
+.ixnote summary{cursor:pointer;font-weight:600;color:var(--c34,var(--grey));list-style-position:inside}
+.ixnote summary:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:4px}
+.ixnote p{margin:8px 0 0}
