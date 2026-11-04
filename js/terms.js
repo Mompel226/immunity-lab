@@ -32,7 +32,7 @@
   var PLAIN_WORDS = {
     struct: ['skin', 'hairs in the nose', 'white blood cell', 'white blood cells', 'phagocyte', 'phagocytes', 'lymphocyte', 'lymphocytes',
              'memory cell', 'memory cells', 'placenta', 'fetus', 'umbilical cord', 'villus', 'villi', 'epithelial cell', 'epithelial cells',
-             'capillary', 'capillaries', 'small intestine', 'stomach', 'cilia', 'airways', 'red blood cells', 'host', 'platelets', 'platelet'],
+             'capillary', 'capillaries', 'small intestine', 'stomach', 'cilia', 'airways', 'red blood cells', 'host', 'platelets', 'platelet', 'goblet cells', 'goblet cell'],
     proc:   ['transmitted', 'transmission', 'phagocytosis', 'vaccination', 'vaccinated', 'immune response', 'active immunity', 'passive immunity',
              'osmosis', 'secretion', 'infection', 'breast-feeding', 'diarrhoea', 'dehydration', 'sewage treatment', 'blood clotting'],
     subst:  ['antibody', 'antibodies', 'antigen', 'antigens', 'toxin', 'mucus', 'stomach acid', 'hydrochloric acid', 'chloride ions',

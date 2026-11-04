@@ -93,11 +93,11 @@
           pts: { trap: [360, 48, 'R'], muc: [100, 62, 'L'] },
           names: { trap: 'pathogens and dust, trapped', muc: 'mucus' } },
         { say: 'The cilia beat. They move the mucus, and what it has trapped, towards the throat, away from the lungs.', ms: 4000,
-          pts: { cil: [60, 80, 'L'], arr: [352, 16, 'R'] },
-          names: { cil: 'cilia beat', arr: 'mucus moves towards the throat' } },
+          pts: { lun: [40, 28, 'L'], cil: [60, 80, 'L'], thr: [408, 28, 'R'] },
+          names: { lun: 'from the lungs', cil: 'cilia beat', thr: 'to the throat' } },
         { say: 'At the throat the mucus is swallowed. In the stomach, the acid kills the pathogens (see Stomach acid).', ms: 4000,
-          pts: { arr: [404, 16, 'R'] },
-          names: { arr: 'to the throat: swallowed' } }
+          pts: { lun: [40, 28, 'L'], thr: [408, 28, 'R'] },
+          names: { lun: 'from the lungs', thr: 'to the throat' } }
       ],
       art: function (u, st, p) {
         var A = global.IMM_ART || {}, K = 1.3, X0 = 8, Y0 = 96, GX = [148.4, 297.9], R = X0 + 311 * K;
@@ -140,29 +140,34 @@
             out += q[1] ? '<circle class="dv__dust" cx="' + n1(x) + '" cy="' + n1(y) + '" r="4.6"/>' : pathogenSmall(x, y - 2, .1, 30 * i, 'dv__bac');
           });
         }
-        /* steps 4 and 5: the way to the throat */
-        if (st >= 3) out += '<path class="dv__flow" d="M300 46 L398 46"/><path class="dv__flowh" d="M408 46 L396 40 L396 52 Z"/>';
+        /* steps 4 and 5: the way the mucus goes, one level arrow over it, from the lungs (left) to the throat (right) */
+        if (st >= 3) out += '<path class="dv__flow" d="M40 58 L396 58"/><path class="dv__flowh" d="M408 58 L395 51 L395 65 Z"/>';
         /* the whole picture 30 units higher: the space above the mucus is only for the falling dust and the arrow */
         return '<g transform="translate(0 -30)">' + out + '</g>';
       } },
     /* the acid is made by the lining and kills the bacteria in the stomach's contents, so the lining is named, not the outer
-       wall (4 Nov 2026). Bacteria come down the oesophagus with food, turn grey as they die and fade; one dead bacterium
-       lies still, and its name points at it. */
+       wall (4 Nov 2026). Food and its bacteria are swallowed: a dashed arrow shows the way, down the oesophagus into the
+       stomach. The bacteria are seen only inside the opened stomach (its lining, cut to the drawing's own outline), never
+       crossing the outside of the organ (Daniel, 4 Nov 2026); they turn grey as they die, and fade. One dead bacterium lies
+       still, and its name points at it. */
     acid: { name: 'Stomach acid', w: 300, h: 260, say: 'Hydrochloric acid in the stomach kills pathogens in food and drink',
       credit: 'Servier Medical Art, CC BY 4.0, adapted',
       art: function (u) {
-        var out = '<image href="assets/photos/sv-stomach.svg" x="30" y="8" width="233" height="250"/>';
-        [[176, 128, 0], [208, 150, .25], [166, 164, .5], [214, 118, .75]].forEach(function (p, i) {
-          var k = (u + p[2]) % 1, m = Math.min(1, k / .45), dead = Math.max(0, Math.min(1, (k - .5) / .25)), x, y;
-          if (m < .4) { x = 142 + (160 - 142) * (m / .4); y = 14 + (66 - 14) * (m / .4); }
-          else { x = 160 + (p[0] - 160) * ((m - .4) / .6); y = 66 + (p[1] - 66) * ((m - .4) / .6); }
-          out += '<g style="filter:grayscale(' + n1(dead * 100) / 100 + ')" opacity="' + n1((1 - Math.max(0, k - .85) / .15) * 100) / 100 + '">' + pathogenSmall(x, y, .11, 60 * i, 'dv__bac') + '</g>';
+        var out = '<image href="assets/photos/sv-stomach.svg" x="30" y="8" width="233" height="250"/>' +
+          '<clipPath id="dvLum"><path transform="translate(30 8)" d="M167.1 86.0C151.3 82.2 134.6 83.6 132.0 95.4L129.3 108.0L127.1 116.0C123.6 131.9 117.0 141.3 106.9 144.6C103.9 145.5 101.7 146.9 100.8 150.2C99.9 153.0 98.1 153.9 98.1 151.1C98.1 149.7 97.7 148.3 97.3 146.9C97.3 146.9 96.8 146.0 95.9 146.0C91.6 145.5 89.4 144.6 87.2 142.7C85.8 142.2 85.0 141.3 83.2 141.3C80.1 140.8 78.8 140.8 77.1 141.3C74.0 141.8 71.3 143.6 69.6 146.5C68.3 148.8 67.4 151.6 67.4 154.4C67.4 155.8 67.4 157.2 67.8 158.6C69.1 164.3 73.5 171.8 76.2 173.6C81.0 177.9 84.5 177.4 88.9 176.9C90.7 176.9 92.4 176.4 94.6 176.4C94.6 176.4 95.1 176.4 95.9 176.4C95.9 176.4 96.8 176.4 97.3 176.0C97.7 174.1 97.3 171.8 98.6 170.8C99.5 170.3 99.9 171.3 100.3 172.7C100.8 174.1 101.2 176.9 104.3 178.3C106.1 178.8 107.4 179.7 108.7 180.7C113.1 183.5 118.4 186.7 133.3 188.2C154.4 190.0 190.0 159.1 202.7 118.3C205.8 103.8 186.5 90.7 167.1 86.0"/></clipPath>' +
+          '<path class="dv__way" d="M141 4 Q146 40 156 66 Q162 84 170 100"/><path class="dv__wayh" d="M175 108 L164 102 L173 95 Z"/>';
+        var inside = '';
+        [[180, 130, 0], [208, 150, .25], [168, 162, .5], [214, 120, .75]].forEach(function (p, i) {
+          var k = (u + p[2]) % 1, m = Math.min(1, k / .45), e = 1 - (1 - m) * (1 - m), dead = Math.max(0, Math.min(1, (k - .5) / .25));
+          var x = 166 + (p[0] - 166) * e + 3 * Math.sin(k * 9 + i), y = 96 + (p[1] - 96) * e;
+          inside += '<g style="filter:grayscale(' + n1(dead * 100) / 100 + ')" opacity="' + n1((1 - Math.max(0, k - .85) / .15) * 100) / 100 + '">' + pathogenSmall(x, y, .11, 60 * i, 'dv__bac') + '</g>';
         });
-        return out + '<g style="filter:grayscale(1)">' + pathogenSmall(195, 172, .11, 30, 'dv__bac') + '</g>';
+        inside += '<g style="filter:grayscale(1)">' + pathogenSmall(195, 172, .11, 30, 'dv__bac') + '</g>';
+        return out + '<g clip-path="url(#dvLum)">' + inside + '</g>';
       },
-      /* every name on the right, away from the bacteria's way in, so the drawing can be larger */
-      pts: { st: [240, 62, 'R'], lin: [222, 112, 'R'], bac: [195, 172, 'R'] },
-      names: { st: 'stomach', lin: 'lining: makes hydrochloric acid', bac: 'bacteria in food: killed' } },
+      /* the names on the right, away from the way in; the way in named at its start */
+      pts: { way: [145, 32, 'L'], st: [240, 62, 'R'], lin: [222, 112, 'R'], bac: [195, 172, 'R'] },
+      names: { way: 'swallowed food', st: 'stomach', lin: 'lining: makes hydrochloric acid', bac: 'bacteria in food: killed' } },
     /* larger cells (4 Nov 2026), and no name line through the antibodies: a pathogen comes to the phagocyte, goes in and
        fades as it is digested; the lymphocyte releases antibodies, and one that has left lies still beside it, with its name */
     wbc: { name: 'White blood cells', w: 440, h: 250, say: 'Phagocytes engulf and digest pathogens; lymphocytes make antibodies',
@@ -197,18 +202,26 @@
     /* a defence told in steps (the mucus): each step waits for "Next step"; its sentence is the line under the picture */
     var sbar = h('div', 'dfv__stepbar'); sbar.hidden = true;
     var sCount = h('span', 'dfv__scount'), sNext = h('button', 'dfv__snext', 'Next step ▶'), sAgain = h('button', 'dfv__sagain', '↺ Start again'),
-        sPhoto = h('button', 'dfv__sphoto', 'Photograph of real cilia');
-    [sNext, sAgain, sPhoto].forEach(function (b) { b.type = 'button'; });
-    sbar.appendChild(sCount); sbar.appendChild(sNext); sbar.appendChild(sAgain); sbar.appendChild(sPhoto);
+        sPhoto = h('button', 'dfv__sphoto', 'Photograph of real cilia'), sAll = h('button', 'dfv__sall', '▶▶ Play all');
+    [sNext, sAll, sAgain, sPhoto].forEach(function (b) { b.type = 'button'; });
+    sbar.appendChild(sCount); sbar.appendChild(sNext); sbar.appendChild(sAll); sbar.appendChild(sAgain); sbar.appendChild(sPhoto);
     root.appendChild(bar); root.appendChild(stage); root.appendChild(key); root.appendChild(sbar); root.appendChild(next);
-    var step = 0, stepT = 0, photoOn = false;
+    var step = 0, stepT = 0, photoOn = false, playT = null;
+    /* Play all (Daniel, 4 Nov 2026: "a way to have the whole thing at once … not only click, click, click"): each step runs, holds
+       for a moment, and the next begins; any press stops it */
+    function stopPlay() { if (playT) clearTimeout(playT); playT = null; sAll.textContent = '▶▶ Play all'; }
+    function playOn() {
+      var T = TABS[cur], S = T.steps[step];
+      playT = setTimeout(function () { if (step < T.steps.length - 1) { setStep(step + 1, true); playOn(); } else stopPlay(); }, (S.ms || 2600) + 1200);
+    }
     var cur = 'skin', raf = null, t0 = 0, font = 14, mL = 100, mR = 100, narrow = false;
     function nowMs() { return (global.performance && performance.now) ? performance.now() : Date.now(); }
-    function setStep(i) {
+    function setStep(i, playing) {
+      if (!playing) stopPlay();
       var T = TABS[cur]; step = Math.max(0, Math.min(T.steps.length - 1, i)); stepT = nowMs();
       sCount.textContent = 'Step ' + (step + 1) + ' of ' + T.steps.length;
       var last = step === T.steps.length - 1;
-      sNext.hidden = last; sAgain.hidden = !last && step === 0; sNext.classList.toggle('is-pulse', !last && step > 0);
+      sNext.hidden = last; sAll.hidden = last && !playT; sAgain.hidden = !last && step === 0; sNext.classList.toggle('is-pulse', !last && step > 0 && !playT);
       api.say = T.steps[step].say; ctx.caption(); frame(.999);
     }
     var btn = {};
@@ -219,10 +232,15 @@
     });
     sNext.addEventListener('click', function () { setStep(step + 1); });
     sAgain.addEventListener('click', function () { setStep(0); });
+    sAll.addEventListener('click', function () {
+      if (playT) { stopPlay(); setStep(step); return; }
+      if (step === TABS[cur].steps.length - 1) setStep(0, true); else setStep(step, true);
+      sAll.textContent = '■ Stop'; playOn();
+    });
     sPhoto.addEventListener('click', function () {
-      photoOn = !photoOn; sPhoto.textContent = photoOn ? 'Back to the steps' : 'Photograph of real cilia';
+      stopPlay(); photoOn = !photoOn; sPhoto.textContent = photoOn ? 'Back to the steps' : 'Photograph of real cilia';
       svg.style.display = photoOn ? 'none' : ''; ph.hidden = !photoOn; if (photoOn) photoTab();
-      [sNext, sAgain, sCount].forEach(function (b) { b.style.visibility = photoOn ? 'hidden' : ''; });
+      [sNext, sAll, sAgain, sCount].forEach(function (b) { b.style.visibility = photoOn ? 'hidden' : ''; });
       api.say = photoOn ? (spec.mucus || {}).say : TABS[cur].steps[step].say; api.credit = photoOn ? (spec.mucus || {}).credit : TABS[cur].credit; ctx.caption();
     });
     next.addEventListener('click', function () { var i = (ORDER.indexOf(cur) + 1) % ORDER.length; show(ORDER[i]); ctx.pick(ORDER[i], { stay: true }); });
@@ -279,7 +297,7 @@
       cur = id;
       ORDER.forEach(function (k) { btn[k].setAttribute('aria-pressed', k === id ? 'true' : 'false'); });
       var T = TABS[id];
-      photoOn = false; sPhoto.textContent = 'Photograph of real cilia'; [sNext, sAgain, sCount].forEach(function (b) { b.style.visibility = ''; });
+      stopPlay(); photoOn = false; sPhoto.textContent = 'Photograph of real cilia'; [sNext, sAll, sAgain, sCount].forEach(function (b) { b.style.visibility = ''; });
       svg.style.display = T.photo ? 'none' : ''; ph.hidden = !T.photo; sbar.hidden = !T.steps;
       if (T.photo) photoTab();
       svg.setAttribute('aria-label', T.say || T.name);
