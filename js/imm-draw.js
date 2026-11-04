@@ -104,6 +104,29 @@
     return '<g class="cellart cellart--' + name + (cls ? ' ' + cls : '') + '" transform="translate(' + n1(x) + ' ' + n1(y) + ') scale(' + s + ') translate(' + n1(-C.w / 2) + ' ' + n1(-C.h / 2) + ')">' + C.svg + '</g>';
   }
 
-  global.ImmDraw = { pathogen: pathogen, antibody: antibody, antigen: antigen, bound: bound, cell: cell, COL: COL, EDGE: EDGE, armTip: armTip,
+  /* the inside of a phagocyte without its outer outline, cytoplasm and rim, centred like cell(): the lab draws round it a
+     membrane that can change shape (defences.js, w-immext.js; Daniel, 4 Nov 2026: "the cell membrane adapts"). The shapes
+     are the Servier drawing's own, in their order: only the outer ones are left out. */
+  var INSIDE = { neutrophil: { 0: 1, 1: 1, 2: 1, 14: 1 }, macrophage: { 0: 1, 3: 1, 6: 1 } }, insideSvg = {};
+  function inside(name, x, y, s) {
+    var C = ART[name]; if (!C) return '';
+    if (!insideSvg[name]) { var i = -1; insideSvg[name] = C.svg.replace(/<path [^>]*\/>/g, function (m) { i++; return INSIDE[name][i] ? '' : m; }); }
+    return '<g transform="translate(' + n1(x) + ' ' + n1(y) + ') scale(' + s + ') translate(' + n1(-C.w / 2) + ' ' + n1(-C.h / 2) + ')">' + insideSvg[name] + '</g>';
+  }
+
+  /* a cell membrane that can change shape: circles (balls: [[x, y, r], …]) blended into one smooth outline by a blur and a
+     sharp threshold, in three layers (the edge, the rim, the cytoplasm), so it reads as one membrane round one cytoplasm. A
+     ring of small circles round a pathogen makes the membrane flow round it; the space inside the ring stays empty, so the
+     closed ring is the membrane of a vacuole. o: { id, balls, edge, rim, fill } (colours: the cell's own). */
+  function membrane(o) {
+    var id = o.id, f = function (k) { return '<filter id="' + id + k + '" filterUnits="userSpaceOnUse" x="-200" y="-200" width="1000" height="1000">' +
+      '<feGaussianBlur stdDeviation="5.5"/><feColorMatrix values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 20 -8"/></filter>'; };
+    function layer(k, col, dr) {
+      return '<g filter="url(#' + id + k + ')">' + o.balls.map(function (b) { return b[2] + dr > .5 ? '<circle cx="' + n1(b[0]) + '" cy="' + n1(b[1]) + '" r="' + n1(b[2] + dr) + '" fill="' + col + '"/>' : ''; }).join('') + '</g>';
+    }
+    return '<defs>' + f('e') + f('r') + f('c') + '</defs>' + layer('e', o.edge, 2.6) + layer('r', o.rim, 1.2) + layer('c', o.fill, -1.4);
+  }
+
+  global.ImmDraw = { pathogen: pathogen, antibody: antibody, antigen: antigen, bound: bound, cell: cell, inside: inside, membrane: membrane, COL: COL, EDGE: EDGE, armTip: armTip,
                      L1: L1, L2: L2 };
 })(window);

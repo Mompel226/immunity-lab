@@ -6,8 +6,9 @@
        vessels open into the space round the villi of the placenta);
      2 they cross the placenta into the blood of the fetus, and reach the fetus along the umbilical cord;
      3 after birth: the baby receives antibodies in breast milk (Servier's baby, its head only);
-     4 in the baby's blood, the mother's antibodies bind to a pathogen the mother has already met; for a pathogen she
-       has not met, none fits;
+     4 in the baby's blood, the mother's antibodies (those that crossed the placenta) bind to a pathogen the mother has
+       already met; for a pathogen she has not met, none fits. The antibodies in milk stay in the baby's gut and work there
+       (most are not absorbed into the blood: the audit of 4 Nov 2026), and the step says so;
      5 no memory cells are produced: the antibodies are broken down after a few weeks, so passive immunity is short-term.
    No graph of antibody concentration (Daniel's 2026–27 mock uses one): the antibodies simply go, one by one.
    SOURCES: syllabus 0610 2026–28 10.1.13–10.1.15 and 16.4.9; the T10 summary's passive immunity section and table
@@ -30,7 +31,7 @@
     { t: 0,  h: 'Before birth: antibodies in the mother’s blood', p: 'The mother’s blood carries **antibodies** against the pathogens she has met. Her blood flows into the **placenta**, round its villi.' },
     { t: 8,  h: 'They cross the placenta', p: 'Antibodies from the mother **cross the placenta** into the blood of the fetus, and reach the fetus in the **umbilical cord**.' },
     { t: 16, h: 'After birth: in breast milk', p: 'After birth, the baby receives antibodies from its mother in **breast milk**.' },
-    { t: 24, h: 'They protect the baby', p: 'The mother’s antibodies bind to a pathogen **the mother has already met**, and it is destroyed. For a pathogen she has not met, none of her antibodies fits.' },
+    { t: 24, h: 'They protect the baby', p: 'In the baby’s blood, the antibodies that crossed the placenta bind to a pathogen **the mother has already met**, and it is destroyed. For a pathogen she has not met, none of her antibodies fits. The antibodies in milk work in the same way in the baby’s gut.' },
     { t: 32, h: 'No memory cells: short-term', p: '**Memory cells are not produced**: the antibodies were made by someone else’s lymphocytes. They are **broken down** after a few weeks, so passive immunity is **short-term**.' }
   ];
   var M = [0, 8, 16, 24, 32, 42];
@@ -108,7 +109,7 @@
       it.push({ id: 'pa', text: t < 30.2 ? 'a pathogen the mother has met' : 'destroyed', x: lerp(-70, AX, ease(seg(t, 24.2, 27))) - 26, y: AY, side: 'L', alts: [[AX - 30, AY - 14], [AX - 30, AY + 14]] });
       if (t > 26.5) it.push({ id: 'pb', text: 'one she has not met: no antibody fits', x: lerp(380, BXp, ease(seg(t, 25, 28))) + 28, y: BYp, side: 'R' });
       if (t < 34) it.push({ id: 'ab', text: 'the mother’s antibodies', x: FREE[4][0], y: FREE[4][1], side: 'L' });
-      if (t > 32.6) it.push({ id: 'lym', text: 'the baby’s lymphocytes: no memory cells', x: 40, y: 52, side: 'L' });
+      if (t > 32.6) it.push({ id: 'lym', text: 'the baby’s lymphocytes: no memory cells made', x: 40, y: 52, side: 'L' });
     }
     return it;
   }

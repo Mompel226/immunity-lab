@@ -9,8 +9,9 @@
 
    The model, kept simple on purpose: an ill person is infectious for one week, then recovers and is immune; each week
    each ill person passes the pathogen to each neighbour who is not immune with a chance of 0.6 (a fixed sequence of
-   random numbers, so a town always runs the same way). Vaccinated people are immune. Babies and people who are ill
-   with something else cannot be vaccinated: they are the people vaccination protects without vaccinating them.
+   random numbers, so a town always runs the same way). Vaccinated people are immune. Young babies and people with a
+   weak immune system (for example during cancer treatment) cannot be vaccinated: they are the people vaccination
+   protects without vaccinating them (a mild illness only delays a vaccination: the audit of 4 Nov 2026).
    The person icon: Material Symbols "person", Google, Apache License 2.0.
    ============================================================ */
 (function (global) {
@@ -21,7 +22,7 @@
   function rng(seed) { var s = seed >>> 0; return function () { s = (s * 1664525 + 1013904223) % 4294967296; return s / 4294967296; }; }
   var PERSON = 'M12 12q-1.65 0-2.825-1.175T8 8q0-1.65 1.175-2.825T12 4q1.65 0 2.825 1.175T16 8q0 1.65-1.175 2.825T12 12Zm-8 8v-2.8q0-.85.438-1.563T5.6 14.55q1.55-.775 3.15-1.163T12 13q1.65 0 3.25.388t3.15 1.162q.725.375 1.163 1.088T20 17.2V20H4Z';
   var C = 12, R = 8, CW = 50, RH = 42, W = C * CW, H = R * RH;
-  /* who cannot be vaccinated: babies (drawn smaller) and people who are ill with something else */
+  /* who cannot be vaccinated: young babies (drawn smaller) and people with a weak immune system */
   var BABY = [5, 18, 30, 43, 52, 61, 74, 87], UNWELL = [10, 37, 66, 81];
   var SCENES = {
     none: { name: 'No one vaccinated', cover: 0, seed: 9 },
@@ -99,7 +100,7 @@
     }
     function endWords(k, c) {
       if (k === 'none') return 'The disease spread from person to person through most of the town.';
-      if (k === 'most') return 'The pathogen could not pass from person to person: the babies and the people who could not be vaccinated were protected too.';
+      if (k === 'most') return 'Transmission from person to person was interrupted, so the pathogen could not spread: the babies and the people who could not be vaccinated were protected too.';
       return 'With few people immune, the disease spread again.';
     }
     function stopT() { if (timer) clearInterval(timer); timer = null; }

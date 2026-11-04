@@ -42,7 +42,7 @@
              /* the named pathogens and diseases, in bold as key words (Daniel, 4 Nov 2026: "salmonella maybe you get questions
                 about that … influenza, COVID-19 … bolden"). 0610 question papers name HIV in 74, athlete's foot 41, malaria 20,
                 measles 10, Salmonella 4, influenza 4, Staphylococcus 2 (counted 4 Nov 2026); COVID-19 in none yet, kept on his word */
-             'Staphylococcus aureus', 'Salmonella', 'measles', 'influenza', 'COVID-19', 'HIV', 'athlete’s foot', 'athlete\'s foot', 'malaria',
+             'Staphylococcus aureus', 'Salmonella', 'Vibrio cholerae', 'measles', 'influenza', 'COVID-19', 'HIV', 'athlete’s foot', 'athlete\'s foot', 'malaria',
              /* the words the 0610 schemes credit, and the examples a pupil names, in every card (Daniel, 4 Nov 2026: "shared
                 needles, blood transfusion should be bolden … explore all of them"); bold in the plain ink, never one of the
                 three colours of the key. 0610/32/O/N/16: droplet, inhaled, food, contaminated surfaces, water, bites, cuts,

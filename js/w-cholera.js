@@ -23,7 +23,7 @@
   var STEPS = [
     { t: 0,  h: 'The bacterium is swallowed', p: 'The cholera **bacterium** is swallowed in **contaminated water**, and reaches the **small intestine**.' },
     { t: 7,  h: 'It produces a toxin', p: 'The bacteria produce a **toxin** (orange) in the small intestine. The toxin reaches the epithelial cells that line the villi.' },
-    { t: 14, h: 'Chloride ions are secreted', p: 'The toxin causes **secretion of chloride ions** (green) **into the small intestine**: the cells release them into the contents.' },
+    { t: 14, h: 'Chloride ions are secreted', p: 'The toxin causes **secretion of chloride ions** (green) **into the small intestine**: ions from the blood pass through the cells, and the cells release them into the contents.' },
     { t: 22, h: 'Water moves in by osmosis', p: 'The chloride ions **lower the water potential** of the contents; the blood loses ions, so its water potential **rises**. Water (blue) moves from the blood into the gut by **osmosis**, down the water potential gradient.' },
     { t: 32, h: 'Diarrhoea and dehydration', p: '**Diarrhoea**: the water and ions leave the body. Water and ions are lost from the blood, so the body becomes **dehydrated**.' }
   ];
@@ -36,9 +36,29 @@
   function surfaceY(i, n) { return 116 + (i / (n - 1)) * 110; }
   function surfaceX(y) { return 205 - 6 * Math.sin((y - 116) / 110 * Math.PI) * .3; }
   var TOX = []; (function () { var r = rng(5); for (var i = 0; i < 12; i++) TOX.push({ b: i % 5, y: surfaceY(i, 12) + 4 * r(), t0: 7.4 + i * .35 }); })();
-  var CL = []; (function () { var r = rng(9); for (var i = 0; i < 14; i++) CL.push({ y: surfaceY(i % 12, 12) + 6 * r(), x1: 160 + 34 * r(), y1: 70 + 170 * r(), t0: 14.4 + i * .42 }); })();
+  var CL = []; (function () { var r = rng(9); for (var i = 0; i < 14; i++) CL.push({ y0: 130 + 150 * r(), y: surfaceY(i % 12, 12) + 6 * r(), x1: 160 + 34 * r(), y1: 70 + 170 * r(), t0: 14.2 + i * .24 }); })();
   var WA = []; (function () { var r = rng(13); for (var i = 0; i < 22; i++) WA.push({ y0: 120 + 160 * r(), y: surfaceY(i % 12, 12) + 8 * r(), x1: 158 + 38 * r(), y1: 60 + 180 * r(), t0: 22.6 + i * .32 }); })();
 
+  /* where each moving thing is at time t: one function for the drawing AND its name, so a name follows its part (Daniel,
+     4 Nov 2026: "the label follows the bacteria and not just static") */
+  function bacAt(b, i, t) { var k = ease(seg(t, .3 + i * .5, 5.4 + i * .3)); return [lerp(b.x0, b.x1, k) + Math.sin(t * 1.3 + i) * 2, lerp(b.y0, b.y1, k)]; }
+  function toxAt(q, t) { var b = BAC[q.b], k = ease(seg(t, q.t0, q.t0 + 3)); return [lerp(b.x1 + 6, surfaceX(q.y) - 2, k), lerp(b.y1, q.y, k)]; }
+  /* a chloride ion comes from the blood (a capillary, x 236–292), through an epithelial cell, out into the contents: so
+     the blood loses ions on screen, as step 4 says (the audit of 4 Nov 2026) */
+  function clAt(q, t) {
+    var k0 = ease(seg(t, q.t0, q.t0 + 1.2)), k1 = ease(seg(t, q.t0 + 1.2, q.t0 + 2.4)), k2 = ease(seg(t, q.t0 + 2.4, q.t0 + 5));
+    var x = lerp(254, 222, k0), y = lerp(q.y0, q.y, k0);
+    x = lerp(x, surfaceX(q.y) - 6, k1);
+    x = lerp(x, q.x1, k2); y = lerp(y, q.y1, k2);
+    if (t > 33) { var k3 = ease(seg(t, 33, 39)); y = lerp(y, -20, k3); x = lerp(x, 175, k3 * .5); }
+    return [x, y];
+  }
+  function waAt(q, t) {
+    var k1 = ease(seg(t, q.t0, q.t0 + 2)), k2 = ease(seg(t, q.t0 + 2, q.t0 + 4.4)), x = lerp(250, 222, k1), y = lerp(q.y0, q.y, k1);
+    x = lerp(x, q.x1, k2); y = lerp(y, q.y1, k2);
+    if (t > 33) { var k3 = ease(seg(t, 33, 39)); y = lerp(y, -20, k3); x = lerp(x, 182, k3 * .5); }
+    return [x, y];
+  }
   function comma(x, y, a, s, op) {
     return '<g transform="translate(' + n1(x) + ' ' + n1(y) + ') rotate(' + n1(a) + ') scale(' + s + ')" opacity="' + n1(op * 100) / 100 + '">' +
       '<path class="ch__bac" d="M-11 2 C-8 -6 6 -8 12 -2 C13 0 12 2 10 2 C5 -3 -5 -2 -8 5 C-10 6 -12 4 -11 2 Z"/></g>';
@@ -50,33 +70,26 @@
     if (pale > 0) out += '<path class="ch__pale" opacity="' + n1(pale * 45) / 100 + '" d="M236 104 C246 96 262 96 270 100 C286 112 296 200 300 316 L232 316 C230 220 228 140 236 104 Z"/>';
     /* the bacteria */
     BAC.forEach(function (b, i) {
-      var k = ease(seg(t, .3 + i * .5, 5.4 + i * .3)), sway = Math.sin(t * 1.3 + i) * 2;
-      out += comma(lerp(b.x0, b.x1, k) + sway, lerp(b.y0, b.y1, k), 20 + i * 47, .85, Math.min(1, seg(t, .3 + i * .5, 1.2 + i * .5)));
+      var at = bacAt(b, i, t);
+      out += comma(at[0], at[1], 20 + i * 47, .85, Math.min(1, seg(t, .3 + i * .5, 1.2 + i * .5)));
     });
     /* the toxin, from the bacteria to the cells' surface */
     TOX.forEach(function (q) {
       if (t < q.t0) return;
-      var b = BAC[q.b], k = ease(seg(t, q.t0, q.t0 + 3)), x0 = b.x1 + 6, y0 = b.y1;
-      var x = lerp(x0, surfaceX(q.y) - 2, k), y = lerp(y0, q.y, k), op = t > 21 ? 1 - seg(t, 21, 23) : 1;
+      var at = toxAt(q, t), x = at[0], y = at[1], op = t > 21 ? 1 - seg(t, 21, 23) : 1;
       out += '<path class="ch__tox" opacity="' + n1(op * 100) / 100 + '" d="M' + n1(x) + ' ' + n1(y - 3.4) + ' l3.4 3.4 l-3.4 3.4 l-3.4 -3.4 z"/>';
     });
-    /* chloride ions, out of the cells into the contents */
+    /* chloride ions, from the blood through the cells into the contents */
     CL.forEach(function (q) {
       if (t < q.t0) return;
-      var k1 = ease(seg(t, q.t0, q.t0 + 1.6)), k2 = ease(seg(t, q.t0 + 1.6, q.t0 + 5));
-      var x = lerp(222, surfaceX(q.y) - 6, k1), y = q.y;
-      x = lerp(x, q.x1, k2); y = lerp(y, q.y1, k2);
-      if (t > 33) { var k3 = ease(seg(t, 33, 39)); y = lerp(y, -20, k3); x = lerp(x, 175, k3 * .5); }
-      out += '<circle class="ch__cl" cx="' + n1(x) + '" cy="' + n1(y) + '" r="3.6"/>';
+      var at = clAt(q, t);
+      out += '<circle class="ch__cl" cx="' + n1(at[0]) + '" cy="' + n1(at[1]) + '" r="3.6"/>';
     });
     /* water, from the blood through the cells into the contents */
     WA.forEach(function (q) {
       if (t < q.t0) return;
-      var k1 = ease(seg(t, q.t0, q.t0 + 2)), k2 = ease(seg(t, q.t0 + 2, q.t0 + 4.4));
-      var x = lerp(250, 222, k1), y = lerp(q.y0, q.y, k1);
-      x = lerp(x, q.x1, k2); y = lerp(y, q.y1, k2);
-      if (t > 33) { var k3 = ease(seg(t, 33, 39)); y = lerp(y, -20, k3); x = lerp(x, 182, k3 * .5); }
-      out += '<circle class="ch__wa" cx="' + n1(x) + '" cy="' + n1(y) + '" r="3"/>';
+      var at = waAt(q, t);
+      out += '<circle class="ch__wa" cx="' + n1(at[0]) + '" cy="' + n1(at[1]) + '" r="3"/>';
     });
     /* step 5: the contents leave, to the large intestine and out of the body */
     var fl = clamp01((t - 33) / 2);
@@ -85,13 +98,15 @@
   }
   function labelsAt(t) {
     var it = [];
-    it.push({ id: 'lumen', text: 'contents of the small intestine', x: 176, y: t > 24 && t < 33 ? 230 : 150, side: 'L', alts: [[176, 120], [180, 200]] });
+    /* in step 4 the contents are named by their water potential, so their own name gives way (four names on one side bent the lines) */
+    if (!(t > 24 && t < 33)) it.push({ id: 'lumen', text: 'contents of the small intestine', x: 176, y: 150, side: 'L', alts: [[176, 120], [180, 200]] });
     it.push({ id: 'epi', text: 'epithelial cell', x: 216, y: 236, side: 'L', alts: [[214, 200], [218, 250]] });
     it.push({ id: 'cap', text: t >= 34 ? 'blood: loses water and ions' : 'blood capillary', x: 270, y: 236, side: 'R', alts: [[262, 270], [268, 180]] });
-    if (t > 1.4 && t < 33) { var b = BAC[2]; it.push({ id: 'bac', text: 'cholera bacteria', x: b.x1 + 8, y: b.y1, side: 'R', alts: BAC.map(function (q) { return [q.x1 + 8, q.y1]; }) }); }
-    if (t > 8.6 && t < 21) it.push({ id: 'tox', text: 'toxin', x: surfaceX(TOX[4].y) - 2, y: TOX[4].y, side: 'R' });
-    if (t > 16 && t < 33) { var c = CL[3]; it.push({ id: 'cl', text: 'chloride ions', x: c.x1, y: c.y1, side: 'L', alts: CL.map(function (q) { return [q.x1, q.y1]; }) }); }
-    if (t > 25 && t < 33) { var w = WA[5]; it.push({ id: 'wa', text: 'water', x: w.x1, y: w.y1, side: 'L', alts: WA.map(function (q) { return [q.x1, q.y1]; }) }); }
+    /* each name where its part IS now (bacAt, toxAt, clAt, waAt), with the others of its kind as alternatives */
+    if (t > 1.4 && t < 33) { var ba = bacAt(BAC[2], 2, t); it.push({ id: 'bac', text: 'cholera bacteria (Vibrio cholerae)', x: ba[0] + 8, y: ba[1], side: 'R', alts: BAC.map(function (q, i) { var a = bacAt(q, i, t); return [a[0] + 8, a[1]]; }) }); }
+    if (t > TOX[4].t0 + .4 && t < 21) { var ta = toxAt(TOX[4], t); it.push({ id: 'tox', text: 'toxin', x: ta[0], y: ta[1], side: 'R' }); }
+    if (t > CL[3].t0 + .6 && t < 33) { var ca = clAt(CL[3], t); it.push({ id: 'cl', text: 'chloride ions', x: ca[0], y: ca[1], side: 'L', alts: CL.filter(function (q) { return t > q.t0; }).map(function (q) { return clAt(q, t); }) }); }
+    if (t > WA[5].t0 + .6 && t < 33) { var wa = waAt(WA[5], t); it.push({ id: 'wa', text: 'water', x: wa[0], y: wa[1], side: 'L', alts: WA.filter(function (q) { return t > q.t0; }).map(function (q) { return waAt(q, t); }) }); }
     if (t > 24 && t < 33) it.push({ id: 'wpl', text: 'lower water potential', x: 180, y: 120, side: 'L', alts: [[180, 100], [176, 160]] }, { id: 'wph', text: 'higher water potential', x: 264, y: 150, side: 'R', alts: [[268, 130], [262, 170]] });
     if (t > 34.5) it.push({ id: 'out', text: 'diarrhoea: out of the body', x: 246, y: 26, side: 'R' });
     return it;
@@ -124,6 +139,14 @@
       S.pill('who', t < 32 ? 'infected' : t < 36 ? 'diarrhoea' : 'dehydrated', t < 32 ? 'warn' : 'bad');
     }
     var sp = L.stepper({ steps: K.readerSteps(STEPS, R), end: R[R.length - 1], render: draw });
+    /* a key to the colours, under the drawing and inside its figure (Daniel, 4 Nov 2026: "a legend for the chloride ions …
+       as well as a legend for the water") */
+    var keyEl = L.h('div', 'ch__keys',
+      '<span class="ch__k"><svg viewBox="-13 -8 26 16" aria-hidden="true"><path class="ch__bac" d="M-11 2 C-8 -6 6 -8 12 -2 C13 0 12 2 10 2 C5 -3 -5 -2 -8 5 C-10 6 -12 4 -11 2 Z"/></svg>cholera bacterium</span>' +
+      '<span class="ch__k"><svg viewBox="-5 -5 10 10" aria-hidden="true"><path class="ch__tox" d="M0 -3.4 l3.4 3.4 l-3.4 3.4 l-3.4 -3.4 z"/></svg>toxin</span>' +
+      '<span class="ch__k"><svg viewBox="-5 -5 10 10" aria-hidden="true"><circle class="ch__cl" r="3.6"/></svg>chloride ions</span>' +
+      '<span class="ch__k"><svg viewBox="-5 -5 10 10" aria-hidden="true"><circle class="ch__wa" r="3"/></svg>water</span>');
+    S.fig.appendChild(keyEl);
     return K.mount(S, sp, 'ch', [
       ['The drawing is the lining of the small intestine: two villi cut in section. The bacteria are drawn larger than real (a cholera bacterium is about 2 µm long), and the toxin, the ions and the water far larger than real molecules.'],
       ['<b>Beyond 0610.</b> In fact the toxin enters the epithelial cells and keeps a channel in their membrane open, so chloride ions leave the cells; sodium ions follow them. The syllabus asks only for the chain above.', 'ch__fence']
