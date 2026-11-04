@@ -47,7 +47,7 @@
      real so their shapes show. The vesicle is wide enough to hold the whole bacterium, its antigens included. */
   var MR = 120, MS = 1.95;                                      /* the macrophage's radius, and the scale of Servier's inside for it */
   var M0 = [132, 380], M1 = [190, 214];                         /* where it starts (wholly inside the frame), where it stops */
-  var PSC = .2, VR = 46, HM = 17;                               /* the bacterium's scale; the vesicle's radius; an antigen's height (ImmDraw: stalk 7 + 1 + head 9) */
+  var PSC = .2, VR = 46, AGS = D.agScale(PSC), HM = D.headTop(KIND) * AGS;   /* the bacterium's scale; the vesicle's radius; its antigens' scale and height */
   var B1 = [M1[0] + (MR + VR - 6) * Math.cos(-.576), M1[1] + (MR + VR - 6) * Math.sin(-.576)], B0 = [B1[0] + 48, B1[1] - 31];   /* the bacterium drifts; the macrophage follows it */
   var IN = [M1[0] + 44, M1[1] - 36];                            /* the vesicle, inside the macrophage, clear of its nucleus */
   var LYS = [[-34, -78], [96, 18], [58, 56]];                   /* lysosomes, in the cytoplasm, from the macrophage's centre */
@@ -144,8 +144,8 @@
       }
       var rot = Math.atan2(nx, -ny) * 180 / Math.PI;
       out += '<g opacity="' + n1(op * 100) / 100 + '">' +
-        (mhc > 0 ? '<path class="ix__mhc" opacity="' + n1(mhc * 100) / 100 + '" transform="translate(' + n1(base[0]) + ' ' + n1(base[1]) + ') rotate(' + n1(rot) + ')" d="M-8 5 L-8 -4 L-3.5 -4 L-3.5 1.5 L3.5 1.5 L3.5 -4 L8 -4 L8 5 Z"/>' : '') +
-        D.antigen(KIND, base[0], base[1], nx, ny) + '</g>';
+        (mhc > 0 ? '<path class="ix__mhc" opacity="' + n1(mhc * 100) / 100 + '" transform="translate(' + n1(base[0]) + ' ' + n1(base[1]) + ') rotate(' + n1(rot) + ')" d="M-6.5 4 L-6.5 -3.5 L-3 -3.5 L-3 1.2 L3 1.2 L3 -3.5 L6.5 -3.5 L6.5 4 Z"/>' : '') +
+        D.antigen(KIND, base[0], base[1], nx, ny, null, AGS) + '</g>';
       if (i === 3 && t >= 6 && t < 8) lab('ag', 'antigens', bp[0] + a.x, bp[1] + a.y, 'R', 2);
       if (i === 6 && t >= 21 && t < 22.6) lab('agk', 'antigen pieces, kept: the same shape', base[0] + nx * HM, base[1] + ny * HM, 'R', 3);
     });
@@ -157,13 +157,13 @@
       out += art('t-lymph', Tx[0], Tx[1], 1.0) + (t >= 33 && t < 42 ? '<circle class="im__glow" cx="' + n1(Tx[0]) + '" cy="' + n1(Tx[1]) + '" r="54" opacity="' + n1(seg(t, 33, 34.5) * 50) / 100 + '"/>' : '');
       /* its receptor: a cup round the antigen piece it fits, on the T-cell's side, once it has bound */
       if (t >= 33.5 && t < 42) {
-        /* round the displayed antigen's head: the head's flat side is 8 out from the membrane, its dome 9 more */
-        var ra = SHOW[1][2], px = SHOW[1][0] + 8 * Math.cos(ra), py = SHOW[1][1] + 8 * Math.sin(ra), q = [];
-        for (var qi = 0; qi <= 14; qi++) { var qa = ra - Math.PI / 2 + Math.PI * qi / 14; q.push(n1(px + 13 * Math.cos(qa)) + ' ' + n1(py + 13 * Math.sin(qa))); }
+        /* round the displayed antigen's head: its flat side stands (stalk 7 + 1) × AGS out from the membrane, its dome 9 × AGS more */
+        var ra = SHOW[1][2], px = SHOW[1][0] + 8 * AGS * Math.cos(ra), py = SHOW[1][1] + 8 * AGS * Math.sin(ra), q = [], rr = 9 * AGS + 4;
+        for (var qi = 0; qi <= 14; qi++) { var qa = ra - Math.PI / 2 + Math.PI * qi / 14; q.push(n1(px + rr * Math.cos(qa)) + ' ' + n1(py + rr * Math.sin(qa))); }
         out += '<path class="ix__rec" opacity="' + n1(seg(t, 33.5, 34.5) * 100) / 100 + '" d="M' + q.join(' L') + '"/>';
       }
       if (t >= 33.5 && t < 46) lab('th', t >= 42 ? 'helper T-cell' : 'helper T-lymphocyte, activated', Tx[0] + 12, Tx[1] - 44, 'R', 2);   /* high on the cell, a row above its receptor */
-      if (t >= 34.5 && t < 38) lab('rec', 'its receptor fits the antigen', SHOW[1][0] + 21 * Math.cos(SHOW[1][2]), SHOW[1][1] + 21 * Math.sin(SHOW[1][2]), 'R', 3);
+      if (t >= 34.5 && t < 38) lab('rec', 'its receptor fits the antigen', SHOW[1][0] + (HM + 4) * Math.cos(SHOW[1][2]), SHOW[1][1] + (HM + 4) * Math.sin(SHOW[1][2]), 'R', 3);
       /* cytokines: small signalling proteins, released and spreading */
       if (t >= 34) for (var c = 0; c < 9; c++) {
         var ca = c * .7 + .3, cr = 44 + 70 * seg(t, 34 + c * .12, 37.5), cx = (t < 42 ? T1 : T2)[0] + cr * Math.cos(ca), cy = (t < 42 ? T1 : T2)[1] + cr * Math.sin(ca) * .8;

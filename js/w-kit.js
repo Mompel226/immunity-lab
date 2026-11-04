@@ -3,7 +3,8 @@
 
    frameOf   fits a model window into the svg with a margin each side for the names, at a readable size
    fitType   the font and the margins, so names stay about 13 px on any screen
-   readerClock / readerSteps   each step lasts at least one second for every 3.2 words of its caption
+   readerClock / readerSteps   each step lasts at least one second for every 3.2 words of its caption; its motion runs
+             1.4 times faster than written and then holds
    drawLabels  the names in both margins on ruled level lines (CircLearn.labels), each ending ON its part
    shell / mount  the widget's head, step bar, drawing and step list; on a wide screen the drawing stands in the
              picture's column and the steps stay beside it (memory animations-beside-their-buttons)
@@ -28,12 +29,17 @@
     return { f: f, mL: mL, mR: mR };
   }
 
-  /* Reading time. Each step's animation is written in its own time (the model's); the reader's
-     time stretches it so that a step lasts at least 1 second for every 3.2 words of its caption
-     (the lab's rule is 4). R = when each step starts for the reader, M = in the model. */
+  /* Reading time. Each step's animation is written in its own time (the model's), and a step lasts at least 1 second
+     for every 3.2 words of its caption (the lab's rule is 4). R = when each step starts for the reader, M = in the
+     model. The motion is never stretched to fill the reading time (Daniel, 4 Nov 2026: "very slow"): it runs PACE
+     times faster than written, then the step holds its last frame until the reader's time is up. */
+  var PACE = 1.4;
   function readerClock(R, M) {
     return function (t) {
-      for (var i = 0; i + 1 < R.length; i++) if (t < R[i + 1] || i + 2 === R.length) return M[i] + (Math.min(t, R[i + 1]) - R[i]) * (M[i + 1] - M[i]) / (R[i + 1] - R[i]);
+      for (var i = 0; i + 1 < R.length; i++) if (t < R[i + 1] || i + 2 === R.length) {
+        var run = Math.min((M[i + 1] - M[i]) / PACE, R[i + 1] - R[i]), k = Math.min(1, Math.max(0, (Math.min(t, R[i + 1]) - R[i]) / run));
+        return M[i] + k * (M[i + 1] - M[i]) - (k === 1 && i + 2 < R.length ? .001 : 0);
+      }
       return M[M.length - 1];
     };
   }

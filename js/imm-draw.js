@@ -8,7 +8,8 @@
    antibody is a Y whose two arms end in a cup with exactly the opposite shape, so it fits one kind and no other.
    Antibodies are far smaller than a bacterium in life (about 10 nm against 2 µm): they are drawn larger, so they show.
 
-   ImmDraw.pathogen(o)   a pathogen: o.x, o.y (centre), o.s (scale), o.rot (degrees), o.kind ('tri'|'round'|'sq'),
+   ImmDraw.pathogen(o)   a pathogen: o.x, o.y (centre), o.s (scale), o.rot (degrees), o.kind ('tri'|'round'|'sq'), o.as (the
+                         antigens' scale: agScale(o.s) unless given),
                          o.n (antigens), o.at (which points of the outline carry them), o.fade, o.dead, o.cls
                          → { svg, antigens: [{ x, y, nx, ny }] }   (the outer end of each antigen's head, and its outward direction)
    ImmDraw.antibody(o)   an antibody: o.x, o.y (its foot), o.rot, o.s, o.kind, o.cls → svg
@@ -33,9 +34,13 @@
   }
   /* how far the head's outer end stands from the surface, in the antigen's own frame */
   function headTop(kind) { return kind === 'tri' ? ST + 2 + HEAD * 1.55 : kind === 'sq' ? ST + 1 + HEAD * 1.6 : ST + 1 + HEAD; }
-  function antigen(kind, x, y, nx, ny, cls) {
+  /* how large a pathogen's antigens are drawn: in step with the pathogen, but never so small that their shape is lost
+     (Daniel, 4 Nov 2026: "the size of the antigens is a bit too big for the size of the pathogen"): a pathogen at the
+     lab's usual .2 has antigens at .65 of full size; from .34 up, full size */
+  function agScale(s) { return Math.min(1, Math.max(.65, (s || 1) * 3)); }
+  function antigen(kind, x, y, nx, ny, cls, sc) {
     var a = Math.atan2(nx, -ny) * 180 / Math.PI;
-    return '<g class="ag ag--' + kind + (cls ? ' ' + cls : '') + '" transform="translate(' + n1(x) + ' ' + n1(y) + ') rotate(' + n1(a) + ')">' +
+    return '<g class="ag ag--' + kind + (cls ? ' ' + cls : '') + '" transform="translate(' + n1(x) + ' ' + n1(y) + ') rotate(' + n1(a) + ')' + (sc && sc !== 1 ? ' scale(' + sc + ')' : '') + '">' +
       '<path class="ag__stalk" d="M0 1 V' + (-ST - 1) + '" stroke="' + EDGE[kind] + '" stroke-width="3" stroke-linecap="round"/>' +
       '<path class="ag__head" d="' + headPath(kind) + '" fill="' + COL[kind] + '" stroke="' + EDGE[kind] + '" stroke-width="1.4" stroke-linejoin="round"/></g>';
   }
@@ -48,11 +53,11 @@
     function tf(x, y) { var dx = (x - cx) * s, dy = (y - cy) * s; return [o.x + dx * c - dy * sn, o.y + dx * sn + dy * c]; }
     var edge = P.edge, n = o.n == null ? 10 : o.n, at = o.at;
     if (!at) { at = []; for (var i = 0; i < n; i++) at.push(Math.round(i * edge.length / n + (o.phase || 0)) % edge.length); }
-    var ags = '', list = [];
+    var ags = '', list = [], as = o.as != null ? o.as : agScale(s);
     at.forEach(function (k) {
       var e = edge[k], p = tf(e[0], e[1]), nx = e[2] * c - e[3] * sn, ny = e[2] * sn + e[3] * c;
-      ags += antigen(o.kind, p[0], p[1], nx, ny, o.agCls);
-      var hm = headTop(o.kind);
+      ags += antigen(o.kind, p[0], p[1], nx, ny, o.agCls, as);
+      var hm = headTop(o.kind) * as;
       list.push({ x: p[0] + nx * hm, y: p[1] + ny * hm, nx: nx, ny: ny, k: k });
     });
     var body = '<g class="pg__body" transform="translate(' + n1(o.x) + ' ' + n1(o.y) + ') rotate(' + n1(o.rot || 0) + ') scale(' + s + ') translate(' + n1(-cx) + ' ' + n1(-cy) + ')">' + P.svg + '</g>';
@@ -127,6 +132,6 @@
     return '<defs>' + f('e') + f('r') + f('c') + '</defs>' + layer('e', o.edge, 2.6) + layer('r', o.rim, 1.2) + layer('c', o.fill, -1.4);
   }
 
-  global.ImmDraw = { pathogen: pathogen, antibody: antibody, antigen: antigen, bound: bound, cell: cell, inside: inside, membrane: membrane, COL: COL, EDGE: EDGE, armTip: armTip,
+  global.ImmDraw = { pathogen: pathogen, antibody: antibody, antigen: antigen, agScale: agScale, headTop: headTop, bound: bound, cell: cell, inside: inside, membrane: membrane, COL: COL, EDGE: EDGE, armTip: armTip,
                      L1: L1, L2: L2 };
 })(window);
