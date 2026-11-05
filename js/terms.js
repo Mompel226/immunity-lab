@@ -288,6 +288,9 @@
     var tag = p.nodeName.toUpperCase(); if (tag === 'SCRIPT' || tag === 'STYLE' || tag === 'TEXTAREA' || tag === 'OPTION' || tag === 'TITLE') return;
     if (p.classList && p.classList.contains('sci')) return;
     var m = SCI.exec(t.nodeValue); if (!m) return;
+    /* in a flex or grid row the italic word would stand as an item of its own, apart from its sentence: keep the sentence
+       together in one span first */
+    if (p.namespaceURI !== SVG && /flex|grid/.test(getComputedStyle(p).display)) { var one = document.createElement('span'); p.insertBefore(one, t); one.appendChild(t); p = one; }
     var svg = p.namespaceURI === SVG, w = svg ? document.createElementNS(SVG, 'tspan') : document.createElement('span');
     w.setAttribute('class', 'sci'); w.textContent = m[1];
     var rest = t.splitText(m.index);
