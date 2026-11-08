@@ -261,14 +261,9 @@
     { h: 'Memory cells stay', tag: 'Extension · IB C3.2.10', p: 'Some cells of the clone become **memory cells**, which live for a long time. If the same pathogen returns, they respond quickly: this is **immunity**. Memory T-cells are made too.' }
   ];
   var M = [0, 7, 15, 22, 30, 38, 43.6, 46, 54, 62];
-  /* how fast each step's motion runs (w-kit readerClock): the steps after the helper T-cell have more to watch, so they
+  /* how fast each step's motion runs (WKit.timeline): the steps after the helper T-cell have more to watch, so they
      run slower (Daniel, 4 Nov 2026: "as soon as the helper T lymphocyte is activated, the next stages are a bit too fast") */
   var PACES = [1.6, 1.6, 1.6, 1.6, 1.1, .8, .6, .9, .9];
-  function readerTimes() {
-    var R = [0];
-    STEPS.forEach(function (s, i) { var words = (s.h + ' ' + s.p).replace(/\*\*/g, '').split(/\s+/).length; R.push(R[i] + Math.max(M[i + 1] - M[i], words / 3.2)); });
-    return R;
-  }
 
   function build(spec) {
     var S = K.shell(spec, 'im', 'How antibodies are made', 'A macrophage engulfs and digests a bacterium and displays pieces of its antigens; a helper T-cell and a B-cell are activated; plasma cells secrete antibodies; memory cells stay.', []);
@@ -280,7 +275,8 @@
     var tissue = '<rect class="im__plasma" x="0" y="0" width="' + W + '" height="' + H + '" rx="16"/>';
     var gArt = document.createElementNS(NSV, 'g'); gArt.setAttribute('clip-path', 'url(#' + cid + ')'); model.appendChild(gArt);
     var gLab = document.createElementNS(NSV, 'g'); svg.appendChild(gLab);
-    var lay = null, narrow = false, key = K.pinKey(S), R = readerTimes(), clock = K.readerClock(R, M, PACES);
+    /* each step: its motion at its pace, then a short beat (WKit.timeline) */
+    var lay = null, narrow = false, key = K.pinKey(S), TL = K.timeline(M, PACES), R = TL.R, clock = TL.clock;
     function draw(t) {
       var mt = clock(t), r = render(mt);
       gArt.innerHTML = tissue + r.svg;
@@ -288,7 +284,7 @@
         .map(function (q) { var p = lay.to(q.x, q.y); return { id: q.id, text: q.text, x: p[0], y: p[1], side: q.side, pri: q.pri }; });
       gLab.innerHTML = K.names(lay, items, narrow, key, null, 6);
     }
-    var sp = L.stepper({ steps: K.readerSteps(STEPS, R), end: R[R.length - 1], render: draw, flow: K.readerFlow(R, M, PACES) });
+    var sp = L.stepper({ steps: K.readerSteps(STEPS, R), end: TL.end, render: draw, flow: TL.flow });
     /* the notes fold away under one closed line (Daniel, 4 Nov 2026: "this text is extremely long. It distracts from … the
        step-by-step"): nothing but the steps stands between the animation and the rest of the station */
     var box = K.mount(S, sp, 'im', [], function (Dw, nar) {

@@ -213,7 +213,7 @@
   }
 
   /* ---------- the two widgets: one frame, one step list each ---------- */
-  function widget(spec, title, aria, scriptOf, steps, R, M, notes, pills, pillAt) {
+  function widget(spec, title, aria, scriptOf, steps, M, notes, pills, pillAt) {
     var S = K.shell(spec, 'im', title, aria, pills);
     var svg = S.svg, NSV = K.NS;
     var bg = document.createElementNS(NSV, 'rect'); bg.setAttribute('class', 'im__bg'); svg.appendChild(bg);
@@ -224,7 +224,8 @@
     var gArt = document.createElementNS(NSV, 'g'); gArt.setAttribute('clip-path', 'url(#' + cid + ')'); model.appendChild(gArt);
     var gLab = document.createElementNS(NSV, 'g'); svg.appendChild(gLab);
     var script = build(scriptOf()), lay = null, narrow = false, key = K.pinKey(S);
-    var clock = K.readerClock(R, M);
+    /* each step: its motion, then a short beat (WKit.timeline) */
+    var TL = K.timeline(M), R = TL.R, clock = TL.clock;
     function draw(t) {
       var mt = clock(t), r = render(script, mt, lay, narrow);
       gArt.innerHTML = plasma + r.svg;
@@ -237,22 +238,12 @@
       gLab.innerHTML = K.names(lay, items, narrow, key, null, 6);
       if (pillAt) pillAt(mt, S);
     }
-    var sp = L.stepper({ steps: K.readerSteps(steps, R), end: R[R.length - 1], render: draw, flow: K.readerFlow(R, M) });
+    var sp = L.stepper({ steps: K.readerSteps(steps, R), end: TL.end, render: draw, flow: TL.flow });
     return K.mount(S, sp, 'im', notes, function (Dw, nar) {
       narrow = nar;
       var m = K.margins(nar, 11, 11, 96, 96);
       lay = K.frameOf(svg, bg, model, cr, { x0: 0, x1: W, y0: 0, y1: H }, false, Dw, m[0], m[1], m[2], m[3], 14.5);
     });
-  }
-
-  /* reading time: seconds for each step's words at 3.2 words a second, at least the step's own animation */
-  function readerTimes(steps, M) {
-    var R = [0];
-    steps.forEach(function (s, i) {
-      var words = (s.h + ' ' + s.p).replace(/\*\*/g, '').split(/\s+/).length;
-      R.push(R[i] + Math.max(M[i + 1] - M[i], words / 3.2));
-    });
-    return R;
   }
 
   /* ================================================================
@@ -408,16 +399,14 @@
   }
 
   function firstmeet(spec) {
-    var R = readerTimes(FM_STEPS, FM_M);
     return widget(spec, 'The first meeting', 'A pathogen enters the blood; lymphocytes, antibodies and phagocytes respond, and memory cells stay.',
-      fmScript, FM_STEPS, R, FM_M,
+      fmScript, FM_STEPS, FM_M,
       [['Each kind of lymphocyte makes one kind of antibody: the small antibody beside each lymphocyte shows its kind. Antibodies and antigens are drawn far larger than real: an antibody is about 10 nm across, a bacterium about 2 µm long. A phagocyte engulfing a pathogen, step by step: the Circulation Lab, What blood is made of.']],
       [['who', 'The person:']], fmPill);
   }
   function vacsteps(spec) {
-    var R = readerTimes(VS_STEPS, VS_M);
     return widget(spec, 'Vaccination, step by step', 'A vaccine of weakened pathogens stimulates lymphocytes to produce antibodies and memory cells; later the real pathogen is destroyed quickly.',
-      vsScript, VS_STEPS, R, VS_M,
+      vsScript, VS_STEPS, VS_M,
       [['The weakened pathogens are drawn paler than the real ones: they have the same antigens, so the same antibodies fit both. Antibodies and antigens are drawn far larger than real.']],
       [['who', 'The person:']], vsPill);
   }

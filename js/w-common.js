@@ -10,10 +10,11 @@
        opts.end     the last moment (s)
        opts.render  render(t) — must be a pure function of t, so any moment can be drawn on demand
        opts.rate    optional: a function returning how fast time runs (1 normal, 2 twice as fast)
-       opts.flow    optional: flow(t) → the time Play all goes on from (a step's reading hold is skipped, so Play all
-                    runs straight through: Daniel, 4 Nov 2026, "the whole animation should flow … I can always press
+       opts.flow    optional: a step's clock (WKit.timeline): flow(t) → the time Play all goes on from, and
+                    flow.endOf(i) → where a single step stops (its motion's end; its band is full there). Play all
+                    runs straight through (Daniel, 4 Nov 2026, "the whole animation should flow … I can always press
                     pause to read")
-       returns { bar, list, now, paint(t), seek(t), stop(), playAll(), isStill(), compact(on) }
+       returns { bar, list, now, paint(t), seek(t), stop(), playAll(), isStill(), compact(on), flow, end }
        compact(true): the steps become small chips, and the step's words stand in a panel right under
        them, for a widget whose drawing stands in the plate's column (Daniel, 26 Sep: "make the different
        stages smaller, and more compacted ... you can still click them. But you see the text on the right")
@@ -48,9 +49,11 @@
     var all = h('button', 'sp__all', '<span class="sp__ico" aria-hidden="true">▶▶</span> Play all'); all.type = 'button';
     var prog = h('div', 'sp__prog'); prog.setAttribute('aria-hidden', 'true');
     function stepEnd(i) { return i + 1 < STEPS.length ? STEPS[i + 1].t : END; }
+    /* each band as wide as the time its step lasts (Daniel, 8 Nov 2026: "make sure that the size of the band indicates
+       the time that it's there"); a step's times come from its widget (WKit.timeline) */
     STEPS.forEach(function (st, i) {
       var sg = h('span', 'sp__seg', '<i></i>');
-      sg.style.flexGrow = Math.max(.5, stepEnd(i) - st.t).toFixed(2);
+      sg.style.flexGrow = Math.max(.3, stepEnd(i) - st.t).toFixed(2);
       sg.addEventListener('click', function () { goStep(i); });
       prog.appendChild(sg);
     });
@@ -70,17 +73,22 @@
 
     var T = 0, playing = false, raf = null, last = null, started = false, stopAt = null;
     function stepAt(t) { var k = 0; for (var i = 0; i < STEPS.length; i++) if (t >= STEPS[i].t - 1e-6) k = i; return k; }
-    function segEnd(i) { return i + 1 < STEPS.length ? STEPS[i + 1].t - .02 : END; }
+    function segEnd(i) { return opts.flow && opts.flow.endOf ? Math.min(i + 1 < STEPS.length ? STEPS[i + 1].t - .02 : END, opts.flow.endOf(i)) : i + 1 < STEPS.length ? STEPS[i + 1].t - .02 : END; }
     function atStepEnd() { return started && !playing && stopAt != null && T >= stopAt - 1e-3; }
+    /* the animation is over once the last step's motion has run (a single step stops there; Play all ends after its beat) */
+    function over(t) { return t >= segEnd(STEPS.length - 1) - 1e-3; }
     function paint(t) {
       render(t);
-      var k = stepAt(t), done = t >= END - 1e-6;
+      var k = stepAt(t), done = over(t);
       Array.prototype.forEach.call(list.children, function (li, i) {
         li.classList.toggle('is-on', started && i === k);
         li.classList.toggle('is-done', started && (i < k || (done && i === k)));
       });
       Array.prototype.forEach.call(prog.children, function (sg, i) {
-        var a = STEPS[i].t, b = stepEnd(i);
+        /* full when the step's motion has run, where a single step stops (Daniel, 8 Nov 2026, Inheritance Lab: the band
+           stopped half full, "this makes me feel that something is missing in the animation"); in Play all it stays full
+           through the beat */
+        var a = STEPS[i].t, b = segEnd(i);
         sg.firstChild.style.width = (started ? clamp01((t - a) / Math.max(.001, b - a)) * 100 : 0).toFixed(1) + '%';
         sg.classList.toggle('is-on', started && i === k);
       });
@@ -93,7 +101,7 @@
       sync();
     }
     function sync() {
-      var ended = T >= END - 1e-3, next = atStepEnd() && !ended;
+      var ended = over(T) && !playing, next = atStepEnd() && !ended;
       play.innerHTML = playing ? '<span class="sp__ico" aria-hidden="true">❚❚</span> Pause'
         : ended ? '<span class="sp__ico" aria-hidden="true">↻</span> Play again'
         : !started ? '<span class="sp__ico" aria-hidden="true">▶</span> Play'
@@ -124,12 +132,12 @@
     function goStep(i) { run(STEPS[i].t, segEnd(i)); }
     play.addEventListener('click', function () {
       if (playing) { stop(); paint(T); return; }
-      if (!started || T >= END - 1e-3) { goStep(0); return; }
+      if (!started || over(T)) { goStep(0); return; }
       if (atStepEnd()) { goStep(stepAt(T) + 1); return; }
       run(T, stopAt == null ? segEnd(stepAt(T)) : stopAt);
     });
     all.addEventListener('click', function () {
-      var from = !started || T >= END - 1e-3 ? 0 : atStepEnd() ? STEPS[stepAt(T) + 1].t : T;
+      var from = !started || over(T) ? 0 : atStepEnd() ? STEPS[stepAt(T) + 1].t : T;
       run(from, END);
     });
     /* the words go under the chips, and come back to wherever the widget put them */
@@ -150,7 +158,8 @@
       bar: bar, list: list, now: now, paint: paint, stop: stop, isStill: still, compact: compact,
       playAll: function () { run(0, END); }, playing: function () { return playing; },
       time: function () { return T; },
-      seek: function (t) { stop(); started = t > 0; stopAt = null; T = Math.max(0, Math.min(END, t)); paint(T); return STEPS.map(function (s) { return s.t; }); }
+      seek: function (t) { stop(); started = t > 0; stopAt = null; T = Math.max(0, Math.min(END, t)); paint(T); return STEPS.map(function (s) { return s.t; }); },
+      flow: opts.flow || null, end: END
     };
   }
 

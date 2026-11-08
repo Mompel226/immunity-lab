@@ -126,9 +126,8 @@
     var cr = document.createElementNS(NSV, 'rect');
     var gLab = document.createElementNS(NSV, 'g'); svg.appendChild(gLab);
     var lay = null, narrow = false, key = K.pinKey(S);
-    var R = [0], wps = 3.2;
-    STEPS.forEach(function (s, i) { var w = (s.h + ' ' + s.p).replace(/\*\*/g, '').split(/\s+/).length; R.push(R[i] + Math.max(M[i + 1] - M[i], w / wps)); });
-    var clock = K.readerClock(R, M);
+    /* each step: its motion, then a short beat (WKit.timeline) */
+    var TL = K.timeline(M), R = TL.R, clock = TL.clock;
     function draw(tt) {
       var t = clock(tt);
       art.innerHTML = render(t);
@@ -139,7 +138,7 @@
       gLab.innerHTML = K.names(lay, items, narrow, key, { tox: 1.6, cl: 1.6, wa: 1.6 }, 6);
       S.pill('who', t < 32 ? 'infected' : t < 36 ? 'diarrhoea' : 'dehydrated', t < 32 ? 'warn' : 'bad');
     }
-    var sp = L.stepper({ steps: K.readerSteps(STEPS, R), end: R[R.length - 1], render: draw, flow: K.readerFlow(R, M) });
+    var sp = L.stepper({ steps: K.readerSteps(STEPS, R), end: TL.end, render: draw, flow: TL.flow });
     /* a key to the colours, under the drawing and inside its figure (Daniel, 4 Nov 2026: "a legend for the chloride ions …
        as well as a legend for the water") */
     var keyEl = L.h('div', 'ch__keys',

@@ -3,8 +3,8 @@
 
    frameOf   fits a model window into the svg with a margin each side for the names, at a readable size
    fitType   the font and the margins, so names stay about 13 px on any screen
-   readerClock / readerSteps   each step lasts at least one second for every 3.2 words of its caption; its motion runs
-             1.6 times faster than written and then holds (Play all skips the hold)
+   timeline  each step lasts its motion (1.6 times faster than written), then a short beat: the step bar's bands are
+             those times; a single step stops at its motion's end, Play all runs straight through
    drawLabels  the names in both margins on ruled level lines (CircLearn.labels), each ending ON its part
    shell / mount  the widget's head, step bar, drawing and step list; on a wide screen the drawing stands in the
              picture's column and the steps stay beside it (memory animations-beside-their-buttons)
@@ -29,32 +29,40 @@
     return { f: f, mL: mL, mR: mR };
   }
 
-  /* Reading time. Each step's animation is written in its own time (the model's), and a step lasts at least 1 second
-     for every 3.2 words of its caption (the lab's rule is 4). R = when each step starts for the reader, M = in the
-     model. The motion is never stretched to fill the reading time (Daniel, 4 Nov 2026: "very slow"): it runs PACE
-     times faster than written, then the step holds its last frame until the reader's time is up. */
+  /* The time of each step (the Inheritance Lab's WKit.timeline, 8 Nov 2026). Each animation is written in its own time
+     (the model's, M); a step's motion runs PACE times faster than written (Daniel, 4 Nov 2026: "very slow"; P: one pace,
+     or one for each step). R[i] is when step i starts on the reader's clock, and each step lasts exactly what Play all
+     gives it: its motion, then a short beat (.35 s) so the eye sees the step change (Daniel, 4 Nov 2026: "the whole
+     animation should flow"). So each band of the step bar is as wide as the time spent on its step (Daniel, 8 Nov 2026:
+     "make sure that the size of the band indicates the time that it's there"); until then a step also held a reading
+     time for its caption, 1 s for every 3.2 words, that only a single step played, standing still, and that made a
+     long caption's band up to 3.4 times its step (the first meeting's step 1: 18.1 s for 5.35 s). A single step (Play,
+     Next step) stops at the end of its motion, its band full, and waits there for the reader, as long as they like
+     (memory animations-wait-for-the-reader; 8 Nov 2026: "It should be completely to the end … and then I press next
+     step"); Play all goes straight on, through the beat. */
   var PACE = 1.6;
-  /* P: the pace of each step (an array), or one pace for all; PACE when not given */
   function paceOf(P, i) { return P == null ? PACE : typeof P === 'number' ? P : (P[i] || PACE); }
-  function readerClock(R, M, P) {
-    return function (t) {
-      for (var i = 0; i + 1 < R.length; i++) if (t < R[i + 1] || i + 2 === R.length) {
-        var run = Math.min((M[i + 1] - M[i]) / paceOf(P, i), R[i + 1] - R[i]), k = Math.min(1, Math.max(0, (Math.min(t, R[i + 1]) - R[i]) / run));
-        return M[i] + k * (M[i + 1] - M[i]) - (k === 1 && i + 2 < R.length ? .001 : 0);
+  function timeline(M, P) {
+    var n = M.length - 1, R = [0], run = [];
+    /* where step i holds, in the model: the end of its motion, just before the next step's start (which is the next
+       step's first frame) */
+    function stopAt(i) { return M[i + 1] - (i + 1 < n ? .001 : 0); }
+    for (var i = 0; i < n; i++) { run.push((M[i + 1] - M[i]) / paceOf(P, i)); R.push(R[i] + run[i] + .35); }
+    /* Play all's clock: straight through (the beat is part of each step) */
+    function flow(t) { return t; }
+    function clock(t) {
+      /* the step the stepper says it is (it counts a step as started 1e-6 s early, CircLearn.stepper stepAt) */
+      for (var i = 0; i < n; i++) if (t < R[i + 1] - 1e-6 || i + 1 === n) {
+        var k = run[i] > 0 ? (t - R[i]) / run[i] : 1;
+        /* at the stop itself (k is 1 less a rounding error there) the held frame, so the stop and the hold are one frame */
+        return k >= 1 - 1e-9 ? stopAt(i) : M[i] + Math.max(0, k) * (M[i + 1] - M[i]);
       }
-      return M[M.length - 1];
-    };
-  }
-  /* Play all skips each step's reading hold: once a step's motion has run (and a short beat, so the eye sees the step
-     change), it goes on with the next step's motion */
-  function readerFlow(R, M, P) {
-    return function (t) {
-      for (var i = 0; i + 1 < R.length; i++) if (t < R[i + 1]) {
-        var run = Math.min((M[i + 1] - M[i]) / paceOf(P, i), R[i + 1] - R[i]);
-        return t > R[i] + run + .35 ? R[i + 1] : t;
-      }
-      return t;
-    };
+      return M[n];
+    }
+    /* where a single step stops (its motion's end; tools/bands.mjs checks its band is full there) */
+    flow.endOf = function (i) { return R[i] + run[i]; };
+    flow.R = R;
+    return { R: R, clock: clock, flow: flow, end: R[n] };
   }
   function readerSteps(steps, R) { return steps.map(function (s, i) { var o = {}; for (var k in s) o[k] = s[k]; o.t = R[i]; return o; }); }
 
@@ -136,6 +144,8 @@
     S.box.__onMove = function () { if (stg) stg.mount(); };
     S.box.__onReset = function () { sp.stop(); if (ro) ro.disconnect(); if (stg) stg.detach(); };
     S.box.__seek = function (t) { fit(); return sp.seek(t); };
+    /* Play all's own clock and end, for the tool that checks the step bar (tools/bands.mjs) */
+    S.box.__flow = sp.flow; S.box.__playEnd = sp.end;
     /* in a card, the animation plays all its steps as soon as its card opens (Daniel, 4 Nov 2026: "as soon as you open
        that, the full animation should play … if the user wants to go one by one or stop it, it just has to scroll
        down"); it pauses when the card closes or the widget is hidden (the IGCSE / IB switch), and plays again when
@@ -164,6 +174,6 @@
 
 
   global.WKit = { pinKey: pinKey, names: names, margins: margins, n1: n1, seg: seg, ease: ease, clamp01: clamp01, lerp: lerp, len: len, rng: rng, fitType: fitType,
-                  readerClock: readerClock, readerFlow: readerFlow, readerSteps: readerSteps, frameOf: frameOf, drawLabels: drawLabels, shell: shell,
+                  timeline: timeline, readerSteps: readerSteps, frameOf: frameOf, drawLabels: drawLabels, shell: shell,
                   mount: mount, NS: NS };
 })(window);

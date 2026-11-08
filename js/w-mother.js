@@ -121,9 +121,8 @@
     var model = document.createElementNS(NSV, 'g'); svg.appendChild(model);
     var gLab = document.createElementNS(NSV, 'g'); svg.appendChild(gLab);
     var cr = document.createElementNS(NSV, 'rect'), lay = null, narrow = false, key = K.pinKey(S);
-    var R = [0];
-    STEPS.forEach(function (s, i) { var w = (s.h + ' ' + s.p).replace(/\*\*/g, '').split(/\s+/).length; R.push(R[i] + Math.max(M[i + 1] - M[i], w / 3.2)); });
-    var clock = K.readerClock(R, M);
+    /* each step: its motion, then a short beat (WKit.timeline) */
+    var TL = K.timeline(M), R = TL.R, clock = TL.clock;
     function draw(tt) {
       var t = clock(tt);
       model.innerHTML = render(t);
@@ -136,7 +135,7 @@
       var weeks = Math.min(8, Math.max(1, Math.round(1 + 7 * seg(t, 32.4, 41))));
       S.pill('age', t < 16 ? 'before birth' : t < 24 ? 'newborn' : t < 32 ? 'a few days old, protected' : weeks + (weeks > 1 ? ' weeks' : ' week') + ' old', t < 32 ? 'ok' : weeks > 6 ? 'warn' : 'ok');
     }
-    var sp = L.stepper({ steps: K.readerSteps(STEPS, R), end: R[R.length - 1], render: draw, flow: K.readerFlow(R, M) });
+    var sp = L.stepper({ steps: K.readerSteps(STEPS, R), end: TL.end, render: draw, flow: TL.flow });
     return K.mount(S, sp, 'mb', [
       ['The placenta drawing shows the mother’s blood vessels opening into the space round a villus of the placenta; the blood of the fetus flows inside the villus and along the umbilical cord. Antibodies are drawn far larger than real.']
     ], function (Dw, nar) {
