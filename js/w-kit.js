@@ -39,29 +39,45 @@
      long caption's band up to 3.4 times its step (the first meeting's step 1: 18.1 s for 5.35 s). A single step (Play,
      Next step) stops at the end of its motion, its band full, and waits there for the reader, as long as they like
      (memory animations-wait-for-the-reader; 8 Nov 2026: "It should be completely to the end … and then I press next
-     step"); Play all goes straight on, through the beat. */
+     step"); Play all goes straight on, through the beat.
+     MOTION[title] (written by tools/motion.mjs --write, which checks it): how long each step's picture really moves, in
+     the model's seconds. In some steps the drawing stops before the step's own time is up (the vaccination's step 4 stood
+     still for 2 s): a single step stops 0.15 model seconds after its drawing's last change, its band full, and Next step
+     comes at once (Daniel, 6 Nov 2026: "allow you to read things, but they don't make you wait there for ages"; 8 Nov
+     2026: "Yes, do it here"). Play all is not changed by it: it still plays each step's whole time, the still part too,
+     and its band stays full there. Without a list the whole step moves. */
   var PACE = 1.6;
   function paceOf(P, i) { return P == null ? PACE : typeof P === 'number' ? P : (P[i] || PACE); }
-  function timeline(M, P) {
-    var n = M.length - 1, R = [0], run = [];
+  function timeline(M, P, MOTION, title) {
+    var n = M.length - 1, R = [0], run = [], mrun = [], ME = MOTION && title ? MOTION[title] : null;
     /* where step i holds, in the model: the end of its motion, just before the next step's start (which is the next
        step's first frame) */
     function stopAt(i) { return M[i + 1] - (i + 1 < n ? .001 : 0); }
-    for (var i = 0; i < n; i++) { run.push((M[i + 1] - M[i]) / paceOf(P, i)); R.push(R[i] + run[i] + .35); }
+    for (var i = 0; i < n; i++) {
+      var d = M[i + 1] - M[i];
+      run.push(d / paceOf(P, i)); mrun.push(ME && ME[i] != null ? Math.min(d, ME[i] + .15) : d);
+      R.push(R[i] + run[i] + .35);
+    }
+    /* where a single step stops: the end of its picture's motion */
+    function endOf(i) { return R[i] + mrun[i] / paceOf(P, i); }
     /* Play all's clock: straight through (the beat is part of each step) */
     function flow(t) { return t; }
+    /* tools/motion.mjs sets flow.model to draw one moment of the model, whatever the reader's clock says */
+    flow.model = null;
     function clock(t) {
+      if (flow.model != null) return flow.model;
       /* the step the stepper says it is (it counts a step as started 1e-6 s early, CircLearn.stepper stepAt) */
       for (var i = 0; i < n; i++) if (t < R[i + 1] - 1e-6 || i + 1 === n) {
-        var k = run[i] > 0 ? (t - R[i]) / run[i] : 1;
-        /* at the stop itself (k is 1 less a rounding error there) the held frame, so the stop and the hold are one frame */
-        return k >= 1 - 1e-9 ? stopAt(i) : M[i] + Math.max(0, k) * (M[i + 1] - M[i]);
+        /* from the stop on (a rounding error before it too) the held frame, so the stop and the hold are one frame; the
+           measured motion is over there, so Play all sees the same picture it always did */
+        if (t >= endOf(i) - 1e-9) return stopAt(i);
+        return M[i] + Math.max(0, run[i] > 0 ? (t - R[i]) / run[i] : 1) * (M[i + 1] - M[i]);
       }
       return M[n];
     }
-    /* where a single step stops (its motion's end; tools/bands.mjs checks its band is full there) */
-    flow.endOf = function (i) { return R[i] + run[i]; };
-    flow.R = R;
+    /* where a single step stops (tools/bands.mjs checks its band is full there) */
+    flow.endOf = endOf;
+    flow.R = R; flow.M = M; flow.title = title || null;
     return { R: R, clock: clock, flow: flow, end: R[n] };
   }
   function readerSteps(steps, R) { return steps.map(function (s, i) { var o = {}; for (var k in s) o[k] = s[k]; o.t = R[i]; return o; }); }

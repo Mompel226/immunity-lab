@@ -264,6 +264,8 @@
   /* how fast each step's motion runs (WKit.timeline): the steps after the helper T-cell have more to watch, so they
      run slower (Daniel, 4 Nov 2026: "as soon as the helper T lymphocyte is activated, the next stages are a bit too fast") */
   var PACES = [1.6, 1.6, 1.6, 1.6, 1.1, .8, .6, .9, .9];
+  /* how long each step's picture really moves, in the model's seconds: written and checked by tools/motion.mjs (WKit.timeline) */
+  var MOTION = {"How antibodies are made":[7,8,7,8,8,5.6,2.4,8,8]};
 
   function build(spec) {
     var S = K.shell(spec, 'im', 'How antibodies are made', 'A macrophage engulfs and digests a bacterium and displays pieces of its antigens; a helper T-cell and a B-cell are activated; plasma cells secrete antibodies; memory cells stay.', []);
@@ -275,8 +277,8 @@
     var tissue = '<rect class="im__plasma" x="0" y="0" width="' + W + '" height="' + H + '" rx="16"/>';
     var gArt = document.createElementNS(NSV, 'g'); gArt.setAttribute('clip-path', 'url(#' + cid + ')'); model.appendChild(gArt);
     var gLab = document.createElementNS(NSV, 'g'); svg.appendChild(gLab);
-    /* each step: its motion at its pace, then a short beat (WKit.timeline) */
-    var lay = null, narrow = false, key = K.pinKey(S), TL = K.timeline(M, PACES), R = TL.R, clock = TL.clock;
+    /* each step: its motion at its pace, then a short beat; a single step stops where its picture stops (WKit.timeline) */
+    var lay = null, narrow = false, key = K.pinKey(S), TL = K.timeline(M, PACES, MOTION, 'How antibodies are made'), R = TL.R, clock = TL.clock;
     function draw(t) {
       var mt = clock(t), r = render(mt);
       gArt.innerHTML = tissue + r.svg;

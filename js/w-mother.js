@@ -35,6 +35,8 @@
     { t: 32, h: 'No memory cells: short-term', p: '**Memory cells are not produced**: the antibodies were made by someone else’s lymphocytes. They are **broken down** after a few weeks, so passive immunity is **short-term**.' }
   ];
   var M = [0, 8, 16, 24, 32, 42];
+  /* how long each step's picture really moves, in the model's seconds: written and checked by tools/motion.mjs (WKit.timeline) */
+  var MOTION = {"From mother to baby":[6.5,7.8,6.4,8,8.55]};
 
   /* ---- panel 1–2: the placenta ---- */
   var AB1 = [[66, 104, 70, 150], [102, 104, 120, 142], [66, 104, 56, 176], [102, 104, 134, 172], [102, 104, 96, 128]];
@@ -121,8 +123,8 @@
     var model = document.createElementNS(NSV, 'g'); svg.appendChild(model);
     var gLab = document.createElementNS(NSV, 'g'); svg.appendChild(gLab);
     var cr = document.createElementNS(NSV, 'rect'), lay = null, narrow = false, key = K.pinKey(S);
-    /* each step: its motion, then a short beat (WKit.timeline) */
-    var TL = K.timeline(M), R = TL.R, clock = TL.clock;
+    /* each step: its motion, then a short beat; a single step stops where its picture stops (WKit.timeline) */
+    var TL = K.timeline(M, null, MOTION, 'From mother to baby'), R = TL.R, clock = TL.clock;
     function draw(tt) {
       var t = clock(tt);
       model.innerHTML = render(t);

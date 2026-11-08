@@ -28,6 +28,8 @@
     { t: 32, h: 'Diarrhoea and dehydration', p: '**Diarrhoea**: the water and ions leave the body. Water and ions are lost from the blood, so the body becomes **dehydrated**.' }
   ];
   var M = [0, 7, 14, 22, 32, 41];
+  /* how long each step's picture really moves, in the model's seconds: written and checked by tools/motion.mjs (WKit.timeline) */
+  var MOTION = {"Cholera in the small intestine":[7,7,8,10,9]};
 
   /* where things are, in the drawing's units (read from the drawing: the gap between the villi is at x 160–200, the
      brush border of the right villus at about x 200–208 from y 110 to 230, its capillaries at x 236–292) */
@@ -126,8 +128,8 @@
     var cr = document.createElementNS(NSV, 'rect');
     var gLab = document.createElementNS(NSV, 'g'); svg.appendChild(gLab);
     var lay = null, narrow = false, key = K.pinKey(S);
-    /* each step: its motion, then a short beat (WKit.timeline) */
-    var TL = K.timeline(M), R = TL.R, clock = TL.clock;
+    /* each step: its motion, then a short beat; a single step stops where its picture stops (WKit.timeline) */
+    var TL = K.timeline(M, null, MOTION, 'Cholera in the small intestine'), R = TL.R, clock = TL.clock;
     function draw(tt) {
       var t = clock(tt);
       art.innerHTML = render(t);

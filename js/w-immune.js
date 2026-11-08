@@ -224,8 +224,8 @@
     var gArt = document.createElementNS(NSV, 'g'); gArt.setAttribute('clip-path', 'url(#' + cid + ')'); model.appendChild(gArt);
     var gLab = document.createElementNS(NSV, 'g'); svg.appendChild(gLab);
     var script = build(scriptOf()), lay = null, narrow = false, key = K.pinKey(S);
-    /* each step: its motion, then a short beat (WKit.timeline) */
-    var TL = K.timeline(M), R = TL.R, clock = TL.clock;
+    /* each step: its motion, then a short beat; a single step stops where its picture stops (WKit.timeline) */
+    var TL = K.timeline(M, null, MOTION, title), R = TL.R, clock = TL.clock;
     function draw(t) {
       var mt = clock(t), r = render(script, mt, lay, narrow);
       gArt.innerHTML = plasma + r.svg;
@@ -260,6 +260,8 @@
     { t: 56, h: 'The same pathogen returns', p: 'If the same pathogen returns, the **memory cells** divide quickly and make antibodies **faster** and in **larger numbers**, so the pathogen is destroyed **before the person becomes ill**. This is **active immunity**.' }
   ];
   var FM_M = [0, 8, 14, 22, 30, 38, 48, 56, 68];
+  /* how long each step's picture really moves, in the model's seconds: written and checked by tools/motion.mjs (WKit.timeline) */
+  var MOTION = {"The first meeting":[7.25,5.2,7.7,8,8,10,5,10.6],"Vaccination, step by step":[6.8,8,10,3.8,11.6]};
   function fmScript() {
     var P = [[410, 92, -12], [384, 216, 8], [384, 330, 20]];   /* to the right, so their new copies fit beside them in step 3, and the phagocytes fit in step 6 */
     var pgs = P.map(function (p, i) {
