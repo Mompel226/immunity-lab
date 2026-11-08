@@ -141,7 +141,10 @@
     pack.appendChild(packT); pack.appendChild(S.fig);
     var left = h('div', cls + '__left'); left.appendChild(S.read); left.appendChild(pack);
     S.fig.appendChild(sp.now);
-    wrap.appendChild(left); wrap.appendChild(sp.list);
+    wrap.appendChild(left);
+    /* steps whose lines are marked IGCSE / IB / Beyond: the key above them (as in the Inheritance Lab) */
+    if (sp.legend) { var side = h('div', cls + '__side'); side.appendChild(sp.legend); side.appendChild(sp.list); wrap.appendChild(side); }
+    else wrap.appendChild(sp.list);
     S.box.appendChild(wrap);
     notes.forEach(function (n) { S.box.appendChild(h('p', 'widget__note' + (n[1] ? ' ' + n[1] : ''), n[0])); });
     var lastD = 0, lastN = false;

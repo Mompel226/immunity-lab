@@ -20,12 +20,14 @@
   var VW = 351.4, VH = 339;                              /* the villi drawing's own box */
   var WIN = { x0: 118, x1: 338, y0: 0, y1: 318 };        /* the part shown: the right villus and the gap beside it */
 
+  /* Each step's words in parts with their level (as in the Inheritance Lab). Every line IGCSE: 0610 10.1.16, 10.1.17
+     and 3.2.7 (water potential, Supplement); the villi and their epithelium are 7.4.6 and 7.5. */
   var STEPS = [
-    { t: 0,  h: 'The bacterium is swallowed', p: 'The cholera **bacterium** is swallowed in **contaminated water**, and reaches the **small intestine**.' },
-    { t: 7,  h: 'It produces a toxin', p: 'The bacteria produce a **toxin** (orange) in the small intestine. The toxin reaches the epithelial cells that line the villi.' },
-    { t: 14, h: 'Chloride ions are secreted', p: 'The toxin causes **secretion of chloride ions** (green) **into the small intestine**: ions from the blood pass through the cells, and the cells release them into the contents.' },
-    { t: 22, h: 'Water moves in by osmosis', p: 'The chloride ions **lower the water potential** of the contents; the blood loses ions, so its water potential **rises**. Water (blue) moves from the blood into the gut by **osmosis**, down the water potential gradient.' },
-    { t: 32, h: 'Diarrhoea and dehydration', p: '**Diarrhoea**: the water and ions leave the body. Water and ions are lost from the blood, so the body becomes **dehydrated**.' }
+    { t: 0,  h: 'The bacterium is swallowed', p: [['ig', 'The cholera **bacterium** is swallowed in **contaminated water**, and reaches the **small intestine**.']] },
+    { t: 7,  h: 'It produces a toxin', p: [['ig', 'The bacteria produce a **toxin** (orange) in the small intestine. The toxin reaches the epithelial cells that line the villi.']] },
+    { t: 14, h: 'Chloride ions are secreted', p: [['ig', 'The toxin causes **secretion of chloride ions** (green) **into the small intestine**: ions from the blood pass through the cells, and the cells release them into the contents.']] },
+    { t: 22, h: 'Water moves in by osmosis', p: [['ig', 'The chloride ions **lower the water potential** of the contents; the blood loses ions, so its water potential **rises**. Water (blue) moves from the blood into the gut by **osmosis**, down the water potential gradient.']] },
+    { t: 32, h: 'Diarrhoea and dehydration', p: [['ig', '**Diarrhoea**: the water and ions leave the body. Water and ions are lost from the blood, so the body becomes **dehydrated**.']] }
   ];
   var M = [0, 7, 14, 22, 32, 41];
   /* how long each step's picture really moves, in the model's seconds: written and checked by tools/motion.mjs (WKit.timeline) */

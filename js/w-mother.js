@@ -27,12 +27,21 @@
   function px(x) { return PX + x * PS; }
   function py(y) { return PY + y * PS; }
 
+  /* Each step's words in parts with their level (as in the Inheritance Lab). IGCSE: 0610 10.1.13–10.1.15 and 16.4.8–16.4.9.
+     IB HL: the placental villi (IB Biology 2025 D3.1.18, Additional higher level: "the large surface area of the placental
+     villi"). Beyond: how the antibodies in milk act in the gut (IB 2025 has no passive immunity; 0610 says only "in breast
+     milk"). */
   var STEPS = [
-    { t: 0,  h: 'Before birth: antibodies in the mother’s blood', p: 'The mother’s blood carries **antibodies** against the pathogens she has met. Her blood flows into the **placenta**, round its villi.' },
-    { t: 8,  h: 'They cross the placenta', p: 'Antibodies from the mother **cross the placenta** into the blood of the fetus, and reach the fetus in the **umbilical cord**.' },
-    { t: 16, h: 'After birth: in breast milk', p: 'After birth, the baby receives antibodies from its mother in **breast milk**.' },
-    { t: 24, h: 'They protect the baby', p: 'In the baby’s blood, the antibodies that crossed the placenta bind to a pathogen **the mother has already met**, and it is destroyed. For a pathogen she has not met, none of her antibodies fits. The antibodies in milk work in the same way in the baby’s gut.' },
-    { t: 32, h: 'No memory cells: short-term', p: '**Memory cells are not produced**: the antibodies were made by someone else’s lymphocytes. They are **broken down** after a few weeks, so passive immunity is **short-term**.' }
+    { t: 0,  h: 'Before birth: antibodies in the mother’s blood', p: [
+      ['ig', 'The mother’s blood carries **antibodies** against the pathogens she has met. Her blood flows into the **placenta**.'],
+      /* D3.1.18 (AHL) */
+      ['ibhl', 'In the placenta it flows round the **placental villi**, which give a large surface area for exchange.']] },
+    { t: 8,  h: 'They cross the placenta', p: [['ig', 'Antibodies from the mother **cross the placenta** into the blood of the fetus, and reach the fetus in the **umbilical cord**.']] },
+    { t: 16, h: 'After birth: in breast milk', p: [['ig', 'After birth, the baby receives antibodies from its mother in **breast milk**.']] },
+    { t: 24, h: 'They protect the baby', p: [
+      ['ig', 'In the baby’s blood, the antibodies that crossed the placenta bind to a pathogen **the mother has already met**, and it is destroyed. For a pathogen she has not met, none of her antibodies fits.'],
+      ['bey', 'The antibodies in milk work in the same way in the baby’s gut.']] },
+    { t: 32, h: 'No memory cells: short-term', p: [['ig', '**Memory cells are not produced**: the antibodies were made by someone else’s lymphocytes. They are **broken down** after a few weeks, so passive immunity is **short-term**.']] }
   ];
   var M = [0, 8, 16, 24, 32, 42];
   /* how long each step's picture really moves, in the model's seconds: written and checked by tools/motion.mjs (WKit.timeline) */

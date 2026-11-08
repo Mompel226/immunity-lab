@@ -14,7 +14,8 @@
                     flow.endOf(i) → where a single step stops (its motion's end; its band is full there). Play all
                     runs straight through (Daniel, 4 Nov 2026, "the whole animation should flow … I can always press
                     pause to read")
-       returns { bar, list, now, paint(t), seek(t), stop(), playAll(), isStill(), compact(on), flow, end }
+       returns { bar, list, now, legend (the key to the step levels, or null), paint(t), seek(t), stop(), playAll(), isStill(),
+                 compact(on), flow, end }
        compact(true): the steps become small chips, and the step's words stand in a panel right under
        them, for a widget whose drawing stands in the plate's column (Daniel, 26 Sep: "make the different
        stages smaller, and more compacted ... you can still click them. But you see the text on the right")
@@ -42,6 +43,15 @@
   function stepText(t) {
     return String(t).split(/\*\*([^*]+)\*\*/).map(function (seg, i) { return i % 2 ? '<b class="sp__kw">' + esc(seg) + '</b>' : L.mk(seg); }).join('');
   }
+  /* A step's words in parts, each marked with its level (Daniel, 8 Nov 2026: "make sure that in the step message that you
+     show, exactly what is IGCSE and what is IB and what is beyond … It needs to be very, very clear"): p is a string, or
+     [[lv, text], …] with lv 'ig' (in the 0610 syllabus: learn it), 'ib' (not in the 0610 syllabus; in IB Biology),
+     'ibhl' (the same, IB Higher Level only) or 'bey' (in neither syllabus) */
+  var LV = { ig: 'IGCSE', ib: 'IB', ibhl: 'IB HL', bey: 'Beyond' };
+  function stepWords(p) {
+    if (!Array.isArray(p)) return stepText(p);
+    return p.map(function (q) { return '<span class="sp__lv sp__lv--' + q[0] + '"><b class="sp__lvt">' + LV[q[0]] + '</b> ' + stepText(q[1]) + '</span>'; }).join('');
+  }
   function stepper(opts) {
     var STEPS = opts.steps, END = opts.end, render = opts.render;
     var bar = h('div', 'sp__bar');
@@ -61,15 +71,26 @@
     bar.appendChild(play); bar.appendChild(all); bar.appendChild(prog); bar.appendChild(count);
 
     var list = h('ol', 'sp__steps');
+    /* a step with no IGCSE line says so on its button, in its level's colour, before it is opened */
+    function onlyLv(st) { return Array.isArray(st.p) && !st.p.some(function (q) { return q[0] === 'ig'; }) ? st.p[0][0] : null; }
     STEPS.forEach(function (st, i) {
-      var li = h('li', 'sp__step');
+      var li = h('li', 'sp__step'), ol = onlyLv(st);
+      if (ol) li.classList.add('sp__step--' + ol);
       var b = h('button', 'sp__stepb', '<span class="sp__num">' + (i + 1) + '</span><span class="sp__txt"><b>' + esc(st.h) + '</b>' +
-        (st.tag ? ' <span class="sp__tag">' + esc(st.tag) + '</span>' : '') + '<span class="sp__p">' + stepText(st.p) + '</span></span>');
+        (ol ? ' <span class="sp__only sp__lv--' + ol + '">' + LV[ol] + ' only</span>' : '') +
+        (st.tag ? ' <span class="sp__tag">' + esc(st.tag) + '</span>' : '') + '<span class="sp__p">' + stepWords(st.p) + '</span></span>');
       b.type = 'button';
       b.addEventListener('click', function () { goStep(i); });
       li.appendChild(b); list.appendChild(li);
     });
     var now = h('p', 'sp__now'); now.setAttribute('aria-live', 'polite');
+    /* steps in level-marked parts: the key to the marks this animation uses, once, above the steps */
+    var used = {}; STEPS.forEach(function (st) { if (Array.isArray(st.p)) st.p.forEach(function (q) { used[q[0] === 'ibhl' ? 'ib' : q[0]] = 1; }); });
+    var hl = STEPS.some(function (st) { return Array.isArray(st.p) && st.p.some(function (q) { return q[0] === 'ibhl'; }); });
+    var legend = Object.keys(used).length ? h('p', 'sp__legend',
+      (used.ig ? '<span class="sp__lv sp__lv--ig"><b class="sp__lvt">IGCSE</b> in the 0610 syllabus: learn these lines</span>' : '') +
+      (used.ib ? '<span class="sp__lv sp__lv--ib"><b class="sp__lvt">IB</b> not in the 0610 syllabus; in IB Biology' + (hl ? ' (IB HL: Higher Level only)' : '') + '</span>' : '') +
+      (used.bey ? '<span class="sp__lv sp__lv--bey"><b class="sp__lvt">Beyond</b> in neither syllabus</span>' : '')) : null;
 
     var T = 0, playing = false, raf = null, last = null, started = false, stopAt = null;
     function stepAt(t) { var k = 0; for (var i = 0; i < STEPS.length; i++) if (t >= STEPS[i].t - 1e-6) k = i; return k; }
@@ -96,7 +117,7 @@
       /* the step's words under the drawing: read aloud to a screen reader, and shown when the
          step list is stacked below the drawing (a narrow widget), so they are never a scroll away */
       var nt = started ? '<b class="sp__nowh">Step ' + (k + 1) + ' of ' + STEPS.length + ' · ' + esc(STEPS[k].h) + '</b>' +
-        (STEPS[k].tag ? '<span class="sp__tag sp__nowtag">' + esc(STEPS[k].tag) + '</span> ' : ' ') + stepText(STEPS[k].p) : '<b class="sp__nowh">Press Play</b> to start. Each step stops until you press Next step.';
+        (STEPS[k].tag ? '<span class="sp__tag sp__nowtag">' + esc(STEPS[k].tag) + '</span> ' : ' ') + stepWords(STEPS[k].p) : '<b class="sp__nowh">Press Play</b> to start. Each step stops until you press Next step.';
       if (now.getAttribute('data-k') !== String(started ? k : -1)) { now.innerHTML = nt; now.setAttribute('data-k', String(started ? k : -1)); }
       sync();
     }
@@ -155,7 +176,7 @@
       }
     }
     return {
-      bar: bar, list: list, now: now, paint: paint, stop: stop, isStill: still, compact: compact,
+      bar: bar, list: list, now: now, legend: legend, paint: paint, stop: stop, isStill: still, compact: compact,
       playAll: function () { run(0, END); }, playing: function () { return playing; },
       time: function () { return T; },
       seek: function (t) { stop(); started = t > 0; stopAt = null; T = Math.max(0, Math.min(END, t)); paint(T); return STEPS.map(function (s) { return s.t; }); },

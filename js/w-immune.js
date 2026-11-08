@@ -249,15 +249,18 @@
   /* ================================================================
      firstmeet — a pathogen enters the body for the first time
      ================================================================ */
+  /* Each step's words in parts with their level (Daniel, 8 Nov 2026: "exactly what is IGCSE and what is IB and what is
+     beyond"; memory animations-in-their-own-card). Every line here is IGCSE: 0610 10.1.6–10.1.10 and 9.4.6, or a
+     point the 0610 mark schemes in the header credit (the clonal start: 0610/42/O/N/16 Q5(d) and its stem). */
   var FM_STEPS = [
-    { t: 0,  h: 'A pathogen enters the body', p: 'A pathogen enters the blood. It has **antigens** on its surface, with a **specific shape**. Each lymphocyte makes antibodies of one shape only: the small antibody beside each shows which. The body already has lymphocytes for many different shapes, but **no memory cells** yet: only a few lymphocytes have the shape that fits.' },
-    { t: 8,  h: 'The matching lymphocytes are stimulated', p: 'Only the **lymphocytes** that make antibodies with a shape **complementary** to these antigens are **stimulated**: an antigen binds to the antibody on the lymphocyte’s surface. The others are not.' },
-    { t: 14, h: 'They divide', p: 'The stimulated lymphocytes **divide**, so there are many cells that make this one antibody. This takes days. Meanwhile the pathogens **reproduce**, so the person is **ill** for a few days.' },
-    { t: 22, h: 'They release antibodies', p: 'The lymphocytes release many of these **antibodies**. Antibodies are **proteins**, not cells.' },
-    { t: 30, h: 'The antibodies bind to the antigens', p: 'The antibodies **bind to the antigens**: their shapes fit. Some pathogens are **destroyed directly**; the others are **marked**.' },
-    { t: 38, h: 'Phagocytes engulf the marked pathogens', p: '**Phagocytes engulf** the marked pathogens: the membrane flows round each one, so it is inside the phagocyte, in a vacuole. Enzymes **digest** it. The person recovers.' },
-    { t: 48, h: 'Memory cells stay in the blood', p: 'Some of the lymphocytes stay in the blood as **memory cells**. Most of the antibodies are broken down, so their number in the blood falls.' },
-    { t: 56, h: 'The same pathogen returns', p: 'If the same pathogen returns, the **memory cells** divide quickly and make antibodies **faster** and in **larger numbers**, so the pathogen is destroyed **before the person becomes ill**. This is **active immunity**.' }
+    { t: 0,  h: 'A pathogen enters the body', p: [['ig', 'A pathogen enters the blood. It has **antigens** on its surface, with a **specific shape**. Each lymphocyte makes antibodies of one shape only: the small antibody beside each shows which. The body already has lymphocytes for many different shapes, but **no memory cells** yet: only a few lymphocytes have the shape that fits.']] },
+    { t: 8,  h: 'The matching lymphocytes are stimulated', p: [['ig', 'Only the **lymphocytes** that make antibodies with a shape **complementary** to these antigens are **stimulated**: an antigen binds to the antibody on the lymphocyte’s surface. The others are not.']] },
+    { t: 14, h: 'They divide', p: [['ig', 'The stimulated lymphocytes **divide**, so there are many cells that make this one antibody. This takes days. Meanwhile the pathogens **reproduce**, so the person is **ill** for a few days.']] },
+    { t: 22, h: 'They release antibodies', p: [['ig', 'The lymphocytes release many of these **antibodies**. Antibodies are **proteins**, not cells.']] },
+    { t: 30, h: 'The antibodies bind to the antigens', p: [['ig', 'The antibodies **bind to the antigens**: their shapes fit. Some pathogens are **destroyed directly**; the others are **marked**.']] },
+    { t: 38, h: 'Phagocytes engulf the marked pathogens', p: [['ig', '**Phagocytes engulf** the marked pathogens: the membrane flows round each one, so it is inside the phagocyte, in a vacuole. Enzymes **digest** it. The person recovers.']] },
+    { t: 48, h: 'Memory cells stay in the blood', p: [['ig', 'Some of the lymphocytes stay in the blood as **memory cells**. Most of the antibodies are broken down, so their number in the blood falls.']] },
+    { t: 56, h: 'The same pathogen returns', p: [['ig', 'If the same pathogen returns, the **memory cells** divide quickly and make antibodies **faster** and in **larger numbers**, so the pathogen is destroyed **before the person becomes ill**. This is **active immunity**.']] }
   ];
   var FM_M = [0, 8, 14, 22, 30, 38, 48, 56, 68];
   /* how long each step's picture really moves, in the model's seconds: written and checked by tools/motion.mjs (WKit.timeline) */
@@ -339,12 +342,13 @@
   /* ================================================================
      vacsteps — vaccination, then the real pathogen
      ================================================================ */
+  /* Every line IGCSE: 0610 10.1.11 (a)–(c), word for word where it has words, and 10.1.10 (the real pathogen later). */
   var VS_STEPS = [
-    { t: 0,  h: 'The vaccine is put into the body', p: '(a) **Weakened pathogens** or their **antigens** are put into the body, here by an injection. Weakened pathogens do not cause the disease in a healthy person, but they have the same antigens as the real pathogen.' },
-    { t: 8,  h: 'The antigens stimulate an immune response', p: '(b) The **antigens stimulate an immune response** by **lymphocytes**: only the lymphocytes whose antibodies are **complementary** to the antigens are stimulated (an antigen binds to the antibody on the lymphocyte’s surface), and they divide.' },
-    { t: 16, h: 'The lymphocytes produce antibodies', p: 'The lymphocytes **produce antibodies**, which **bind** to the antigens of the weakened pathogens, and the weakened pathogens are destroyed.' },
-    { t: 26, h: 'Memory cells are produced', p: '(c) **Memory cells** are produced that give **long-term immunity**. Most of the antibodies are broken down.' },
-    { t: 33, h: 'Later: the real pathogen', p: 'If the real pathogen enters the body later, the memory cells divide and make the specific antibodies **quickly**, so the pathogen is destroyed **before the person becomes ill**.' }
+    { t: 0,  h: 'The vaccine is put into the body', p: [['ig', '(a) **Weakened pathogens** or their **antigens** are put into the body, here by an injection. Weakened pathogens do not cause the disease in a healthy person, but they have the same antigens as the real pathogen.']] },
+    { t: 8,  h: 'The antigens stimulate an immune response', p: [['ig', '(b) The **antigens stimulate an immune response** by **lymphocytes**: only the lymphocytes whose antibodies are **complementary** to the antigens are stimulated (an antigen binds to the antibody on the lymphocyte’s surface), and they divide.']] },
+    { t: 16, h: 'The lymphocytes produce antibodies', p: [['ig', 'The lymphocytes **produce antibodies**, which **bind** to the antigens of the weakened pathogens, and the weakened pathogens are destroyed.']] },
+    { t: 26, h: 'Memory cells are produced', p: [['ig', '(c) **Memory cells** are produced that give **long-term immunity**. Most of the antibodies are broken down.']] },
+    { t: 33, h: 'Later: the real pathogen', p: [['ig', 'If the real pathogen enters the body later, the memory cells divide and make the specific antibodies **quickly**, so the pathogen is destroyed **before the person becomes ill**.']] }
   ];
   var VS_M = [0, 8, 16, 26, 33, 46];
   function vsScript() {

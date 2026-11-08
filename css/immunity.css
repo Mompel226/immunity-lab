@@ -157,6 +157,33 @@ svg .lb__lead,svg .lb__halo{vector-effect:non-scaling-stroke}
 .xcard.is-open .xcard__a{transform:rotate(225deg);margin-top:4px}
 .xcard__b{border:1px solid var(--accent);border-top:0;border-radius:0 0 var(--r) var(--r);padding:12px 14px;background:var(--card)}
 .xcard__b[hidden]{display:none}
+/* a film (a step animation) in a card of its own (copied from the Inheritance Lab, 8 Nov 2026), drawn as a dark "screen", like a video player, so a pupil sees at once
+   that it opens an animation (Daniel, 8 Nov 2026: "a different kind of tab that has a different background"; then: not
+   purple, "because purple is the color that you use for IB extensions … not any other color used for color coding, but
+   still easy to see"). --anim: ink in a bright page, near white in a dark one; it is also the player's Play button, step
+   bar and current step, so nothing in an animation is purple. The widget's own title is the card's heading. */
+:root{--anim:#1B2430;--anim-ink:#FFFFFF;--anim-soft:#C9D2DC}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--anim:#E6EBF1;--anim-ink:#121820;--anim-soft:#3B4756}}
+:root[data-theme="dark"]{--anim:#E6EBF1;--anim-ink:#121820;--anim-soft:#3B4756}
+.xcard--film .xcard__h{background:var(--anim);border-color:var(--anim);color:var(--anim-ink)}
+.xcard--film .xcard__h:hover{filter:brightness(1.12)}
+.xcard--film.is-open .xcard__h{background:var(--anim);color:var(--anim-ink)}
+.xcard--film .xcard__h:focus-visible{outline-color:var(--anim)}
+.xcard--film .xcard__a{border-color:var(--anim-ink)}
+.xcard--film .xcard__b{border-color:var(--anim)}
+.xcard__play{flex:none;display:inline-grid;place-items:center;width:26px;height:26px;border-radius:50%;background:var(--anim-ink);color:var(--anim);font-size:11px;padding-left:2px}
+.xcard__kind{display:block;font-size:12.5px;font-weight:600;color:var(--anim-soft);margin-top:1px}
+.xcard--film .xcard__b > .widget > .widget__h,.xcard--film .xcard__b > .widget > .widget__ask,
+.xcard--film .lvw__bar + .widget > .widget__h,.xcard--film .lvw__bar + .widget > .widget__ask{display:none}
+.exam-part[class*="exam-part--"] .xcard--film .xcard__h,.exam-part[class*="exam-part--"] .xcard--film .xcard__h:hover,.exam-part[class*="exam-part--"] .xcard--film.is-open .xcard__h{background:var(--anim);border-color:var(--anim);color:var(--anim-ink)}
+.exam-part[class*="exam-part--"] .xcard--film .xcard__b{border-color:var(--anim)}
+/* the player in the animation colour: Play, the step bar, the step on screen and its words' panel */
+.sp__bar{--sp:var(--anim)}
+.sp__play{color:var(--anim-ink)}
+.sp__step.is-on .sp__stepb{border-color:var(--anim);background:color-mix(in srgb,var(--anim) 7%,var(--card))}
+.sp__step.is-on .sp__num{background:var(--anim);color:var(--anim-ink)}
+.sp__now.sp__now--panel{border-left-color:var(--anim)}
+@keyframes sp-next{0%{box-shadow:0 0 0 0 color-mix(in srgb,var(--anim) 45%,transparent)}100%{box-shadow:0 0 0 11px transparent}}
 /* a widget, photo or table inside a card sits inside it: the list's bullet margin (-26px in app.css) does not apply here */
 .exam-list li.xcard .widget,.exam-list li.xcard .media,.exam-list li.xcard .photo,.exam-list li.xcard .ctable{margin-left:0;margin-right:0;max-width:100%}
 /* a closed tooltip takes no room: laid out while hidden, it made the panel scroll sideways when its word sat near the
@@ -408,7 +435,8 @@ p,li,dd,figcaption{text-wrap:pretty}
 .im__pill.is-bad,.ch__pill.is-bad,.mb__pill.is-bad{border-color:var(--bad);color:var(--bad)}
 .im__fig,.ch__fig,.mb__fig{margin:0}
 .im__svg,.ch__svg,.mb__svg{display:block;width:100%;height:auto}
-.ch__fence{font-size:12.5px;color:var(--purple);border-left:3px solid var(--purple);padding-left:8px}
+/* beyond 0610, in the grey of a step's Beyond line (sp__lv--bey), never purple: purple reads as IB (Daniel, 8 Nov 2026) */
+.ch__fence{font-size:12.5px;color:var(--col-ink);background:var(--c106);border-left:3px solid var(--c107);border-radius:7px;padding:4px 9px 5px}
 
 /* Close the routes (station 3) */
 .rt__wrap{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);gap:14px;align-items:start}
@@ -485,3 +513,22 @@ p,li,dd,figcaption{text-wrap:pretty}
 .ixnote summary{cursor:pointer;font-weight:600;color:var(--c34,var(--grey));list-style-position:inside}
 .ixnote summary:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:4px}
 .ixnote p{margin:8px 0 0}
+
+/* (copied from the Inheritance Lab, 8 Nov 2026) a step's words in parts, each marked with its level (Daniel, 8 Nov 2026: "exactly what is IGCSE and what is IB and what
+   is beyond … It needs to be very, very clear"): IGCSE in the lab's green, IB in the IB blue, beyond both in grey italics,
+   each a filled tint (memory level-colours-never-blank); the key to them, once, above the steps */
+.sp__lv{display:block;margin-top:5px;padding:4px 9px 5px;border-radius:7px;border-left:3px solid var(--accent);background:var(--accent-tint)}
+.sp__lv:first-child{margin-top:0}
+.sp__lvt{display:inline-block;font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:1px 7px;border-radius:var(--r-pill);margin-right:3px;vertical-align:1px;background:var(--accent);color:var(--card)}
+.sp__lv--ib,.sp__lv--ibhl{background:var(--c103);border-left-color:var(--c104)}
+.sp__lv--ib .sp__lvt,.sp__lv--ibhl .sp__lvt{background:var(--c104);color:var(--c103)}
+.sp__lv--bey{background:var(--c106);border-left-color:var(--c107)}
+.sp__lv--bey .sp__lvt{background:var(--c24);color:var(--card);font-style:italic}
+.sp__legend{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 8px;font-size:12.5px;line-height:1.35}
+.sp__legend .sp__lv{display:inline-block;margin:0;padding:3px 8px}
+/* a step with no IGCSE line: its level on its button (w-common.js onlyLv) */
+.sp__only{display:inline-block;font-size:10px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;padding:0 6px;border-radius:var(--r-pill);vertical-align:1px;border:0;margin-left:2px}
+.sp__only.sp__lv--ib,.sp__only.sp__lv--ibhl{background:var(--c104);color:var(--c103)}
+.sp__only.sp__lv--bey{background:var(--c24);color:var(--card);font-style:italic}
+.sp__step--ib .sp__stepb,.sp__step--ibhl .sp__stepb{background:var(--c103)}
+.sp__step--bey .sp__stepb{background:var(--c106)}
