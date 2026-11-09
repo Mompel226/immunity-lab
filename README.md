@@ -34,7 +34,7 @@ in its order and in its words. Then the questions say right or wrong, never the 
 | 🔑 **Which antibody fits?** | choose an antibody, then the pathogen it fits: only a complementary shape binds |
 | 🎬 **Step by step** | the first meeting with a pathogen, from antigens to memory cells; a vaccination; antibodies from mother to baby; cholera in the small intestine. Each step waits for “Next step” |
 | 🏘️ **A town of 96 people** | a disease arrives, week by week: no one vaccinated, most people vaccinated, and years after vaccination stopped |
-| 📖 **A shared glossary** | one wording per term, the same in every lab |
+| 📖 **A shared glossary** | one wording per term, the same in every lab; press 한국어, 中文 or 日本語 to see each word's name in Korean, Chinese or Japanese (the definitions stay in English) |
 
 > [!NOTE]
 > **The right answers are stored only as scrambled fingerprints.** The lab can tell a student they are wrong, but its
