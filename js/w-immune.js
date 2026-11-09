@@ -226,19 +226,18 @@
     var script = build(scriptOf()), lay = null, narrow = false, key = K.pinKey(S);
     /* each step: its motion, then a short beat; a single step stops where its picture stops (WKit.timeline) */
     var TL = K.timeline(M, null, MOTION, title), R = TL.R, clock = TL.clock;
-    function draw(t) {
+    /* one name per kind of thing: the first of each is enough to teach it (K.itemsOf keeps the first of each id) */
+    var itemsAt = K.itemsOf(function () { return lay; }, function (t) { return render(script, clock(t), lay, narrow).labels; }), memo = {};
+    function draw(t, still) {
       var mt = clock(t), r = render(script, mt, lay, narrow);
       gArt.innerHTML = plasma + r.svg;
-      var items = r.labels.map(function (q) {
-        var p = lay.to(q.x, q.y);
-        return { id: q.id, text: q.text, x: p[0], y: p[1], side: q.side, pri: q.pri, alts: (q.alts || []).map(function (a) { return lay.to(a[0], a[1]); }) };
-      });
-      /* one name per kind of thing: the first of each is enough to teach it */
-      var seen = {}; items = items.filter(function (q) { if (seen[q.id]) return false; seen[q.id] = 1; return true; });
+      var items = itemsAt(t);
+      /* Reduce motion: the step's still also names what came and went during the step (CircLearn.stillItems) */
+      items = L.stillItems(still, itemsAt, items, t, memo, narrow + '|' + lay.f);
       gLab.innerHTML = K.names(lay, items, narrow, key, null, 6);
       if (pillAt) pillAt(mt, S);
     }
-    var sp = L.stepper({ steps: K.readerSteps(steps, R), end: TL.end, render: draw, flow: TL.flow });
+    var sp = L.stepper({ steps: K.readerSteps(steps, R), end: TL.end, render: draw, flow: TL.flow, stills: K.stillsOf(steps, TL) });
     return K.mount(S, sp, 'im', notes, function (Dw, nar) {
       narrow = nar;
       var m = K.margins(nar, 11, 11, 96, 96);
@@ -257,12 +256,14 @@
     { t: 8,  h: 'The matching lymphocytes are stimulated', p: [['ig', 'Only the **lymphocytes** that make antibodies with a shape **complementary** to these antigens are **stimulated**: an antigen binds to the antibody on the lymphocyte’s surface. The others are not.']] },
     { t: 14, h: 'They divide', p: [['ig', 'The stimulated lymphocytes **divide**, so there are many cells that make this one antibody. This takes days. Meanwhile the pathogens **reproduce**, so the person is **ill** for a few days.']] },
     { t: 22, h: 'They release antibodies', p: [['ig', 'The lymphocytes release many of these **antibodies**. Antibodies are **proteins**, not cells.']] },
-    { t: 30, h: 'The antibodies bind to the antigens', p: [['ig', 'The antibodies **bind to the antigens**: their shapes fit. Some pathogens are **destroyed directly**; the others are **marked**.']] },
+    { t: 30, still: 36, h: 'The antibodies bind to the antigens', p: [['ig', 'The antibodies **bind to the antigens**: their shapes fit. Some pathogens are **destroyed directly**; the others are **marked**.']] },
     { t: 38, h: 'Phagocytes engulf the marked pathogens', p: [['ig', '**Phagocytes engulf** the marked pathogens: the membrane flows round each one, so it is inside the phagocyte, in a vacuole. Enzymes **digest** it. The person recovers.']] },
     { t: 48, h: 'Memory cells stay in the blood', p: [['ig', 'Some of the lymphocytes stay in the blood as **memory cells**. Most of the antibodies are broken down, so their number in the blood falls.']] },
     { t: 56, h: 'The same pathogen returns', p: [['ig', 'If the same pathogen returns, the **memory cells** divide quickly and make antibodies **faster** and in **larger numbers**, so the pathogen is destroyed **before the person becomes ill**. This is **active immunity**.']] }
   ];
   var FM_M = [0, 8, 14, 22, 30, 38, 48, 56, 68];
+  /* `still` (Reduce motion): the step's still in the model's time, where all its parts are drawn: step 5 at 36, while the
+     pathogen the antibodies destroyed directly is still there (it fades from 35.6 to 37.4); the others stop on their end */
   /* how long each step's picture really moves, in the model's seconds: written and checked by tools/motion.mjs (WKit.timeline) */
   var MOTION = {"The first meeting":[7.25,5.2,7.7,8,8,10,5,10.6],"Vaccination, step by step":[6.8,8,10,3.8,11.6]};
   function fmScript() {

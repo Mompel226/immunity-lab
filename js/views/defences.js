@@ -186,7 +186,7 @@
           pts: { pha: [60, 160, 'L'], lym: [378, 170, 'R'], mem: [0, 0, 'R'] }, late: { mem: 1 },
           names: { pha: 'phagocyte', lym: 'lymphocyte', mem: 'the membrane flows round it' } },
         { say: 'The pathogen is now inside the phagocyte, in a vacuole. Enzymes digest it. Engulfing and digesting a pathogen is <b class="t t--proc">phagocytosis</b>.', ms: 4400,
-          pts: { pha: [60, 160, 'L'], lym: [378, 170, 'R'], vac: [0, 0, 'R'] }, from: { vac: .18 }, until: { vac: .72 },
+          pts: { pha: [60, 160, 'L'], lym: [378, 170, 'R'], vac: [0, 0, 'R'] }, from: { vac: .18 }, until: { vac: .72 }, still: .55,
           names: { pha: 'phagocyte', lym: 'lymphocyte', vac: 'vacuole: the pathogen is digested' } },
         { say: 'Supplement: the <b class="t t--struct">lymphocyte</b> makes <b class="t t--subst">antibodies</b>. They bind to the antigens of a pathogen and mark it for phagocytes.', ms: 3800,
           pts: { pha: [60, 160, 'L'], lym: [378, 170, 'R'], ab: [0, 0, 'R'], ag2: [0, 0, 'R'] }, late: { ab: 1 }, from: { ag2: .3 },
@@ -355,7 +355,9 @@
     }
     function frame(u) {
       var T = TABS[cur]; if (T.photo || (T.steps && photoOn)) { key.hidden = true; return; }
-      var S = T.steps ? T.steps[step] : T, sp = T.steps ? (still() ? 1 : Math.min(1, (nowMs() - stepT) / (S.ms || 2600))) : 0;
+      /* with Reduce motion a step shows ONE still holding every name it shows (Daniel, 9 Nov 2026: "Nothing should
+         disappear"): its `still` moment (the vacuole step while the vacuole is there), else its end */
+      var S = T.steps ? T.steps[step] : T, sp = T.steps ? (still() ? (S.still != null ? S.still : 1) : Math.min(1, (nowMs() - stepT) / (S.ms || 2600))) : 0;
       gArt.innerHTML = T.art(u, step, sp);
       /* the headings over a drawing: the labels' size on screen, and the page's ink in bright and dark */
       Array.prototype.forEach.call(gArt.querySelectorAll('.dv__head'), function (t) { t.style.fontSize = (font * .92).toFixed(1) + 'px'; });

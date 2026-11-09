@@ -76,6 +76,8 @@
   var RESTK = ALLK.filter(function (k) { return k !== BAG.k; });   /* the bacterium without the antigen the B-cell took in */
 
   /* ---------- one frame at model time t ---------- */
+  /* STILL: drawing the still of a step with Reduce motion (draw sets it round its own render only) */
+  var STILL = false;
   function render(t) {
     var out = '', labels = [];
     function lab(id, text, x, y, side, pri) { labels.push({ id: id, text: text, x: x, y: y, side: side, pri: pri || 1 }); }
@@ -101,6 +103,8 @@
       }
       if (t < 10.5) lab('memb', 'its membrane flows round it', bp[0] + (VR + 8) * Math.cos(tu + phi + g * 1.4), bp[1] + (VR + 8) * Math.sin(tu + phi + g * 1.4), 'R', 3);
     }
+    /* a still of the step (Reduce motion) cannot show the flowing: the name points at the membrane it became, the vesicle's */
+    if (STILL && t >= 10.5 && t < 15) lab('memb', 'its membrane flows round it', bp[0] - VR * .72, bp[1] - VR * .72, 'R', 3);
     out += D.membrane({ id: 'ixMb', balls: balls, edge: '#5E8F5A', rim: '#B0D4AD', fill: '#CCE1C3' }) + D.inside('macrophage', Mx[0] - 6, Mx[1] + 4, MS);
     /* the vesicle round the bacterium, from when the membrane has closed until its antigen pieces have left it (10.5–25) */
     if (t >= 10.5 && t < 25) {
@@ -279,14 +283,15 @@
     var gLab = document.createElementNS(NSV, 'g'); svg.appendChild(gLab);
     /* each step: its motion at its pace, then a short beat; a single step stops where its picture stops (WKit.timeline) */
     var lay = null, narrow = false, key = K.pinKey(S), TL = K.timeline(M, PACES, MOTION, 'How antibodies are made'), R = TL.R, clock = TL.clock;
-    function draw(t) {
-      var mt = clock(t), r = render(mt);
+    var itemsAt = K.itemsOf(function () { return lay; }, function (t) { return render(clock(t)).labels; }), memo = {};
+    function draw(t, still) {
+      STILL = !!still; var mt = clock(t), r = render(mt), items = itemsAt(t); STILL = false;
       gArt.innerHTML = tissue + r.svg;
-      var seen = {}, items = r.labels.filter(function (q) { if (seen[q.id]) return false; seen[q.id] = 1; return true; })
-        .map(function (q) { var p = lay.to(q.x, q.y); return { id: q.id, text: q.text, x: p[0], y: p[1], side: q.side, pri: q.pri }; });
+      /* Reduce motion: the step's still also names what came and went during the step (CircLearn.stillItems) */
+      items = L.stillItems(still, itemsAt, items, t, memo, narrow + '|' + lay.f);
       gLab.innerHTML = K.names(lay, items, narrow, key, null, 6);
     }
-    var sp = L.stepper({ steps: K.readerSteps(STEPS, R), end: TL.end, render: draw, flow: TL.flow });
+    var sp = L.stepper({ steps: K.readerSteps(STEPS, R), end: TL.end, render: draw, flow: TL.flow, stills: K.stillsOf(STEPS, TL) });
     /* the notes fold away under one closed line (Daniel, 4 Nov 2026: "this text is extremely long. It distracts from … the
        step-by-step"): nothing but the steps stands between the animation and the rest of the station */
     var box = K.mount(S, sp, 'im', [], function (Dw, nar) {

@@ -132,17 +132,17 @@
     var lay = null, narrow = false, key = K.pinKey(S);
     /* each step: its motion, then a short beat; a single step stops where its picture stops (WKit.timeline) */
     var TL = K.timeline(M, null, MOTION, 'Cholera in the small intestine'), R = TL.R, clock = TL.clock;
-    function draw(tt) {
+    var itemsAt = K.itemsOf(function () { return lay; }, function (tt) { return labelsAt(clock(tt)); }, true), memo = {};
+    function draw(tt, still) {
       var t = clock(tt);
       art.innerHTML = render(t);
-      var items = labelsAt(t).map(function (q) {
-        var p = lay.to(q.x, q.y);
-        return { id: q.id, text: q.text, x: p[0], y: p[1], side: q.side, alts: (q.alts || []).map(function (a) { return lay.to(a[0], a[1]); }) };
-      });
+      var items = itemsAt(tt);
+      /* Reduce motion: the step's still also names what came and went during the step (CircLearn.stillItems) */
+      items = L.stillItems(still, itemsAt, items, tt, memo, narrow + '|' + lay.f);
       gLab.innerHTML = K.names(lay, items, narrow, key, { tox: 1.6, cl: 1.6, wa: 1.6 }, 6);
       S.pill('who', t < 32 ? 'infected' : t < 36 ? 'diarrhoea' : 'dehydrated', t < 32 ? 'warn' : 'bad');
     }
-    var sp = L.stepper({ steps: K.readerSteps(STEPS, R), end: TL.end, render: draw, flow: TL.flow });
+    var sp = L.stepper({ steps: K.readerSteps(STEPS, R), end: TL.end, render: draw, flow: TL.flow, stills: K.stillsOf(STEPS, TL) });
     /* a key to the colours, under the drawing and inside its figure (Daniel, 4 Nov 2026: "a legend for the chloride ions …
        as well as a legend for the water") */
     var keyEl = L.h('div', 'ch__keys',
