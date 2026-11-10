@@ -435,8 +435,9 @@ p,li,dd,figcaption{text-wrap:pretty}
 .im__pill.is-bad,.ch__pill.is-bad,.mb__pill.is-bad{border-color:var(--bad);color:var(--bad)}
 .im__fig,.ch__fig,.mb__fig{margin:0}
 .im__svg,.ch__svg,.mb__svg{display:block;width:100%;height:auto}
-/* beyond 0610, in the grey of a step's Beyond line (sp__lv--bey), never purple: purple reads as IB (Daniel, 8 Nov 2026) */
-.ch__fence{font-size:12.5px;color:var(--col-ink);background:var(--c106);border-left:3px solid var(--c107);border-radius:7px;padding:4px 9px 5px}
+/* beyond 0610, in the extension violet of a step's Beyond line (sp__lv--bey): Daniel, 10 Nov 2026, "One violet" for IB and
+   beyond alike (this replaced 8 Nov's grey) */
+.ch__fence{font-size:12.5px;color:var(--col-ink);background:var(--ext-tint);border-left:3px solid var(--ext);border-radius:7px;padding:4px 9px 5px}
 
 /* Close the routes (station 3) */
 .rt__wrap{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);gap:14px;align-items:start}
@@ -491,9 +492,9 @@ p,li,dd,figcaption{text-wrap:pretty}
 .fmsw{margin:10px 0 6px}
 .fmsw__b{font:inherit;font-size:13.5px;font-weight:600;padding:7px 14px;border-radius:var(--r-pill);cursor:pointer;border:1.5px solid var(--col-line);background:var(--col-card);color:var(--col-ink)}
 .fmsw__b[aria-pressed="true"]{border-color:var(--accent);background:var(--accent-tint);color:var(--accent)}
-/* the IB version in the IB blue, as every lab marks IB (later__ref--ib) */
-.fmsw__b--ib{color:var(--c104);border-color:var(--c105)}
-.fmsw__b--ib[aria-pressed="true"]{border-color:var(--c104);background:var(--c103);color:var(--c104)}
+/* the IB version in the extension violet, as every lab marks IB (later__ref--ib; Daniel, 10 Nov 2026) */
+.fmsw__b--ib{color:var(--ext);border-color:var(--ext-rule)}
+.fmsw__b--ib[aria-pressed="true"]{border-color:var(--ext);background:var(--ext-tint);color:var(--ext)}
 .ixg__p .later__ref{margin-right:4px}
 .fmsw__b:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 .widget__note.ixg__names{font-size:14px;color:var(--col-ink)}
@@ -502,7 +503,7 @@ p,li,dd,figcaption{text-wrap:pretty}
 .pinkey[hidden]{display:none}
 .pinkey b{display:inline-grid;place-items:center;width:20px;height:20px;border-radius:50%;border:1.5px solid var(--ink);font-size:11.5px;margin-right:4px}
 /* the note under the first meeting: where the antibody shapes come from (w-immext.js shapesnote) */
-.fmnote{background:var(--c106);border:1.5px dashed var(--c107);border-radius:var(--r);padding:12px 16px;margin:12px 0}
+.fmnote{background:var(--ext-wash);border:1.5px dashed var(--ext-rule);border-radius:var(--r);padding:12px 16px;margin:12px 0}
 .fmnote p{margin:0 0 8px;line-height:1.55}
 .fmnote p:last-child{margin-bottom:0}
 .fmnote__h{font-weight:700;font-size:16px}
@@ -520,15 +521,15 @@ p,li,dd,figcaption{text-wrap:pretty}
 .sp__lv{display:block;margin-top:5px;padding:4px 9px 5px;border-radius:7px;border-left:3px solid var(--accent);background:var(--accent-tint)}
 .sp__lv:first-child{margin-top:0}
 .sp__lvt{display:inline-block;font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:1px 7px;border-radius:var(--r-pill);margin-right:3px;vertical-align:1px;background:var(--accent);color:var(--card)}
-.sp__lv--ib,.sp__lv--ibhl{background:var(--c103);border-left-color:var(--c104)}
-.sp__lv--ib .sp__lvt,.sp__lv--ibhl .sp__lvt{background:var(--c104);color:var(--c103)}
-.sp__lv--bey{background:var(--c106);border-left-color:var(--c107)}
-.sp__lv--bey .sp__lvt{background:var(--c24);color:var(--card);font-style:italic}
+.sp__lv--ib,.sp__lv--ibhl{background:var(--ext-tint);border-left-color:var(--ext)}
+.sp__lv--ib .sp__lvt,.sp__lv--ibhl .sp__lvt{background:var(--ext);color:var(--ext-on)}
+.sp__lv--bey{background:var(--ext-tint);border-left-color:var(--ext)}
+.sp__lv--bey .sp__lvt{background:var(--ext);color:var(--ext-on);font-style:italic}
 .sp__legend{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 8px;font-size:12.5px;line-height:1.35}
 .sp__legend .sp__lv{display:inline-block;margin:0;padding:3px 8px}
 /* a step with no IGCSE line: its level on its button (w-common.js onlyLv) */
 .sp__only{display:inline-block;font-size:10px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;padding:0 6px;border-radius:var(--r-pill);vertical-align:1px;border:0;margin-left:2px}
-.sp__only.sp__lv--ib,.sp__only.sp__lv--ibhl{background:var(--c104);color:var(--c103)}
-.sp__only.sp__lv--bey{background:var(--c24);color:var(--card);font-style:italic}
-.sp__step--ib .sp__stepb,.sp__step--ibhl .sp__stepb{background:var(--c103)}
-.sp__step--bey .sp__stepb{background:var(--c106)}
+.sp__only.sp__lv--ib,.sp__only.sp__lv--ibhl{background:var(--ext);color:var(--ext-on)}
+.sp__only.sp__lv--bey{background:var(--ext);color:var(--ext-on);font-style:italic}
+.sp__step--ib .sp__stepb,.sp__step--ibhl .sp__stepb{background:var(--ext-tint)}
+.sp__step--bey .sp__stepb{background:var(--ext-tint)}

@@ -309,7 +309,7 @@
   function immext(spec) {
     var box = build(spec), head = box.firstChild;
     box.classList.add('ixw'); box.hidden = true;
-    /* marked as IB as the other labs mark IB (later__ref--ib, the IB blue; Daniel, 4 Nov 2026: "the same color coding … as in other labs") */
+    /* marked as IB as the other labs mark IB (later__ref--ib, the extension violet since Daniel's "One violet", 10 Nov 2026; 4 Nov 2026: "the same color coding … as in other labs") */
     box.insertBefore(h('p', 'ixg__p', '<span class="later__ref later__ref--ib">IB Biology · extension</span> Beyond the 0610 syllabus, which does not list these cells or steps. ' +
       'IB Biology (C3.2) asks most of it; two steps go beyond IB, and each step says which.'), head.nextSibling);
     return box;
