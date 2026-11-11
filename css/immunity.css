@@ -14,9 +14,9 @@
   --tw-v:#E3A90B; --tw-s:#2F6DB5; --tw-i:#C8322F; --tw-r:#9AA6B2;
   --rt-bg:#F6F8FA; --rt-path:#556372; --rt-shut:#C8322F; --rt-ill:#C8322F; --rt-well:#2F6DB5;
   --ch-tox:#E8730C; --ch-cl:#2E9E4F; --ch-wa:#2B7BD6; --ch-bac:#7A8B1E; --ch-pale:#FFFFFF;
-  /* the parts of a station (a block of What you need to know, and its button on the picture): blue and violet, far from the
-     inks of the words (green, orange, rose) and from the lab's teal */
-  --pt1-ink:#1E5BB8; --pt1-tint:#EAF1FC; --pt1-edge:#B9D0F2; --pt2-ink:#7438B0; --pt2-tint:#F4EDFB; --pt2-edge:#D8C4F0;
+  /* the parts of a station (a block of What you need to know, and its button on the picture): blue and teal, far from the
+     inks of the words (green, orange, rose); the teal is close to the lab's own (violet until 11 Nov 2026, when violet came to mean extension; Daniel chose teal) */
+  --pt1-ink:#1E5BB8; --pt1-tint:#EAF1FC; --pt1-edge:#B9D0F2; --pt2-ink:#0F766E; --pt2-tint:#E6F4F1; --pt2-edge:#A8D8CF;
 }
 @media (prefers-color-scheme: dark){
 :root:not([data-theme="light"]){
@@ -26,7 +26,7 @@
   --tw-v:#F2C230; --tw-s:#6FA8EC; --tw-i:#F06A5E; --tw-r:#76828F;
   --rt-bg:#16202A; --rt-path:#9AA8B5; --rt-shut:#F06A5E; --rt-ill:#F06A5E; --rt-well:#6FA8EC;
   --ch-pale:#0E141B;
-  --pt1-ink:#8DB9FF; --pt1-tint:#14233A; --pt1-edge:#2C4C7A; --pt2-ink:#CFA9F7; --pt2-tint:#231A36; --pt2-edge:#4C3672;
+  --pt1-ink:#8DB9FF; --pt1-tint:#14233A; --pt1-edge:#2C4C7A; --pt2-ink:#7FD8C9; --pt2-tint:#12302C; --pt2-edge:#2D6A61;
 }
 }
 :root[data-theme="dark"]{
@@ -36,7 +36,7 @@
   --tw-v:#F2C230; --tw-s:#6FA8EC; --tw-i:#F06A5E; --tw-r:#76828F;
   --rt-bg:#16202A; --rt-path:#9AA8B5; --rt-shut:#F06A5E; --rt-ill:#F06A5E; --rt-well:#6FA8EC;
   --ch-pale:#0E141B;
-  --pt1-ink:#8DB9FF; --pt1-tint:#14233A; --pt1-edge:#2C4C7A; --pt2-ink:#CFA9F7; --pt2-tint:#231A36; --pt2-edge:#4C3672;
+  --pt1-ink:#8DB9FF; --pt1-tint:#14233A; --pt1-edge:#2C4C7A; --pt2-ink:#7FD8C9; --pt2-tint:#12302C; --pt2-edge:#2D6A61;
 }
 
 /* ---------- the header: the shelf's own colours, never the other labs' green ---------- */
