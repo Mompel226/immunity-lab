@@ -224,6 +224,9 @@
       chips.appendChild(c);
     });
     host.appendChild(chips);
+    /* the immunity map (js/imm-map.js, 20 Nov 2026): one button under the title in the stations about the defences and
+       immunity, on both tabs; it opens the map in a pop-up over the lab */
+    if (window.ImmMap) { var mapGo = window.ImmMap.button(st.id); if (mapGo) host.appendChild(mapGo); }
 
     var tabs = document.createElement('div');
     tabs.className = 'tabs'; tabs.setAttribute('role', 'tablist');

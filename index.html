@@ -31,8 +31,9 @@
 <link rel="stylesheet" media="print" onload="this.media='all'"
       href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@400;500;600;700&display=swap">
 <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@400;500;600;700&display=swap"></noscript>
-<link rel="stylesheet" href="css/app.css?v=1795101956">
-<link rel="stylesheet" href="css/immunity.css?v=1795101956">
+<link rel="stylesheet" href="css/app.css?v=1795152908">
+<link rel="stylesheet" href="css/immunity.css?v=1795152908">
+<link rel="stylesheet" href="css/imm-map.css?v=1795152908">
 </head>
 <body>
 <div class="app">
@@ -134,6 +135,7 @@
       <li>An underlined word can be pressed: <b>↗</b> takes you to the station that explains it, with a button to return here, <b>↓</b> takes you to its card in Key words, at the bottom of the station, and a faint dotted line opens the definition.</li>
       <li>The <b>Glossary</b> (<span lang="ko">용어집</span> · <span lang="zh-Hans">词汇表</span>) lists every word with its definition. Choose <b lang="ko">한국어</b>, <b lang="zh-Hans">中文</b> or <b lang="ja">日本語</b> at its top to see the name of each word in that language. The definitions stay in English, the language of the exam.</li>
       <li>Your work is kept <b>in this browser</b> and, once you sign in with your school account, sent to Dr&nbsp;Mompel&rsquo;s records automatically while you work. You do not need to submit anything. Signed in, you can continue your work on another computer.</li>
+      <li>Unsure where innate, acquired, active and passive immunity fit? In the stations about the defences and immunity, <b>See the immunity map</b> opens a map of how they fit inside each other. <b>× Close</b> takes you back to where you were.</li>
       <li><b>☾ Dark</b> and <b>☀ Bright</b> switch the page between its two versions.</li>
     </ul>
     <p class="fineprint">The answers are never shown. Sign in with your school Google account so Dr&nbsp;Mompel knows whose work it is. Anyone else is welcome to use the lab: their work stays in their own browser.</p>
@@ -163,43 +165,44 @@
 </div>
 
 <script src="https://accounts.google.com/gsi/client?hl=en-GB" async defer></script>
-<script src="js/config.js?v=1795101956" defer></script>
-<script src="js/data/glossary.js?v=1795101956" defer></script>
-<script src="js/data/glossary-tr.js?v=1795101956" defer></script>
-<script src="js/data/syllabus.js?v=1795101956" defer></script>
-<script src="js/data/stations.js?v=1795101956" defer></script>
-<script src="js/data/photos.js?v=1795101956" defer></script>
-<script src="js/terms.js?v=1795101956" defer></script>
-<script src="js/say.js?v=1795101956" defer></script>
-<script src="js/marking.js?v=1795101956" defer></script>
-<script src="js/sync.js?v=1795101956" defer></script>
-<script src="js/signin.js?v=1795101956" defer></script>
-<script src="js/homework.js?v=1795101956" defer></script>
-<script src="js/engine.js?v=1795101956" defer></script>
-<script src="js/syllabus.js?v=1795101956" defer></script>
-<script src="js/widgets.js?v=1795101956" defer></script>
-<script src="js/learn.js?v=1795101956" defer></script>
-<script src="js/w-common.js?v=1795101956" defer></script>
-<script src="js/engine-ext.js?v=1795101956" defer></script>
-<script src="js/plate.js?v=1795101956" defer></script>
-<script src="js/imm-art.js?v=1795101956" defer></script>
-<script src="js/imm-draw.js?v=1795101956" defer></script>
-<script src="js/imm-scenes.js?v=1795101956" defer></script>
-<script src="js/w-kit.js?v=1795101956" defer></script>
-<script src="js/w-immune.js?v=1795101956" defer></script>
-<script src="js/w-immext.js?v=1795101956" defer></script>
-<script src="js/w-routes.js?v=1795101956" defer></script>
-<script src="js/w-abfit.js?v=1795101956" defer></script>
-<script src="js/w-mother.js?v=1795101956" defer></script>
-<script src="js/w-cholera.js?v=1795101956" defer></script>
-<script src="js/views/gallery.js?v=1795101956" defer></script>
-<script src="js/views/defences.js?v=1795101956" defer></script>
-<script src="js/views/town.js?v=1795101956" defer></script>
-<script src="js/views/figure.js?v=1795101956" defer></script>
-<script src="js/app.js?v=1795101956" defer></script>
-<script src="js/glossary-lang.js?v=1795101956" defer></script>
-<script src="js/data/mywords-ids.js?v=1795101956" defer></script>
-<script src="js/mywords.js?v=1795101956" defer></script>
+<script src="js/config.js?v=1795152908" defer></script>
+<script src="js/data/glossary.js?v=1795152908" defer></script>
+<script src="js/data/glossary-tr.js?v=1795152908" defer></script>
+<script src="js/data/syllabus.js?v=1795152908" defer></script>
+<script src="js/data/stations.js?v=1795152908" defer></script>
+<script src="js/data/photos.js?v=1795152908" defer></script>
+<script src="js/terms.js?v=1795152908" defer></script>
+<script src="js/say.js?v=1795152908" defer></script>
+<script src="js/marking.js?v=1795152908" defer></script>
+<script src="js/sync.js?v=1795152908" defer></script>
+<script src="js/signin.js?v=1795152908" defer></script>
+<script src="js/homework.js?v=1795152908" defer></script>
+<script src="js/engine.js?v=1795152908" defer></script>
+<script src="js/syllabus.js?v=1795152908" defer></script>
+<script src="js/widgets.js?v=1795152908" defer></script>
+<script src="js/learn.js?v=1795152908" defer></script>
+<script src="js/w-common.js?v=1795152908" defer></script>
+<script src="js/engine-ext.js?v=1795152908" defer></script>
+<script src="js/plate.js?v=1795152908" defer></script>
+<script src="js/imm-art.js?v=1795152908" defer></script>
+<script src="js/imm-draw.js?v=1795152908" defer></script>
+<script src="js/imm-scenes.js?v=1795152908" defer></script>
+<script src="js/w-kit.js?v=1795152908" defer></script>
+<script src="js/w-immune.js?v=1795152908" defer></script>
+<script src="js/w-immext.js?v=1795152908" defer></script>
+<script src="js/w-routes.js?v=1795152908" defer></script>
+<script src="js/w-abfit.js?v=1795152908" defer></script>
+<script src="js/w-mother.js?v=1795152908" defer></script>
+<script src="js/w-cholera.js?v=1795152908" defer></script>
+<script src="js/views/gallery.js?v=1795152908" defer></script>
+<script src="js/views/defences.js?v=1795152908" defer></script>
+<script src="js/views/town.js?v=1795152908" defer></script>
+<script src="js/views/figure.js?v=1795152908" defer></script>
+<script src="js/imm-map.js?v=1795152908" defer></script>
+<script src="js/app.js?v=1795152908" defer></script>
+<script src="js/glossary-lang.js?v=1795152908" defer></script>
+<script src="js/data/mywords-ids.js?v=1795152908" defer></script>
+<script src="js/mywords.js?v=1795152908" defer></script>
 <!-- The lab offline. The worker lives at this lab's root, so on Pages its scope is exactly
      /<lab>/. It fetches the HTML network-first, so a deploy always reaches an online student
      and the cache is only the fall-back for when the wifi is not there. -->

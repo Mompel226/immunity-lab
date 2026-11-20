@@ -1,0 +1,232 @@
+/* ============================================================
+   imm-map.css — the immunity map (20 Nov 2026): Daniel's one-page poster of how innate, acquired, active and passive
+   immunity fit inside each other, shown big in a pop-up over the lab (js/imm-map.js) and printed from the same source as
+   the classroom PDF (tools/imm-map-pdf.mjs → IGCSE Lessons/Y10/T10_Disease and Immunity/Immunity-poster-answer-key.pdf).
+   The poster's own look (warm paper, one colour per box); every colour is a --mp- token with a bright value and the same
+   dark value in both dark blocks (memory bright-and-dark-versions). Passive immunity is rose, not the poster's first
+   violet: violet means "beyond the syllabus" on every site (Daniel, 10 Nov 2026, "One violet"), and the map's own
+   "beyond 0610" tag wears it.
+   Layout: one column on a phone; at 760 px the kinds of immunity side by side; at 1100 px (and the 1600 px print) the
+   poster's two halves side by side.
+   ============================================================ */
+:root{
+  --mp-paper:#F7F6F2; --mp-card:#FFFFFF; --mp-rule:#DDD9CE; --mp-frame:#1C1B19; --mp-pill:#1C1B19; --mp-pill-ink:#FFFFFF;
+  --mp-ink:#1C1B19; --mp-ink-2:#3F3C36; --mp-soft:#5C5850; --mp-ref:#6B6860;
+  --mp-in:#B4530A; --mp-in-h:#7A3504; --mp-in-lab:#8A3D05; --mp-in-tint:#FDF1E6; --mp-in-edge:#EBC9A8;
+  --mp-ac:#1D4ED8; --mp-ac-h:#1E3A8A; --mp-ac-lab:#1E40AF; --mp-ac-tint:#EEF3FD; --mp-ac-edge:#BFCFF5;
+  --mp-act:#0F766E; --mp-act-h:#0B5550; --mp-act-tint:#E2F3EF; --mp-act-edge:#9FD3CA; --mp-act-on:#FFFFFF;
+  --mp-pas:#BE185D; --mp-pas-h:#831843; --mp-pas-lab:#9D174D; --mp-pas-tint:#FDF0F5; --mp-pas-edge:#F1B5CF; --mp-pas-on:#FFFFFF;
+  --mp-ext:#7243C0; --mp-ext-tint:#EDE8FA; --mp-ext-rule:#C9BAEE;
+  --mp-slip:#FFF8E1; --mp-slip-edge:#E6CF7A;
+}
+@media (prefers-color-scheme: dark){
+:root:not([data-theme="light"]){
+  --mp-paper:#121A23; --mp-card:#1A232E; --mp-rule:#2B3744; --mp-frame:#C9D2DC; --mp-pill:#E9EEF3; --mp-pill-ink:#0E141B;
+  --mp-ink:#E9EEF3; --mp-ink-2:#CBD4DD; --mp-soft:#A9B5C1; --mp-ref:#9AA8B5;
+  --mp-in:#E8954F; --mp-in-h:#F6B77A; --mp-in-lab:#F2A866; --mp-in-tint:#2A1F15; --mp-in-edge:#5C4128;
+  --mp-ac:#7AA2F7; --mp-ac-h:#A9C1FF; --mp-ac-lab:#9DB8FA; --mp-ac-tint:#141F35; --mp-ac-edge:#2F4675;
+  --mp-act:#4FD1BF; --mp-act-h:#7FE0D0; --mp-act-tint:#10302B; --mp-act-edge:#2D6A61; --mp-act-on:#0E141B;
+  --mp-pas:#F48FB8; --mp-pas-h:#F8B4CF; --mp-pas-lab:#F6A3C5; --mp-pas-tint:#311725; --mp-pas-edge:#6E3550; --mp-pas-on:#0E141B;
+  --mp-ext:#B388FF; --mp-ext-tint:#2A2142; --mp-ext-rule:#5B4A8C;
+  --mp-slip:#2B2615; --mp-slip-edge:#6B5B22;
+}
+}
+:root[data-theme="dark"]{
+  --mp-paper:#121A23; --mp-card:#1A232E; --mp-rule:#2B3744; --mp-frame:#C9D2DC; --mp-pill:#E9EEF3; --mp-pill-ink:#0E141B;
+  --mp-ink:#E9EEF3; --mp-ink-2:#CBD4DD; --mp-soft:#A9B5C1; --mp-ref:#9AA8B5;
+  --mp-in:#E8954F; --mp-in-h:#F6B77A; --mp-in-lab:#F2A866; --mp-in-tint:#2A1F15; --mp-in-edge:#5C4128;
+  --mp-ac:#7AA2F7; --mp-ac-h:#A9C1FF; --mp-ac-lab:#9DB8FA; --mp-ac-tint:#141F35; --mp-ac-edge:#2F4675;
+  --mp-act:#4FD1BF; --mp-act-h:#7FE0D0; --mp-act-tint:#10302B; --mp-act-edge:#2D6A61; --mp-act-on:#0E141B;
+  --mp-pas:#F48FB8; --mp-pas-h:#F8B4CF; --mp-pas-lab:#F6A3C5; --mp-pas-tint:#311725; --mp-pas-edge:#6E3550; --mp-pas-on:#0E141B;
+  --mp-ext:#B388FF; --mp-ext-tint:#2A2142; --mp-ext-rule:#5B4A8C;
+  --mp-slip:#2B2615; --mp-slip-edge:#6B5B22;
+}
+
+/* ---------- the map itself ---------- */
+.mp{background:var(--mp-paper);color:var(--mp-ink);font-family:"Inter",system-ui,-apple-system,"Segoe UI","Helvetica Neue",sans-serif;
+    padding:22px 16px 18px;line-height:1.45;font-size:15px;text-align:left}
+.mp *{box-sizing:border-box}
+:where(.mp) :where(h2,h3,h4,h5,p,ol,ul,table){margin:0}   /* no weight: every rule below may set its own margin */
+.mp b{font-weight:700}
+.mp-ref{color:var(--mp-ref);font-size:12px;font-weight:400;white-space:nowrap}
+.mp-top{display:grid;gap:14px;margin-bottom:22px}
+.mp-eyebrow{font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--mp-soft);font-weight:600;margin-bottom:6px}
+.mp-title{font-size:clamp(27px,3.75vw,60px);line-height:1.05;letter-spacing:-.025em;font-weight:800;color:var(--mp-ink);margin-bottom:12px}
+.mp-lede{font-size:clamp(15px,1.19vw,19px);color:var(--mp-ink-2);line-height:1.5}
+.mp-key{background:var(--mp-card);border:1px solid var(--mp-rule);border-radius:12px;padding:12px 16px;align-self:end}
+.mp-key__h{font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--mp-soft);font-weight:600;margin-bottom:6px}
+.mp-key p+p{font-size:14px;color:var(--mp-ink)}
+.mp-beyond{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;line-height:1.2;
+           color:var(--mp-ext);background:var(--mp-ext-tint);border:1px dashed var(--mp-ext);border-radius:999px;padding:2px 8px;
+           margin-right:8px;vertical-align:1px;white-space:nowrap}
+
+.mp-card{background:var(--mp-card);border:1px solid var(--mp-rule);border-radius:12px;padding:14px 16px}
+.mp-card h4{font-size:17px;font-weight:600;line-height:1.25;margin-bottom:5px;color:var(--mp-ink)}
+.mp-card p,.mp-card li{font-size:14.5px;color:var(--mp-ink-2)}
+.mp-defs3{display:grid;gap:12px;margin-bottom:26px}
+.mp-defs3 h4{font-size:19px}
+
+/* the frame round all of immunity, with its black pill */
+.mp-imm{position:relative;border:3px solid var(--mp-frame);border-radius:20px;background:var(--mp-card);padding:34px 12px 14px;margin-bottom:26px}
+.mp-imm__pill{position:absolute;left:14px;top:-19px;max-width:calc(100% - 28px);background:var(--mp-pill);color:var(--mp-pill-ink);
+              border-radius:999px;padding:6px 16px;font-size:clamp(14px,1.4vw,22px);font-weight:700;letter-spacing:.01em;line-height:1.25}
+.mp-imm__pill span{font-weight:600}
+.mp-halves{display:grid;gap:14px}
+.mp-half{border:2px solid;border-radius:14px;padding:18px 14px 16px}
+.mp-half__n{font-size:12px;letter-spacing:.12em;text-transform:uppercase;font-weight:700;margin-bottom:2px}
+.mp-half h3{font-size:clamp(25px,2.25vw,36px);line-height:1.12;font-weight:700;letter-spacing:-.015em;margin-bottom:6px}
+.mp-half__is{font-size:16px;color:var(--mp-ink-2);margin-bottom:6px;line-height:1.4}
+.mp-half__note{font-size:13.5px;color:var(--mp-soft);margin-bottom:14px}
+.mp-lab{font-size:12px;letter-spacing:.1em;text-transform:uppercase;font-weight:700;margin:16px 0 8px}
+.mp-stack{display:grid;gap:10px}
+
+.mp-innate{background:var(--mp-in-tint);border-color:var(--mp-in)}
+.mp-innate .mp-half__n,.mp-innate .mp-lab{color:var(--mp-in-lab)}
+.mp-innate h3{color:var(--mp-in-h)}
+.mp-innate .mp-card{border-color:var(--mp-in-edge)}
+.mp-innate .mp-card--key{border:2px solid var(--mp-in)}
+.mp-sub{font-size:13.5px !important;margin-top:6px}
+
+.mp-acq{background:var(--mp-ac-tint);border-color:var(--mp-ac)}
+.mp-acq>.mp-half__n,.mp-acq>.mp-lab{color:var(--mp-ac-lab)}
+.mp-acq h3{color:var(--mp-ac-h)}
+.mp-acq>.mp-terms .mp-card{border-color:var(--mp-ac-edge)}
+.mp-terms{display:grid;gap:10px}
+.mp-terms .mp-card{padding:12px 14px}
+.mp-terms h4{font-size:16px}
+.mp-terms p{font-size:14px}
+.mp-kinds{display:grid;gap:14px;margin-top:18px}
+
+/* active and passive immunity */
+.mp-kind{border:2px solid;border-radius:14px;padding:18px 14px 16px;display:flex;flex-direction:column;gap:10px}
+.mp-kind h4.mp-kind__h{font-size:clamp(23px,1.9vw,30px);line-height:1.15;font-weight:700;letter-spacing:-.01em;margin:0}
+.mp-kind__is{font-size:15px;color:var(--mp-ink)}
+.mp-chips{display:flex;flex-wrap:wrap;gap:6px}
+.mp-chip{display:inline-block;font-size:13px;font-weight:600;line-height:1.2;padding:5px 9px;border-radius:7px;background:var(--mp-card);
+         border:1px solid;color:var(--mp-ink)}
+.mp-kind .mp-lab{margin:6px 0 -2px}
+.mp-kind .mp-card h5{font-size:12px;letter-spacing:.1em;text-transform:uppercase;font-weight:700;margin-bottom:4px}
+.mp-kind .mp-card h4{font-size:18px}
+.mp-kind .mp-card p,.mp-kind .mp-card li{font-size:14px}
+.mp-kind ol{padding-left:20px;margin-top:4px}
+.mp-kind ol li{margin-bottom:5px}
+.mp-kind__tail{font-size:14px;color:var(--mp-ink-2);margin-top:auto}
+
+.mp-active{background:var(--mp-act-tint);border-color:var(--mp-act)}
+.mp-active h4.mp-kind__h,.mp-active .mp-lab,.mp-active .mp-card h5{color:var(--mp-act-h)}
+.mp-active .mp-card,.mp-active .mp-chip{border-color:var(--mp-act-edge)}
+.mp-active .mp-chip--yes{background:var(--mp-act);border-color:var(--mp-act);color:var(--mp-act-on)}
+
+.mp-passive{background:var(--mp-pas-tint);border-color:var(--mp-pas)}
+.mp-passive h4.mp-kind__h,.mp-passive .mp-lab,.mp-passive .mp-card h5{color:var(--mp-pas-h)}
+.mp-passive .mp-lab,.mp-passive .mp-card h5{color:var(--mp-pas-lab)}
+.mp-passive .mp-card,.mp-passive .mp-chip{border-color:var(--mp-pas-edge)}
+.mp-passive .mp-chip--no{background:var(--mp-pas);border-color:var(--mp-pas);color:var(--mp-pas-on)}
+/* where active immunity has its own lymphocytes and memory cells, passive immunity says it has neither */
+.mp-passive .mp-card.mp-not{border:2px solid var(--mp-pas)}
+.mp-not p{color:var(--mp-ink) !important}
+.mp-passive .mp-card.mp-card--beyond{border:1.5px dashed var(--mp-ext)}
+.mp-card--beyond h5 .mp-beyond{margin:0 0 0 6px;font-size:10px;padding:1px 6px;letter-spacing:.05em}
+
+/* white blood cells in both halves */
+.mp-wbc{display:grid;gap:10px;align-items:center;margin-top:14px;background:var(--mp-paper);border:1px solid var(--mp-rule);border-radius:12px;padding:14px}
+.mp-wbc h4{font-size:19px;font-weight:600;line-height:1.25}
+.mp-wbc p{font-size:14.5px;border-radius:10px;padding:10px 12px;border:1px solid}
+.mp-wbc__in{background:var(--mp-in-tint);border-color:var(--mp-in-edge) !important}
+.mp-wbc__ac{background:var(--mp-ac-tint);border-color:var(--mp-ac-edge) !important}
+.mp-wbc__ar{display:none;color:var(--mp-soft);font-size:26px;line-height:1;text-align:center}
+
+/* the three boxes under the frame */
+.mp-bottom3{display:grid;gap:14px;margin-bottom:22px}
+.mp-bottom3>.mp-card{padding:18px 18px 16px}
+.mp-bottom3 h4{font-size:clamp(19px,1.5vw,24px);font-weight:600;line-height:1.25;margin-bottom:12px}
+.mp-vacc{background:var(--mp-act-tint);border-color:var(--mp-act-edge)}
+.mp-vacc p{color:var(--mp-ink) !important;margin-bottom:10px}
+.mp-slips{background:var(--mp-slip);border-color:var(--mp-slip-edge)}
+.mp-slips ul{padding-left:18px}
+.mp-slips li{color:var(--mp-ink) !important;margin-bottom:7px}
+.mp-tbl{width:100%;border-collapse:collapse;font-size:13.5px}
+.mp-tbl th,.mp-tbl td{text-align:left;vertical-align:top;padding:8px 8px;border-bottom:1px solid var(--mp-rule);color:var(--mp-ink)}
+.mp-tbl thead th{font-weight:600;border-bottom:2px solid var(--mp-ink);padding-top:0}
+.mp-tbl tbody th{font-weight:500}
+.mp-tbl tbody tr:last-child>*{border-bottom:0}
+.mp-tbl__act{color:var(--mp-act-h) !important}
+.mp-tbl__pas{color:var(--mp-pas-lab) !important}
+.mp-foot{font-size:12.5px;color:var(--mp-soft);line-height:1.5}
+
+.mp-sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.mp-only{display:flex;flex-direction:column;gap:8px}
+
+/* ---------- in the lab: the pop-up and the button that opens it (the lab's own tokens, both versions) ---------- */
+.modal--map{padding:16px}
+.mapbox{max-width:1320px;width:100%;max-height:calc(100vh - 32px);max-height:calc(100dvh - 32px);overflow:auto;
+        background:var(--mp-paper);border-radius:var(--r-lg,14px);box-shadow:var(--shadow-lg);position:relative;overscroll-behavior:contain}
+.mapbar{position:sticky;top:0;z-index:2;display:flex;align-items:center;justify-content:space-between;gap:12px;
+        padding:10px 12px 10px 18px;background:var(--card);border-bottom:1px solid var(--edge)}
+.mapbar__name{font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--grey)}
+.mapbar__close{font:inherit;font-size:15px;font-weight:600;color:var(--ink);background:var(--card-2);border:1px solid var(--edge);
+               border-radius:999px;padding:8px 16px;min-height:40px;cursor:pointer;line-height:1}
+.mapbar__close:hover,.mapbar__close:focus-visible{background:var(--red-tint);color:var(--red);border-color:var(--red)}
+@media (max-width:600px){
+  .modal--map{padding:0}
+  .mapbox{max-height:100vh;max-height:100dvh;height:100%;border-radius:0}
+}
+.mapgo{display:flex;align-items:center;gap:12px;width:100%;margin:2px 0 14px;padding:10px 14px;text-align:left;font:inherit;
+       color:var(--ink);background:var(--accent-tint);border:1.5px solid var(--accent);border-radius:12px;cursor:pointer}
+.mapgo:hover,.mapgo:focus-visible{background:var(--card)}
+.mapgo__ic{flex:none;width:44px;height:32px}
+.mapgo__all{fill:var(--mp-card);stroke:var(--mp-frame);stroke-width:2}
+.mapgo__in{fill:var(--mp-in-tint);stroke:var(--mp-in);stroke-width:1.6}
+.mapgo__ac{fill:var(--mp-ac-tint);stroke:var(--mp-ac);stroke-width:1.6}
+.mapgo__act{fill:var(--mp-act-tint);stroke:var(--mp-act);stroke-width:1.4}
+.mapgo__pas{fill:var(--mp-pas-tint);stroke:var(--mp-pas);stroke-width:1.4}
+.mapgo__t{display:flex;flex-direction:column;gap:2px;min-width:0}
+.mapgo__q{font-size:13.5px;color:var(--grey);line-height:1.35}
+.mapgo__go{font-size:15.5px;font-weight:700;color:var(--accent);line-height:1.3}
+
+/* a phone: the frames inside frames give the words more of the width */
+@media (max-width:480px){
+  .mp{padding:18px 10px 16px}
+  .mp-imm{padding:32px 7px 10px;border-radius:16px}
+  .mp-imm__pill{left:10px;max-width:calc(100% - 20px)}
+  .mp-half{padding:16px 9px 12px}
+  .mp-kind{padding:14px 9px 12px}
+  .mp-card{padding:12px 12px}
+  .mp-wbc{padding:10px}
+}
+/* ---------- 760 px and wider: the kinds of immunity side by side ---------- */
+@media (min-width:760px){
+  .mp{padding:30px 30px 22px}
+  .mp-top{grid-template-columns:1fr minmax(240px,320px);gap:24px}
+  .mp-defs3{grid-template-columns:repeat(3,1fr)}
+  .mp-imm{padding:40px 22px 20px}
+  .mp-imm__pill{left:22px}
+  .mp-half{padding:22px 20px 20px}
+  .mp-terms{grid-template-columns:1fr 1fr}
+  .mp-kind .mp-terms{grid-template-columns:1fr}
+  /* the kinds share their rows, so "Only in active immunity" and "Not in passive immunity" start level, and so do the
+     natural and the artificial cards (subgrid; a browser without it keeps each column as it is) */
+  .mp-kinds{grid-template-columns:1fr 1fr;grid-template-rows:repeat(5,auto)}
+  .mp-kind{display:grid;grid-row:span 5;grid-template-rows:subgrid;align-content:start;gap:10px}
+  .mp-kind>*{align-self:start}                                   /* a card ends with its words; only the tops line up */
+  .mp-kind>.mp-kind__tail{align-self:end}
+  .mp-kind__head{display:flex;flex-direction:column;gap:8px}
+  .mp-wbc{grid-template-columns:minmax(150px,.7fr) 1fr auto 1.3fr}
+  .mp-wbc__ar{display:block}
+  .mp-bottom3{grid-template-columns:1fr 1fr}
+  .mp-bottom3>.mp-cmp{grid-column:1/-1}
+}
+/* ---------- 1100 px and wider, and the print: the poster's two halves side by side ---------- */
+@media (min-width:1100px){
+  .mp{padding:40px 44px 30px}
+  .mp-halves{grid-template-columns:minmax(0,518fr) minmax(0,864fr);gap:24px}
+  .mp-imm{padding:44px 28px 26px;border-radius:24px}
+  .mp-imm__pill{left:28px}
+  .mp-half{padding:24px 22px 22px}
+  .mp-bottom3{grid-template-columns:639fr 395fr 395fr;gap:20px}
+  .mp-bottom3>.mp-cmp{grid-column:auto}
+}
+@media (min-width:1500px){
+  .mp{padding:48px 64px 30px}                                   /* the print keeps the poster's 1600 × 2320 */
+  .mp-kind .mp-terms{grid-template-columns:1fr 1fr}             /* narrower, the two cards in a kind stand one above the other */
+}
