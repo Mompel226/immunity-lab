@@ -15,14 +15,20 @@
    memory cell at its top thinks they are always produced, "that's not necessarily the case with passive immunity"):
      • Lymphocyte and Memory cell moved from the top of Acquired immunity into Active immunity, under "Only in active
        immunity"; Antigen and Antibody stay at the top, under "In both active and passive immunity";
-     • Passive immunity answers them level, under "Not in passive immunity": no lymphocytes of your own (another
-       individual made the antibodies) and no memory cells (0610 2026–28, 10.1.13 and 10.1.15); the white blood cells strip says "Lymphocytes (active immunity)";
+     • Passive immunity answers them level, under "Not in passive immunity": no antibodies of your own (your
+       lymphocytes do not make them: another individual made them) and no memory cells (0610 2026–28, 10.1.13 and 10.1.15); the white blood cells strip says "Lymphocytes (active immunity)";
      • his rules for every page: the key said the "beyond" card was "not examined" (never say so: 0610/22/M/J/22 Q19 asks
        about injected antibodies, and three 0610 mark schemes credit them), now "beyond 0610"; passive immunity is rose,
        as violet means beyond the syllabus on every site; and plain words for EAL pupils ("keep out", "get inside",
        "breathe in", "at once" → stop … entering, enter the body, inhale, immediately);
      • the injection card no longer says "(antiserum or antitoxin)": a private paper of his (the Y10 Annual 2025, Paper 4
        Q5) is built on an injection of antitoxin, and the lab shares no context with his private papers (its check 4).
+   25 Nov 2026 (Daniel: "make sure that the hub has an updated and not erroneous poster"): the first card under passive
+   immunity said "No lymphocytes of your own", which tells a pupil they HAVE no lymphocytes (a baby has its own; they do
+   not make these antibodies); it says "No antibodies of your own" (short enough to stay two lines, so the poster keeps
+   its size), and its sentence still says your own lymphocytes do not make them. The mucus card said "ciliated cells beat", where the CILIA beat (0610 examiner report, June 2005: candidates
+   used cilia and ciliated cells as if they were the same): "the cilia of ciliated cells beat", the lab's own station
+   wording. tools/works-check.mjs part 7 fails on either old wording.
    ============================================================ */
 (function () {
   'use strict';
@@ -71,7 +77,7 @@
             '</div>',
             '<p class="mp-lab">Chemical barriers · trap or kill pathogens</p>',
             '<div class="mp-stack">',
-              '<div class="mp-card"><h4>Mucus</h4><p>Sticky; traps pathogens and particles in the airways.</p><p class="mp-sub"><b>Goblet cells</b> secrete mucus; <b>ciliated cells</b> beat to move it up the trachea and bronchi to the throat, where it is swallowed.' + ref('11.1.11') + '</p></div>',
+              '<div class="mp-card"><h4>Mucus</h4><p>Sticky; traps pathogens and particles in the airways.</p><p class="mp-sub"><b>Goblet cells</b> secrete mucus; the <b>cilia</b> of <b>ciliated cells</b> beat to move it up the trachea and bronchi to the throat, where it is swallowed.' + ref('11.1.11') + '</p></div>',
               card('Stomach acid' + ref('7.4.5'), '<b>Hydrochloric acid</b> in gastric juice kills harmful microorganisms in food, drink and swallowed mucus.'),
             '</div>',
             '<p class="mp-lab">Cells · if pathogens enter the body</p>',
@@ -126,7 +132,7 @@
                 '<div class="mp-only">',
                   '<p class="mp-lab">Not in passive immunity</p>',
                   '<div class="mp-terms">',
-                    card('No lymphocytes of your own', 'Your own <b>lymphocytes</b> do not make these antibodies: another individual made them.', ' mp-not'),
+                    card('No antibodies of your own', 'Your own <b>lymphocytes</b> do not make these antibodies: another individual made them.', ' mp-not'),
                     card('No memory cells', '<b>Memory cells</b> are not produced in passive immunity.' + ref('10.1.15'), ' mp-not'),
                   '</div>',
                 '</div>',
