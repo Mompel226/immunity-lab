@@ -39,7 +39,6 @@
     return '<g opacity="' + n1((op == null ? 1 : op) * 100) / 100 + '" transform="translate(' + n1(x - a.w * s / 2) + ' ' + n1(y - a.h * s / 2) + ') scale(' + s + ')">' + a.svg + '</g>';
   }
   function pt(a, b, k) { return [lerp(a[0], b[0], k), lerp(a[1], b[1], k)]; }
-  function wob(t, amp) { return 1 + amp * Math.sin(t * 9); }
 
   /* ---------- the places (the sheet is W × H) ----------
      Sizes nearer to life (Daniel, 4 Nov 2026: "make the macrophage bigger … keep the pathogen the same size"): a macrophage is

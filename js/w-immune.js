@@ -56,7 +56,6 @@
      the antibodies it binds) and from the cell's centre, and the scale of Servier's neutrophil inside it (defences.js: 62 ↔ .74) */
   var RN = 74, RV = 58, VOFF = 14, COFF = 12, NIN = .88;
   function lymph(x, y, kind, keys) { return { type: 'lym', kind: kind, keys: keys || [[0, { x: x, y: y, op: 1, glow: 0 }]] }; }
-  function pathogenActor(kind, keys, ag) { return { type: 'pg', kind: kind, keys: keys, ag: ag }; }
 
   function remap(script) {
     function mv(o) { if (o.x != null) o.x *= FX; if (o.y != null) o.y *= FY; }
