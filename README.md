@@ -15,7 +15,7 @@ by **Dr Daniel Mompel Riera**
 
 </div>
 
-![The Immunity Lab: a lymphocyte and antibodies that fit the antigens of one pathogen, beside the station's cards](docs/img/screen.jpg)
+![The Immunity Lab: four kinds of pathogen, each seen with an electron or a light microscope, beside the station Pathogens and how they spread](docs/img/screen.jpg)
 
 ---
 
