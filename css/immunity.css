@@ -45,8 +45,13 @@
 /* his name is never cut (memory header-footer-credit): the topic line gives way first */
 .hdr__title,.hdr__by{flex:none}
 .hdr__mark{flex:none}
-@media (max-width:1500px){ .hdr__sub{display:none} }
-@media (max-width:1300px) and (min-width:1001px){ .stat--stations{display:none} }
+/* the header is one row that fits the window: the topic line gives way first, then the stations count (28 Nov 2026: from 1101 to 1650px the
+   page was wider than the window at many widths, so the station row dragged it sideways, cutting the picture; the limits were 1500px
+   and 1300px) */
+@media (max-width:1700px){ .hdr__sub{display:none} }
+@media (max-width:1480px) and (min-width:1001px){ .stat--stations{display:none} }
+/* and if the buttons still do not fit (a longer name or warning once signed in), they take a second row rather than standing past the window's edge */
+@media (min-width:541px){ .hdr__stats{flex:0 1 auto;min-width:0;flex-wrap:wrap;justify-content:flex-end;row-gap:5px} }
 .hdr__sub{color:var(--hdr-soft);opacity:1;font-size:12.5px;min-width:0;flex:0 1 auto}
 .hdr__by{color:var(--hdr-soft);opacity:1}
 .hdr__by:hover,.hdr__by:focus-visible{color:var(--hdr-ink)}
@@ -92,16 +97,6 @@
 .said:empty{display:none}
 .said__name{display:block;font-size:14px;font-weight:600;color:var(--col-ink)}
 .said__credit{display:block;font-size:11.5px;color:var(--col-soft);margin-top:2px}
-/* a picture of several photographs: its credits folded under it (Daniel, 4 Nov 2026), open upwards into the picture's space */
-.said__fold{margin-top:3px;font-size:12.5px;color:var(--col-soft)}
-.said__fold summary{display:inline-flex;align-items:center;gap:5px;cursor:pointer;padding:2px 8px;border-radius:6px;list-style:none}
-.said__fold summary::-webkit-details-marker{display:none}
-.said__fold summary::before{content:'\25B8';font-size:11px}
-.said__fold[open] summary::before{content:'\25BE'}
-.said__fold summary:hover{color:var(--col-ink)}
-.said__fold summary:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
-.said__list{margin:4px auto 0;padding:0;list-style:none;text-align:left;display:inline-block;max-width:100%;line-height:1.45}
-.said__list b{color:var(--col-ink);font-weight:600}
 .sim{flex:1;min-height:0;overflow:auto;padding:12px 14px 16px;display:flex;flex-direction:column}
 .sim[hidden]{display:none}
 .sim .widget{margin-top:0;border:none;box-shadow:none;background:transparent;padding:0}
@@ -320,7 +315,7 @@ p,li,dd,figcaption{text-wrap:pretty}
 .exam-part[class*="exam-part--"] .xcard__b{border-color:var(--pt-ink)}
 .exam-part[class*="exam-part--"] .xcard__h:focus-visible{outline-color:var(--pt-ink)}
 
-/* the photographs (stations 1 and 3): each one names itself; their credits are folded under the picture (.said__fold) */
+/* the photographs (stations 1 and 3): each one names itself; their credits wait under the caption's i (js/plate.js caption) */
 .gal{flex:1;min-height:0;display:flex;flex-direction:column;padding:8px 10px 8px;overflow:auto}
 .gal__grid{display:grid;grid-template-columns:repeat(var(--cols,2),minmax(0,1fr));gap:10px;align-content:start}
 .gal__grid[hidden]{display:none}
@@ -533,3 +528,53 @@ p,li,dd,figcaption{text-wrap:pretty}
 .sp__only.sp__lv--bey{background:var(--ext);color:var(--ext-on);font-style:italic}
 .sp__step--ib .sp__stepb,.sp__step--ibhl .sp__stepb{background:var(--ext-tint)}
 .sp__step--bey .sp__stepb{background:var(--ext-tint)}
+
+/* ---------- the picture is the priority (Daniel, 27 Nov 2026, the Membrane Lab; every lab, 28 Nov 2026) ----------
+   "I still believe that animation is too small and there's too much text that impedes the visualization. Text should be on the
+   right"; 28 Nov: "when you show an image on the left, you don't have to scroll down". On a laptop each station's column is as
+   wide as its own picture can stand in the window's height (--pr, its width to its height with its names; --pf, the height the
+   window keeps for the header, the station row, the picture's buttons and its caption), never narrower than a square picture's
+   column or 42 % of the window, and the words keep at least 600 px. This lab's station pictures are all wider than high (the
+   two skin blocks 2.6 to 1, the lymphocyte and the town 1.8, the placenta and the gut 1.4), so each gets the width it can use;
+   its films are taller than wide and already fill the column's height. The caption is one line; a photograph's credit, or the
+   credits of a picture made of several photographs, wait under the i beside it (js/plate.js caption). Proof:
+   tools/picture-space.mjs. */
+@media (min-width:1001px){
+  .stage{--pr:1;--pf:214px;--colw:clamp(42vw, max(calc(100dvh - 194px), calc((100dvh - var(--pf)) * var(--pr) + 20px)), calc(100vw - 600px));
+    grid-template-columns:minmax(360px,var(--colw)) minmax(0,1fr)}
+  .stage:has(> .platecol[data-station="spread"]){--pr:1.2}   /* four photographs, two by two, with their names on them: 1.4 put the lower names under the caption */
+  .stage:has(> .platecol[data-station="defences"]){--pr:2;--pf:300px}
+  .stage:has(> .platecol[data-station="antibodies"]){--pr:1.7}
+  .stage:has(> .platecol[data-station="vaccination"]){--pr:1.7;--pf:330px}
+  .stage:has(> .platecol[data-station="passive"]){--pr:1.42}
+  .stage:has(> .platecol[data-station="cholera"]){--pr:1.37}
+  /* the five ways to control the spread: three to a row on a laptop, so all five photographs stand whole above the caption
+     (two to a row took three rows, and the fifth stood under the caption: 86 px at 1440 x 790 before 28 Nov 2026) */
+  .stage:has(> .platecol[data-station="control"]){--pr:1.5}
+  .platecol[data-station="control"] .gal__grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+  /* the picture's own buttons, smaller */
+  .vbar{gap:6px;padding:0 6px 4px}
+  .cellv__mode{font-size:12.5px;padding:4px 11px}
+  /* the reading pane keeps room under its pinned Learn | Practise tabs, so whatever is brought into view stops below them */
+  .panel{scroll-padding-top:64px}
+}
+@media (min-width:621px){
+  .said:not(:empty){display:flex;align-items:center;justify-content:center;gap:7px;padding:5px 14px 6px;line-height:1.35}
+  .said__name{display:block;font-size:13px;min-width:0}
+}
+.said__i{display:inline-grid;place-items:center;position:relative;flex:none;width:21px;height:21px;margin:0;padding:0;
+  border-radius:50%;border:1.5px solid var(--col-line);background:var(--col-card);color:var(--col-ink);
+  font:italic 700 12.5px/1 Georgia,'Times New Roman',serif;cursor:pointer}
+.said__i::before{content:"";position:absolute;inset:-8px}
+.said__i:hover,.said__i[aria-expanded="true"]{border-color:var(--accent);color:var(--accent)}
+.said__i:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.said__more{position:absolute;left:12px;right:12px;bottom:calc(100% + 6px);z-index:8;display:block;text-align:left;
+  padding:10px 14px 11px;border-radius:10px;background:var(--col-card);border:1px solid var(--col-line);
+  box-shadow:0 8px 24px rgba(0,0,0,.35);font-size:12.5px;line-height:1.45;color:var(--col-ink)}
+.said__more[hidden]{display:none}
+.said__more .said__credit{display:block;font-size:12.5px;color:var(--col-ink);margin:0}
+.said__more .said__h{display:block;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--col-soft);margin-bottom:3px}
+.said__more .said__list{display:block;margin:0;max-width:none}
+.said__more .said__li{display:block;margin-top:2px}
+.said__more .said__li b{color:var(--col-ink);font-weight:600}
+@media (max-width:540px){ .said__i{width:26px;height:26px} }
