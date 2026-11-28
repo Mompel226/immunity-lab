@@ -40,7 +40,7 @@
     { t: 16, h: 'After birth: in breast milk', p: [['ig', 'After birth, the baby receives antibodies from its mother in **breast milk**.']] },
     { t: 24, h: 'They protect the baby', p: [
       ['ig', 'In the baby’s blood, the antibodies that crossed the placenta bind to a pathogen **the mother has already met**, and it is destroyed. For a pathogen she has not met, none of her antibodies fits.'],
-      ['bey', 'The antibodies in milk work in the same way in the baby’s gut.']] },
+      ['bey', 'The **antibodies in milk** work in the same way in the baby’s gut.']] },
     { t: 32, h: 'No memory cells: short-term', p: [['ig', '**Memory cells are not produced**: the antibodies were made by someone else’s lymphocytes. They are **broken down** after a few weeks, so passive immunity is **short-term**.']] }
   ];
   var M = [0, 8, 16, 24, 32, 42];
